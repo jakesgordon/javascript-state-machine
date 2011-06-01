@@ -4,8 +4,8 @@ Javascript Finite State Machine
 This standalone javascript micro-framework provides a finite state machine for your pleasure.
 
  * You can find the [code here](https://github.com/jakesgordon/javascript-state-machine)
- * You can find a description here - (_coming soon_)
- * You can find a working demo here - (_coming soon_)
+ * You can find a [description here](http://codeincomplete.com/posts/2011/6/1/javascript_state_machine/)
+ * You can find a [working demo here](http://codeincomplete.com/posts/2011/6/1/javascript_state_machine/example/)
 
 Download
 ========
