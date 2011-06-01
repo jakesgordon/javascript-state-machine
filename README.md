@@ -54,19 +54,8 @@ along with the following members:
  * fsm.can(e)    - return true if event `e` can be fired in the current state
  * fsm.cannot(e) - return true if event `e` cannot be fired in the current state
 
-Multiple Transitions
-====================
-
-If an event should be available from multiple states, simply use an array in the event `from` argument:
-
-    var fsm = StateMachine.create({
-      state: 'green',
-      events: [
-        { name: 'warn',  from: ['green'],           to: 'yellow' },
-        { name: 'panic', from: ['green', 'yellow'], to: 'red'    },
-        { name: 'calm',  from: ['red'],             to: 'yellow' },
-        { name: 'clear', from: ['red', 'yellow'],   to: 'green'  }
-    ]});
+>> _NOTE: If an event should be allowed from multiple states, simply provide an array of state
+   names in the event's `from` argument._
 
 Hooks
 =====
@@ -77,13 +66,6 @@ Hooks
  * onafter**event**  - fired after an event
  * onenter**state**  - fired when entering a state
  * onleave**state**  - fired when leaving a state
-
-The order of the hooks should be as expected:
-
- * onbefore**event**
- * onleave**state**
- * onenter**state**
- * onafter**event**
 
 For convenience, the 2 most useful hooks can be shortened:
 
@@ -111,36 +93,12 @@ Hooks can be added after the FSM is created:
     fsm.clear()
     ...
 
-Alternatively, hooks can be added before the FSM is created (to be sure of including the
-initial state transition), by turning an existing object into an FSM using the `target`
-option:
+State Machine Classes
+=====================
 
-    var fsm = {
-      onpanic  : function() { alert('panic!'); },
-      onclear  : function() { alert('all clear!'); },
-      ongreen  : function() { document.body.className = 'green';  },
-      onyellow : function() { document.body.className = 'yellow'; },
-      onred    : function() { document.body.className = 'red';    }
-    };
-
-    StateMachine.create({
-      target: fsm,
-      state: 'green',
-      events: [
-        { name: 'warn',  from: 'green',  to: 'yellow' },
-        { name: 'panic', from: 'yellow', to: 'red'    },
-        { name: 'calm',  from: 'red',    to: 'yellow' },
-        { name: 'clear', from: 'yellow', to: 'green'  },
-    ]});
-
-
-    fsm.panic()
-    fsm.clear()
-    ...
-
-In this way, you can also turn all instances of a  _class_ into an FSM by applying
-the state machine functionality in a constructor function, and adding your hooks
-into the prototype:
+You can also turn all instances of a  _class_ into an FSM by applying
+the state machine functionality in a constructor function using the `target`
+option, and adding your hooks into the prototype:
 
     MyFSM = function() {         // my constructor function
       StateMachine.create({
