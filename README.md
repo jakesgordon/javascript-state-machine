@@ -4,10 +4,22 @@ Javascript Finite State Machine
 This standalone javascript micro-framework provides a finite state machine for your pleasure.
 
  * You can find the [code here](https://github.com/jakesgordon/javascript-state-machine)
- * You can find a [description here](https://github.com/jakesgordon/javascript-state-machine) - COMING SOON
- * You can find a [working demo here](https://github.com/jakesgordon/javascript-state-machine) - COMING SOON
+ * You can find a description here - (_coming soon_)
+ * You can find a working demo here - (_coming soon_)
+
+Download
+========
+
+You can download the [source state-machine.js here](https://github.com/jakesgordon/javascript-state-machine/raw/master/state-machine.js),
+or the [minified version here](https://github.com/jakesgordon/javascript-state-machine/raw/master/state-machine.min.js)
+
+Alternatively
+
+    git clone git@github.com:jakesgordon/javascript-state-machine
+
 
  * All code is in state-machine.js
+ * Minified version provided as state-machine.min.js
  * No 3rd party library is required
  * Demo can be found in /index.html
  * QUnit tests can be found in /test/index.html
