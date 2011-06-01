@@ -10,16 +10,16 @@ This standalone javascript micro-framework provides a finite state machine for y
 Download
 ========
 
-You can download the [source state-machine.js here](https://github.com/jakesgordon/javascript-state-machine/raw/master/state-machine.js),
-or the [minified version here](https://github.com/jakesgordon/javascript-state-machine/raw/master/state-machine.min.js)
+You can download [state-machine.js](https://github.com/jakesgordon/javascript-state-machine/raw/master/state-machine.js),
+or the [minified version](https://github.com/jakesgordon/javascript-state-machine/raw/master/state-machine.min.js)
 
-Alternatively
+Alternatively:
 
     git clone git@github.com:jakesgordon/javascript-state-machine
 
 
  * All code is in state-machine.js
- * Minified version provided as state-machine.min.js
+ * Minified version provided in state-machine.min.js
  * No 3rd party library is required
  * Demo can be found in /index.html
  * QUnit tests can be found in /test/index.html
@@ -71,7 +71,7 @@ If an event should be available from multiple states, simply use an array in the
 Hooks
 =====
 
-4 hooks are available if FSM has methods using the following naming conventions:
+4 hooks are available if your object has methods using the following naming conventions:
 
  * onbefore**event** - fired before an event
  * onafter**event**  - fired after an event
@@ -80,10 +80,10 @@ Hooks
 
 The order of the hooks should be as expected:
 
- * onbefore**event** - fired before an event
- * onleave**state**  - fired when leaving existing state
- * onenter**state**  - fired when entering new state
- * onafter**event**  - fired after event
+ * onbefore**event**
+ * onleave**state**
+ * onenter**state**
+ * onafter**event**
 
 For convenience, the 2 most useful hooks can be shortened:
 
@@ -142,7 +142,7 @@ In this way, you can also turn all instances of a  _class_ into an FSM by applyi
 the state machine functionality in a constructor function, and adding your hooks
 into the prototype:
 
-    MyFSM = function() {
+    MyFSM = function() {         // my constructor function
       StateMachine.create({
         target: this,
         state: 'green',
