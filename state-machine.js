@@ -4,15 +4,10 @@ StateMachine = {
 
   create: function(cfg) {
 
-    var target  = cfg.target || {};
-    var initial = cfg.state;
+    var target  = cfg.target  || {};
     var events  = cfg.events;
 
-    var can = {
-      startup: ['none'] // implicit 'startup' event is allowed from implicit 'none' state
-    }
-
-    var n, event, name;
+    var n, event, name, can = {};
     for(n = 0 ; n < events.length ; n++) {
       event = events[n];
       name  = event.name;
@@ -25,7 +20,16 @@ StateMachine = {
     target.can     = function(event) { return can[event].indexOf(this.current) >= 0; };
     target.cannot  = function(event) { return !this.can(event); };
 
-    this.buildEvent('startup', 'none', initial, target).call(target); // call an implicit 'startup' event to set the initial state
+    if (cfg.initial) { // see "initial" qunit tests for examples
+      var initial = (typeof cfg.initial == 'string') ? { state: cfg.initial } : cfg.initial; // allow single string to represent initial state, or complex object to configure { state: 'first', event: 'init', defer: true|false }
+      name = initial.event || 'startup';
+      can[name] = ['none'];
+      event = this.buildEvent(name, 'none', initial.state, target);
+      if (initial.defer)
+        target[name] = event; // allow caller to trigger initial transition event
+      else
+        event.call(target);
+    }
 
     return target;
   },
@@ -43,15 +47,18 @@ StateMachine = {
       if (beforeEvent && (false === beforeEvent.apply(this, arguments)))
         return;
 
-      var exitState = this['onleave'  + this.current];
-      if (exitState)
-        exitState.apply(this, arguments);
+      if (this.current != to) {
 
-      this.current = to;
+        var exitState = this['onleave'  + this.current];
+        if (exitState)
+          exitState.apply(this, arguments);
 
-      var enterState = this['onenter' + to] || this['on' + to];
-      if (enterState)
-        enterState.apply(this, arguments);
+        this.current = to;
+
+        var enterState = this['onenter' + to] || this['on' + to];
+        if (enterState)
+          enterState.apply(this, arguments);
+      }
 
       var afterEvent = this['onafter'  + name] || this['on' + name];
       if (afterEvent)

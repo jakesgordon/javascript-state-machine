@@ -32,7 +32,7 @@ Include `state-machine.min.js` in your application.
 In its simplest form, create a standalone state machine using:
 
     var fsm = StateMachine.create({
-      state: 'green',
+      initial: 'green',
       events: [
         { name: 'warn',  from: 'green',  to: 'yellow' },
         { name: 'panic', from: 'yellow', to: 'red'    },
@@ -75,7 +75,7 @@ For convenience, the 2 most useful hooks can be shortened:
 Hooks can be added after the FSM is created:
 
     var fsm = StateMachine.create({
-      state: 'green',
+      initial: 'green',
       events: [
         { name: 'warn',  from: 'green',  to: 'yellow' },
         { name: 'panic', from: 'yellow', to: 'red'    },
@@ -103,7 +103,7 @@ option, and adding your hooks into the prototype:
     MyFSM = function() {         // my constructor function
       StateMachine.create({
         target: this,
-        state: 'green',
+        initial: 'green',
         events: [
           { name: 'warn',  from: 'green',  to: 'yellow' },
           { name: 'panic', from: 'yellow', to: 'red'    },
@@ -125,6 +125,65 @@ option, and adding your hooks into the prototype:
     };
 
 This should be easy to adjust to fit your appropriate mechanism for object construction.
+
+Initialization Options
+======================
+
+How the state machine should initialize can depend on your application requirements, so
+the library provides a number of simple options.
+
+By default, if you dont specify any initial state, the state machine will be in the `'none'`
+state and you would need to provide an event to take it out of this state:
+
+    var fsm = StateMachine.create({
+      events: [
+        { name: 'startup', from: 'none',  to: 'green' },
+        { name: 'panic',   from: 'green', to: 'red'   },
+        { name: 'calm',    from: 'red',   to: 'green' },
+    ]});
+    alert(fsm.current); // "none"
+    fsm.startup();
+    alert(fsm.current); // "green"
+
+If you specify the name of your initial event (as in all the earlier examples), then an
+implicit `startup` event will be created for you and fired when the state machine is constructed.
+
+    var fsm = StateMachine.create({
+      initial: 'green',
+      events: [
+        { name: 'panic', from: 'green', to: 'red'   },
+        { name: 'calm',  from: 'red',   to: 'green' },
+    ]});
+    alert(fsm.current); // "green"
+
+If your object already has a `startup` method you can change the name of the initial event
+
+    var fsm = StateMachine.create({
+      initial: { state: 'green', event: 'init' },
+      events: [
+        { name: 'panic', from: 'green', to: 'red'   },
+        { name: 'calm',  from: 'red',   to: 'green' },
+    ]});
+    alert(fsm.current); // "green"
+
+Finally, if you want to wait to call the initial state transition event until a later date you
+can `defer` it:
+
+    var fsm = StateMachine.create({
+      initial: { state: 'green', event: 'init', defer: true },
+      events: [
+        { name: 'panic', from: 'green', to: 'red'   },
+        { name: 'calm',  from: 'red',   to: 'green' },
+    ]});
+    alert(fsm.current); // "none"
+    fsm.init();
+    alert(fsm.current); // "green"
+
+Of course, we have now come full circle, this last example is pretty much functionally the
+same as the first example in this section where you simply define your own startup event.
+
+So you have a number of choices available to you when initializing your state machine.
+
 
 License
 =======

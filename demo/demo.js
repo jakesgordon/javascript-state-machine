@@ -3,7 +3,7 @@ Demo = {
   run: function() {
     StateMachine.create({
       target: this,
-      state: 'green',
+      initial: 'green',
       events: [
         { name: 'warn',  from: ['green'],           to: 'yellow' },
         { name: 'panic', from: ['green', 'yellow'], to: 'red'    },
