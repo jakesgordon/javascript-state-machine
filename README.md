@@ -10,7 +10,7 @@ This standalone javascript micro-framework provides a finite state machine for y
 New in version 1.2
 ==================
 
- * Allows the same event to transition to different states, depending on the current state
+ * Allows the same event to transition to different states, depending on the current state (see 'Multiple...' sections below)
 
 Download
 ========
@@ -131,7 +131,7 @@ This example will create an object with 2 event methods:
  * fsm.eat()
  * fsm.rest()
 
-The rest event will always transition to the `hungry` state, while the eat event will transition to a state that is dependent on the current state.
+The `rest` event will always transition to the `hungry` state, while the `eat` event will transition to a state that is dependent on the current state.
 
 State Machine Classes
 =====================
