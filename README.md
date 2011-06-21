@@ -7,6 +7,11 @@ This standalone javascript micro-framework provides a finite state machine for y
  * You can find a [description here](http://codeincomplete.com/posts/2011/6/1/javascript_state_machine/)
  * You can find a [working demo here](http://codeincomplete.com/posts/2011/6/1/javascript_state_machine/example/)
 
+New in version 1.2
+==================
+
+ * Allows the same event to transition to different states, depending on the current state
+
 Download
 ========
 
@@ -54,9 +59,6 @@ along with the following members:
  * fsm.can(e)    - return true if event `e` can be fired in the current state
  * fsm.cannot(e) - return true if event `e` cannot be fired in the current state
 
->> _NOTE: If an event should be allowed from multiple states, simply provide an array of state
-   names in the event's `from` argument._
-
 Hooks
 =====
 
@@ -92,6 +94,44 @@ Hooks can be added after the FSM is created:
     fsm.panic()
     fsm.clear()
     ...
+
+Multiple 'from' states for a single event
+=========================================
+
+If an event is allowed **from** multiple states, and always transitions **to** the same
+state, then simply provide an array of states in the `from` attribute of an event:
+
+    var fsm = StateMachine.create({
+      initial: 'green',
+      events: [
+        { name: 'warn',  from: ['green'],           to: 'yellow' },
+        { name: 'panic', from: ['green', 'yellow'], to: 'red'    },
+        { name: 'calm',  from: ['red'],             to: 'yellow' },
+        { name: 'clear', from: ['red', 'yellow'],   to: 'green'  }
+    ]});
+
+Multiple 'to' states for a single event
+=======================================
+
+If an event is allowed **from** multiple states, but should transition **to** a different
+state depending on the current state, then provide multiple event entries with
+the same name:
+
+    var fsm = StateMachine.create({
+      initial: 'hungry',
+      events: [
+        { name: 'eat',  from: 'hungry',                                to: 'satisfied' },
+        { name: 'eat',  from: 'satisfied',                             to: 'full'      },
+        { name: 'eat',  from: 'full',                                  to: 'sick'      },
+        { name: 'rest', from: ['hungry', 'satisfied', 'full', 'sick'], to: 'hungry'    },
+    ]});
+
+This example will create an object with 2 event methods:
+
+ * fsm.eat()
+ * fsm.rest()
+
+The rest event will always transition to the `hungry` state, while the eat event will transition to a state that is dependent on the current state.
 
 State Machine Classes
 =====================
@@ -205,7 +245,7 @@ Contact
 
 If you have any ideas, feedback, requests or bug reports, you can reach me at
 [jake@codeincomplete.com](mailto:jake@codeincomplete.com), or via
-my website: [Code inComplete](http://codeincomplete.com/).
+my website: [Code inComplete](http://codeincomplete.com/posts/2011/6/1/javascript_state_machine/)
 
 
 

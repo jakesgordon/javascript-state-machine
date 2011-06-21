@@ -4,46 +4,44 @@ StateMachine = {
 
   create: function(cfg) {
 
-    var target  = cfg.target  || {};
-    var events  = cfg.events;
-    var initial = (typeof cfg.initial == 'string') ? { state: cfg.initial } : cfg.initial;
-    var map     = {};
-    var n;
+    var initial = (typeof cfg.initial == 'string') ? { state: cfg.initial } : cfg.initial; // allow for a simple string, or an object with { state: 'foo', event: 'setup', defer: true|false }
+    var fsm     = cfg.target  || {};
+    var events  = {};
 
-    var addMap = function(map, event) {
-      var from = (event.from instanceof Array) ? event.from : [event.from];
-      map[event.name] = map[event.name] || {};
+    var add = function(e) {
+      var from = (e.from instanceof Array) ? e.from : [e.from];
+      events[e.name] = events[e.name] || {};
       for (var n = 0 ; n < from.length ; n++)
-        map[event.name][from[n]] = event.to;
+        events[e.name][from[n]] = e.to;
     }
 
     if (initial) {
       initial.event = initial.event || 'startup';
-      addMap(map, { name: initial.event, from: 'none', to: initial.state });
+      add({ name: initial.event, from: 'none', to: initial.state });
     }
 
-    for(n = 0 ; n < events.length ; n++)
-      addMap(map, events[n]);
+    for(var n = 0 ; n < cfg.events.length ; n++)
+      add(cfg.events[n]);
 
-    for(n in map) {
-      if (map.hasOwnProperty(n))
-        target[n] = this.buildEvent(n, map[n], target);
+    for(var name in events) {
+      if (events.hasOwnProperty(name))
+        fsm[name] = this.buildEvent(name, events[name]);
     }
 
-    target.current = 'none';
-    target.is      = function(state) { return this.current == state; };
-    target.can     = function(event) { return map[event][this.current]; };
-    target.cannot  = function(event) { return !this.can(event); };
+    fsm.current = 'none';
+    fsm.is      = function(state) { return this.current == state; };
+    fsm.can     = function(event) { return !!events[event][this.current]; };
+    fsm.cannot  = function(event) { return !this.can(event); };
 
     if (initial && !initial.defer)
-      target[initial.event]();
+      fsm[initial.event]();
 
-    return target;
+    return fsm;
   },
 
   //---------------------------------------------------------------------------
 
-  buildEvent: function(name, map, target) {
+  buildEvent: function(name, map) {
 
     return function() {
 
