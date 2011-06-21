@@ -2,6 +2,10 @@ StateMachine = {
 
   //---------------------------------------------------------------------------
 
+  VERSION: "1.2.0",
+
+  //---------------------------------------------------------------------------
+
   create: function(cfg) {
 
     var initial = (typeof cfg.initial == 'string') ? { state: cfg.initial } : cfg.initial; // allow for a simple string, or an object with { state: 'foo', event: 'setup', defer: true|false }
