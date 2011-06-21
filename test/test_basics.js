@@ -130,36 +130,6 @@ test("event is cancelable", function() {
 
 //-----------------------------------------------------------------------------
 
-test("multiple from states", function() {
-
-  var fsm = StateMachine.create({
-    initial: 'green',
-    events: [
-      { name: 'warn',  from: 'green',             to: 'yellow' },
-      { name: 'panic', from: ['green', 'yellow'], to: 'red'    },
-      { name: 'calm',  from: 'red',               to: 'yellow' },
-      { name: 'clear', from: ['yellow', 'red'],   to: 'green'  },
-  ]});
-
-  equals(fsm.current, 'green', "initial state should be green");
-
-  ok(fsm.can('warn'),     "should be able to warn from green state")
-  ok(fsm.can('panic'),    "should NOT be able to panic from green state")
-  ok(fsm.cannot('calm'),  "should NOT be able to calm from green state")
-  ok(fsm.cannot('clear'), "should NOT be able to clear from green state")
-
-  fsm.warn();  equals(fsm.current, 'yellow', "warn  event should transition from green  to yellow");
-  fsm.panic(); equals(fsm.current, 'red',    "panic event should transition from yellow to red");
-  fsm.calm();  equals(fsm.current, 'yellow', "calm  event should transition from red    to yellow");
-  fsm.clear(); equals(fsm.current, 'green',  "clear event should transition from yellow to green");
-
-  fsm.panic(); equals(fsm.current, 'red',   "panic event should transition from green to red");
-  fsm.clear(); equals(fsm.current, 'green', "clear event should transition from red to green");
-   
-});
-
-//-----------------------------------------------------------------------------
-
 test("hooks are called when appropriate", function() {
 
   var fsm = StateMachine.create({

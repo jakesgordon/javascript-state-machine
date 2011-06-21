@@ -1,3 +1,5 @@
+//-----------------------------------------------------------------------------
+
 module("special initialization options", {
 
   setup: function() {
@@ -20,7 +22,9 @@ module("special initialization options", {
 
 });
 
-test("state defaults to 'none'", function() {
+//-----------------------------------------------------------------------------
+
+test("initial state defaults to 'none'", function() {
   StateMachine.create({
     target: this,
     events: [
@@ -31,7 +35,9 @@ test("state defaults to 'none'", function() {
   deepEqual(this.called,  []);
 });
 
-test("state can be specified", function() {
+//-----------------------------------------------------------------------------
+
+test("initial state can be specified", function() {
   StateMachine.create({
     target: this,
     initial: 'green',
@@ -43,7 +49,9 @@ test("state can be specified", function() {
   deepEqual(this.called, ["onbeforestartup", "onleavenone", "onentergreen", "onafterstartup"]);
 });
 
-test("event name can be specified", function() {
+//-----------------------------------------------------------------------------
+
+test("startup event name can be specified", function() {
   StateMachine.create({
     target: this,
     initial: { state: 'green', event: 'init' },
@@ -55,7 +63,9 @@ test("event name can be specified", function() {
   deepEqual(this.called, ["onbeforeinit", "onleavenone", "onentergreen", "onafterinit"]);
 });
 
-test("event can be deferred", function() {
+//-----------------------------------------------------------------------------
+
+test("startup event can be deferred", function() {
   StateMachine.create({
     target: this,
     initial: { state: 'green', event: 'init', defer: true },
@@ -71,4 +81,7 @@ test("event can be deferred", function() {
   equal(this.current, 'green');
   deepEqual(this.called, ["onbeforeinit", "onleavenone", "onentergreen", "onafterinit"]);
 });
+
+//-----------------------------------------------------------------------------
+
 
