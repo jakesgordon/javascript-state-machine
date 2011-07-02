@@ -115,5 +115,62 @@ test("hooks are called when appropriate for multiple 'from' and 'to' transitions
 
 //-----------------------------------------------------------------------------
 
+test("hooks are called when appropriate for prototype based state machine", function() {
+
+  myFSM = function() {
+    this.called = [];
+    this.startup();
+  };
+
+  myFSM.prototype = {
+
+    // state hooks
+    onentergreen:   function() { this.called.push('onentergreen');  },
+    onleavegreen:   function() { this.called.push('onleavegreen');  },
+    onenteryellow : function() { this.called.push('onenteryellow'); },
+    onleaveyellow:  function() { this.called.push('onleaveyellow'); },
+    onenterred:     function() { this.called.push('onenterred');    },
+    onleavered:     function() { this.called.push('onleavered');    },
+
+    // event hooks
+    onbeforestartup: function() { this.called.push('onbeforestartup'); },
+    onafterstartup:  function() { this.called.push('onafterstartup');  },
+    onbeforewarn:    function() { this.called.push('onbeforewarn');    },
+    onafterwarn:     function() { this.called.push('onafterwarn');     },
+    onbeforepanic:   function() { this.called.push('onbeforepanic');   },
+    onafterpanic:    function() { this.called.push('onafterpanic');    },
+    onbeforeclear:   function() { this.called.push('onbeforeclear');   },
+    onafterclear:    function() { this.called.push('onafterclear');    }
+  };
+
+  StateMachine.create({
+    target: myFSM.prototype,
+    events: [
+      { name: 'startup', from: 'none',   to: 'green'  },
+      { name: 'warn',    from: 'green',  to: 'yellow' },
+      { name: 'panic',   from: 'yellow', to: 'red'    },
+      { name: 'clear',   from: 'yellow', to: 'green'  }
+    ]
+  });
+
+  var a = new myFSM();
+  var b = new myFSM();
+
+  equal(a.current, 'green', 'start with correct state');
+  equal(b.current, 'green', 'start with correct state');
+
+  deepEqual(a.called, ['onbeforestartup', 'onentergreen', 'onafterstartup']);
+  deepEqual(b.called, ['onbeforestartup', 'onentergreen', 'onafterstartup']);
+
+  a.warn();
+
+  equal(a.current, 'yellow', 'maintain independent current state');
+  equal(b.current, 'green',  'maintain independent current state');
+
+  deepEqual(a.called, ['onbeforestartup', 'onentergreen', 'onafterstartup', 'onbeforewarn', 'onleavegreen', 'onenteryellow', 'onafterwarn']);
+  deepEqual(b.called, ['onbeforestartup', 'onentergreen', 'onafterstartup']);
+
+});
+
 
 
