@@ -137,22 +137,11 @@ State Machine Classes
 =====================
 
 You can also turn all instances of a  _class_ into an FSM by applying
-the state machine functionality in a constructor function using the `target`
-option, and adding your hooks into the prototype:
+the state machine functionality to the prototype object and providing
+a `startup` event for use when constructing instances:
 
     MyFSM = function() {         // my constructor function
-      StateMachine.create({
-        target: this,
-        initial: 'green',
-        events: [
-          { name: 'warn',  from: 'green',  to: 'yellow' },
-          { name: 'panic', from: 'yellow', to: 'red'    },
-          { name: 'calm',  from: 'red',    to: 'yellow' },
-          { name: 'clear', from: 'yellow', to: 'green'  }
-        ]});
-
-      // other constructor behavior
-
+      this.startup();
     };
 
     MyFSM.prototype = {
@@ -164,17 +153,18 @@ option, and adding your hooks into the prototype:
 
     };
 
+    StateMachine.create({
+      target: MyFSM.prototype,
+      events: [
+        { name: 'startup', from: 'none',   to: 'green'  },
+        { name: 'warn',    from: 'green',  to: 'yellow' },
+        { name: 'panic',   from: 'yellow', to: 'red'    },
+        { name: 'calm',    from: 'red',    to: 'yellow' },
+        { name: 'clear',   from: 'yellow', to: 'green'  }
+      ]});
+
+
 This should be easy to adjust to fit your appropriate mechanism for object construction.
-
->> _NOTE: There may be performance implications if you use this last pattern on classes
-   that are going to be instantiated hundreds of times. Since the current implementation
-   will re-create the event firing methods over and over again on each instance instead
-   of creating them only once on the prototype object
-
->> In this case, what we would need is a way to create the StateMachine on the prototype
-   object and simply initialize this.current for each instance.
-
->> If there is enough demand I'll fix that in a future version.
 
 Initialization Options
 ======================
