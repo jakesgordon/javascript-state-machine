@@ -182,6 +182,9 @@ test("hooks are called when appropriate", function() {
 
   var called = [];
 
+  // generic state hook
+  fsm.onchangestate = function(from,to) { called.push('onchange from ' + from + ' to ' + to); };
+
   // state hooks
   fsm.onentergreen    = function() { called.push('onentergreen');     };
   fsm.onleavegreen    = function() { called.push('onleavegreen');     };
@@ -198,23 +201,24 @@ test("hooks are called when appropriate", function() {
   fsm.onbeforecalm    = function() { called.push('onbeforecalm');     };
   fsm.onaftercalm     = function() { called.push('onaftercalm');      };
   fsm.onbeforeclear   = function() { called.push('onbeforeclear');    };
-  fsm.onafterclear    = function() { called.push('onafterclear');     }
+  fsm.onafterclear    = function() { called.push('onafterclear');     };
+
 
   called = [];
   fsm.warn();
-  deepEqual(called, ['onbeforewarn', 'onleavegreen', 'onenteryellow', 'onafterwarn']);
+  deepEqual(called, ['onbeforewarn', 'onleavegreen', 'onenteryellow', 'onchange from green to yellow', 'onafterwarn']);
 
   called = [];
   fsm.panic();
-  deepEqual(called, ['onbeforepanic', 'onleaveyellow', 'onenterred', 'onafterpanic']);
+  deepEqual(called, ['onbeforepanic', 'onleaveyellow', 'onenterred', 'onchange from yellow to red', 'onafterpanic']);
 
   called = [];
   fsm.calm();
-  deepEqual(called, ['onbeforecalm', 'onleavered', 'onenteryellow', 'onaftercalm']);
+  deepEqual(called, ['onbeforecalm', 'onleavered', 'onenteryellow', 'onchange from red to yellow', 'onaftercalm']);
 
   called = [];
   fsm.clear();
-  deepEqual(called, ['onbeforeclear', 'onleaveyellow', 'onentergreen', 'onafterclear']);
+  deepEqual(called, ['onbeforeclear', 'onleaveyellow', 'onentergreen', 'onchange from yellow to green', 'onafterclear']);
 
 });
 

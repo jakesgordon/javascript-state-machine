@@ -79,6 +79,9 @@ test("hooks are called when appropriate for multiple 'from' and 'to' transitions
 
   var called = [];
 
+  // generic state hook
+  fsm.onchangestate = function(from,to) { called.push('onchange from ' + from + ' to ' + to); };
+
   // state hooks
   fsm.onenterhungry    = function() { called.push('onenterhungry');    };
   fsm.onleavehungry    = function() { called.push('onleavehungry');    };
@@ -97,19 +100,19 @@ test("hooks are called when appropriate for multiple 'from' and 'to' transitions
 
   called = [];
   fsm.eat();
-  deepEqual(called, ['onbeforeeat', 'onleavehungry', 'onentersatisfied', 'onaftereat']);
+  deepEqual(called, ['onbeforeeat', 'onleavehungry', 'onentersatisfied', 'onchange from hungry to satisfied', 'onaftereat']);
 
   called = [];
   fsm.eat();
-  deepEqual(called, ['onbeforeeat', 'onleavesatisfied', 'onenterfull', 'onaftereat']);
+  deepEqual(called, ['onbeforeeat', 'onleavesatisfied', 'onenterfull', 'onchange from satisfied to full', 'onaftereat']);
 
   called = [];
   fsm.eat();
-  deepEqual(called, ['onbeforeeat', 'onleavefull', 'onentersick', 'onaftereat']);
+  deepEqual(called, ['onbeforeeat', 'onleavefull', 'onentersick', 'onchange from full to sick', 'onaftereat']);
 
   called = [];
   fsm.rest();
-  deepEqual(called, ['onbeforerest', 'onleavesick', 'onenterhungry', 'onafterrest']);
+  deepEqual(called, ['onbeforerest', 'onleavesick', 'onenterhungry', 'onchange from sick to hungry', 'onafterrest']);
 
 });
 
@@ -123,6 +126,9 @@ test("hooks are called when appropriate for prototype based state machine", func
   };
 
   myFSM.prototype = {
+
+    // generic state hook
+    onchangestate: function(from,to) { this.called.push('onchange from ' + from + ' to ' + to); },
 
     // state hooks
     onentergreen:   function() { this.called.push('onentergreen');  },
@@ -159,16 +165,16 @@ test("hooks are called when appropriate for prototype based state machine", func
   equal(a.current, 'green', 'start with correct state');
   equal(b.current, 'green', 'start with correct state');
 
-  deepEqual(a.called, ['onbeforestartup', 'onentergreen', 'onafterstartup']);
-  deepEqual(b.called, ['onbeforestartup', 'onentergreen', 'onafterstartup']);
+  deepEqual(a.called, ['onbeforestartup', 'onentergreen', 'onchange from none to green', 'onafterstartup']);
+  deepEqual(b.called, ['onbeforestartup', 'onentergreen', 'onchange from none to green', 'onafterstartup']);
 
   a.warn();
 
   equal(a.current, 'yellow', 'maintain independent current state');
   equal(b.current, 'green',  'maintain independent current state');
 
-  deepEqual(a.called, ['onbeforestartup', 'onentergreen', 'onafterstartup', 'onbeforewarn', 'onleavegreen', 'onenteryellow', 'onafterwarn']);
-  deepEqual(b.called, ['onbeforestartup', 'onentergreen', 'onafterstartup']);
+  deepEqual(a.called, ['onbeforestartup', 'onentergreen', 'onchange from none to green', 'onafterstartup', 'onbeforewarn', 'onleavegreen', 'onenteryellow', 'onchange from green to yellow', 'onafterwarn']);
+  deepEqual(b.called, ['onbeforestartup', 'onentergreen', 'onchange from none to green', 'onafterstartup']);
 
 });
 

@@ -2,14 +2,14 @@ StateMachine = {
 
   //---------------------------------------------------------------------------
 
-  VERSION: "1.2.0",
+  VERSION: "1.3.0",
 
   //---------------------------------------------------------------------------
 
-  create: function(cfg) {
+  create: function(cfg, target) {
 
     var initial = (typeof cfg.initial == 'string') ? { state: cfg.initial } : cfg.initial; // allow for a simple string, or an object with { state: 'foo', event: 'setup', defer: true|false }
-    var fsm     = cfg.target  || {};
+    var fsm     = target || cfg.target  || {};
     var events  = {};
 
     var add = function(e) {
@@ -70,6 +70,11 @@ StateMachine = {
         var enterState = this['onenter' + to] || this['on' + to];
         if (enterState)
           enterState.apply(this, arguments);
+
+        var changeState = this['onchangestate'];
+        if (changeState)
+          changeState.call(this, from, to);
+
       }
 
       var afterEvent = this['onafter'  + name] || this['on' + name];

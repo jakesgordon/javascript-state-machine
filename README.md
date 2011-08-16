@@ -1,16 +1,11 @@
-Javascript Finite State Machine
-===============================
+Javascript Finite State Machine (v1.3.0)
+========================================
 
 This standalone javascript micro-framework provides a finite state machine for your pleasure.
 
  * You can find the [code here](https://github.com/jakesgordon/javascript-state-machine)
  * You can find a [description here](http://codeincomplete.com/posts/2011/6/1/javascript_state_machine/)
  * You can find a [working demo here](http://codeincomplete.com/posts/2011/6/1/javascript_state_machine/example/)
-
-New in version 1.2
-==================
-
- * Allows the same event to transition to different states, depending on the current state (see 'Multiple...' sections below)
 
 Download
 ========
@@ -94,6 +89,12 @@ Hooks can be added after the FSM is created:
     fsm.panic()
     fsm.clear()
     ...
+
+*NEW in v1.3.0* is a generic `onstatechage` hook was added to allow a single function
+to be called, with from and to parameters, on all state changes
+
+    fsm.onchangestate = function(from, to) { document.body.className = to; };
+
 
 Multiple 'from' states for a single event
 =========================================
@@ -224,6 +225,10 @@ same as the first example in this section where you simply define your own start
 
 So you have a number of choices available to you when initializing your state machine.
 
+Release Notes
+=============
+
+See [RELEASE NOTES](https://github.com/jakesgordon/javascript-state-machine/blob/master/RELEASE_NOTES.md) file.
 
 License
 =======
