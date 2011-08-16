@@ -90,8 +90,8 @@ Hooks can be added after the FSM is created:
     fsm.clear()
     ...
 
-*NEW in v1.3.0* is a generic `onstatechage` hook was added to allow a single function
-to be called, with from and to parameters, on all state changes
+*NEW in v1.3.0* is a generic `onchangestate(from,to)` hook was added to allow a single function
+to be called on all state changes:
 
     fsm.onchangestate = function(from, to) { document.body.className = to; };
 
