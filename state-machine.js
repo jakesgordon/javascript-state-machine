@@ -87,7 +87,7 @@ StateMachine = {
     return function() {
 
       if (this.transition)
-        throw "event " + name + " innapropriate because previous async transition from " + this.transition.from + " to " + this.transition.to + " did not complete"
+        throw "event " + name + " innapropriate because previous async transition (" + this.transition.event + ") from " + this.transition.from + " to " + this.transition.to + " did not complete"
 
       if (this.cannot(name))
         throw "event " + name + " innapropriate in current state " + this.current;
@@ -103,9 +103,10 @@ StateMachine = {
         if (false === StateMachine.beforeEvent.call(this, name, args))
           return;
 
-        this.transition      = function() { StateMachine.transition.call(self, name, from, to, args); self.transition = null; };
-        this.transition.from = from;
-        this.transition.to   = to;
+        this.transition       = function() { StateMachine.transition.call(self, name, from, to, args); self.transition = null; };
+        this.transition.event = name;
+        this.transition.from  = from;
+        this.transition.to    = to;
 
         if (false === StateMachine.leaveState.call(this, this.current, args))
           async = true;

@@ -2,6 +2,7 @@
 
 #controls { text-align: center; }
 
+#demo #notes   { margin-bottom: 1em; }
 #demo #diagram { width: 400px; height: 275px; }
 #demo #output  { width: 100%;  height: 30em;  }
 

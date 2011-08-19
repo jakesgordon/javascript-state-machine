@@ -26,11 +26,31 @@ Demo = {
 
   onleavegreen:    function() { this.log("LEAVE STATE: green");  },
   onleaveyellow:   function() { this.log("LEAVE STATE: yellow"); },
-  onleavered:      function() { this.log("LEAVE STATE: red");    },
+  onleavered:      function() { this.log("LEAVE STATE: red");    this.asyncTransition(); return false; },
 
   ongreen:         function() { this.log("ENTER STATE: green");  },
   onyellow:        function() { this.log("ENTER STATE: yellow"); },
   onred:           function() { this.log("ENTER STATE: red");    },
+
+  asyncTransition: function() {
+    var self = this;
+    self.logTransition(3);
+    setTimeout(function() {
+      self.logTransition(2);
+      setTimeout(function() {
+        self.logTransition(1);
+        setTimeout(function() {
+          self.logTransition(0);
+          self.transition();
+        }, 1000);
+      }, 1000);
+    }, 1000);
+  },
+
+  logTransition: function(n) {
+    if (n)
+      this.log("PENDING " + this.transition.event + " from " + this.transition.from + " to " + this.transition.to + " in : " + n + "...");
+  },
 
   log: function(msg, separate) {
     this.count = (this.count || 0) + (separate ? 1 : 0);

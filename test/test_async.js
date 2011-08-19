@@ -174,7 +174,10 @@ test("state transitions using onleavestate run-time return value instead of desi
 
   fsm.onleavegreen = function(async) {
     if (async) {
-      setTimeout(function() { fsm.transition() }, 10);
+      setTimeout(function() {
+        fsm.transition(); equals(fsm.current, 'yellow', "warn event should transition from green to yellow");
+        start(); // move on to next test
+      }, 10);
       return false;
     }
   }
@@ -183,7 +186,8 @@ test("state transitions using onleavestate run-time return value instead of desi
   fsm.warn(false);  equals(fsm.current, 'yellow', "expected synchronous transition from green to yellow");
   fsm.clear();      equals(fsm.current, 'green',  "clear event should transition from yellow to green");
   fsm.warn(true);   equals(fsm.current, 'green',  "should still be green because we haven't transitioned yet");
-  fsm.transition(); equals(fsm.current, 'yellow', "warn event should transition from green to yellow");
+
+  stop(); // doing async stuff - dont run next qunit test until I call start() in callback above
 
 });
 
@@ -206,7 +210,7 @@ test("state transition fired without completing previous transition", function()
   fsm.transition(); equals(fsm.current, 'yellow', "warn event should transition from green to yellow");
   fsm.panic();      equals(fsm.current, 'yellow', "should still be yellow because we haven't transitioned yet");
 
-  raises(fsm.calm.bind(fsm), /event calm innapropriate because previous async transition from yellow to red did not complete/);
+  raises(fsm.calm.bind(fsm), /event calm innapropriate because previous async transition \(panic\) from yellow to red did not complete/);
 
 });
 
