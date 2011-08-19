@@ -85,6 +85,9 @@ StateMachine = {
   buildEvent: function(name, map) {
     return function() {
 
+      if (this.transition)
+        throw "event " + name + " innapropriate because previous async transition from " + this.transition.from + " to " + this.transition.to + " did not complete"
+
       if (this.cannot(name))
         throw "event " + name + " innapropriate in current state " + this.current;
 
@@ -98,9 +101,11 @@ StateMachine = {
         return;
 
       if (this.current != to) {
-        this.transition = function() { StateMachine.transition.call(self, from, to, args); self.transition = null; };
+        this.transition      = function() { StateMachine.transition.call(self, from, to, args); self.transition = null; };
+        this.transition.from = from;
+        this.transition.to   = to;
         StateMachine.exitState.call(this, this.current, arguments);
-        if (!async)
+        if (!async && this.transition) // if not async OR user already called transition method (e.g. in an onleavestate hook)
           this.transition();
       }
 
