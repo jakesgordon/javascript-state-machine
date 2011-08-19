@@ -66,7 +66,9 @@ test("multiple 'to' states for the same event", function() {
 
 //-----------------------------------------------------------------------------
 
-test("hooks are called when appropriate for multiple 'from' and 'to' transitions", function() {
+test("callbacks are called when appropriate for multiple 'from' and 'to' transitions", function() {
+
+  var called = [];
 
   var fsm = StateMachine.create({
     initial: 'hungry',
@@ -75,28 +77,25 @@ test("hooks are called when appropriate for multiple 'from' and 'to' transitions
       { name: 'eat',  from: 'satisfied',                             to: 'full'      },
       { name: 'eat',  from: 'full',                                  to: 'sick'      },
       { name: 'rest', from: ['hungry', 'satisfied', 'full', 'sick'], to: 'hungry'    },
-  ]});
+    ],
+    callbacks: {
+      onchangestate: function(event,from,to) { called.push('onchange from ' + from + ' to ' + to); },
 
-  var called = [];
+      onenterhungry:    function() { called.push('onenterhungry');    },
+      onleavehungry:    function() { called.push('onleavehungry');    },
+      onentersatisfied: function() { called.push('onentersatisfied'); },
+      onleavesatisfied: function() { called.push('onleavesatisfied'); },
+      onenterfull:      function() { called.push('onenterfull');      },
+      onleavefull:      function() { called.push('onleavefull');      },
+      onentersick:      function() { called.push('onentersick');      },
+      onleavesick:      function() { called.push('onleavesick');      },
 
-  // generic state hook
-  fsm.onchangestate = function(event,from,to) { called.push('onchange from ' + from + ' to ' + to); };
-
-  // state hooks
-  fsm.onenterhungry    = function() { called.push('onenterhungry');    };
-  fsm.onleavehungry    = function() { called.push('onleavehungry');    };
-  fsm.onentersatisfied = function() { called.push('onentersatisfied'); };
-  fsm.onleavesatisfied = function() { called.push('onleavesatisfied'); };
-  fsm.onenterfull      = function() { called.push('onenterfull');      };
-  fsm.onleavefull      = function() { called.push('onleavefull');      };
-  fsm.onentersick      = function() { called.push('onentersick');      };
-  fsm.onleavesick      = function() { called.push('onleavesick');      };
-
-  // event hooks
-  fsm.onbeforeeat    = function() { called.push('onbeforeeat');     };
-  fsm.onaftereat     = function() { called.push('onaftereat');      };
-  fsm.onbeforerest   = function() { called.push('onbeforerest');    };
-  fsm.onafterrest    = function() { called.push('onafterrest');     };
+      onbeforeeat:      function() { called.push('onbeforeeat');      },
+      onaftereat:       function() { called.push('onaftereat');       },
+      onbeforerest:     function() { called.push('onbeforerest');     },
+      onafterrest:      function() { called.push('onafterrest');      }
+    }
+  });
 
   called = [];
   fsm.eat();
@@ -118,7 +117,7 @@ test("hooks are called when appropriate for multiple 'from' and 'to' transitions
 
 //-----------------------------------------------------------------------------
 
-test("hooks are called when appropriate for prototype based state machine", function() {
+test("callbacks are called when appropriate for prototype based state machine", function() {
 
   myFSM = function() {
     this.called = [];
@@ -127,10 +126,8 @@ test("hooks are called when appropriate for prototype based state machine", func
 
   myFSM.prototype = {
 
-    // generic state hook
     onchangestate: function(event,from,to) { this.called.push('onchange from ' + from + ' to ' + to); },
 
-    // state hooks
     onentergreen:   function() { this.called.push('onentergreen');  },
     onleavegreen:   function() { this.called.push('onleavegreen');  },
     onenteryellow : function() { this.called.push('onenteryellow'); },
@@ -138,7 +135,6 @@ test("hooks are called when appropriate for prototype based state machine", func
     onenterred:     function() { this.called.push('onenterred');    },
     onleavered:     function() { this.called.push('onleavered');    },
 
-    // event hooks
     onbeforestartup: function() { this.called.push('onbeforestartup'); },
     onafterstartup:  function() { this.called.push('onafterstartup');  },
     onbeforewarn:    function() { this.called.push('onbeforewarn');    },

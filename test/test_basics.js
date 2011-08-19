@@ -169,7 +169,9 @@ test("event is cancelable", function() {
 
 //-----------------------------------------------------------------------------
 
-test("hooks are called when appropriate", function() {
+test("callbacks are ordered correctly", function() {
+
+  var called = [];
 
   var fsm = StateMachine.create({
     initial: 'green',
@@ -177,32 +179,30 @@ test("hooks are called when appropriate", function() {
       { name: 'warn',  from: 'green',  to: 'yellow' },
       { name: 'panic', from: 'yellow', to: 'red'    },
       { name: 'calm',  from: 'red',    to: 'yellow' },
-      { name: 'clear', from: 'yellow', to: 'green'  },
-  ]});
+      { name: 'clear', from: 'yellow', to: 'green'  }
+    ],
+    callbacks: {
 
-  var called = [];
+      onchangestate: function(event,from,to) { called.push('onchange from ' + from + ' to ' + to); },
 
-  // generic state hook
-  fsm.onchangestate = function(event,from,to) { called.push('onchange from ' + from + ' to ' + to); };
+      onentergreen:  function() { called.push('onentergreen');     },
+      onenteryellow: function() { called.push('onenteryellow');    },
+      onenterred:    function() { called.push('onenterred');       },
+      onleavegreen:  function() { called.push('onleavegreen');     },
+      onleaveyellow: function() { called.push('onleaveyellow');    },
+      onleavered:    function() { called.push('onleavered');       },
 
-  // state hooks
-  fsm.onentergreen    = function() { called.push('onentergreen');     };
-  fsm.onleavegreen    = function() { called.push('onleavegreen');     };
-  fsm.onenteryellow   = function() { called.push('onenteryellow');    };
-  fsm.onleaveyellow   = function() { called.push('onleaveyellow');    };
-  fsm.onenterred      = function() { called.push('onenterred');       };
-  fsm.onleavered      = function() { called.push('onleavered');       };
+      onbeforewarn:  function() { called.push('onbeforewarn');     },
+      onbeforepanic: function() { called.push('onbeforepanic');    },
+      onbeforecalm:  function() { called.push('onbeforecalm');     },
+      onbeforeclear: function() { called.push('onbeforeclear');    },
+      onafterwarn:   function() { called.push('onafterwarn');      },
+      onafterpanic:  function() { called.push('onafterpanic');     },
+      onaftercalm:   function() { called.push('onaftercalm');      },
+      onafterclear:  function() { called.push('onafterclear');     },
 
-  // event hooks
-  fsm.onbeforewarn    = function() { called.push('onbeforewarn');     };
-  fsm.onafterwarn     = function() { called.push('onafterwarn');      };
-  fsm.onbeforepanic   = function() { called.push('onbeforepanic');    };
-  fsm.onafterpanic    = function() { called.push('onafterpanic');     };
-  fsm.onbeforecalm    = function() { called.push('onbeforecalm');     };
-  fsm.onaftercalm     = function() { called.push('onaftercalm');      };
-  fsm.onbeforeclear   = function() { called.push('onbeforeclear');    };
-  fsm.onafterclear    = function() { called.push('onafterclear');     };
-
+    }
+  });
 
   called = [];
   fsm.warn();
@@ -224,18 +224,10 @@ test("hooks are called when appropriate", function() {
 
 //-----------------------------------------------------------------------------
 
-test("arguments are passed correctly to all hooks", function() {
+test("callback arguments are correct", function() {
 
-  var fsm = StateMachine.create({
-    initial: 'green',
-    events: [
-      { name: 'warn',  from: 'green',  to: 'yellow' },
-      { name: 'panic', from: 'yellow', to: 'red'    },
-      { name: 'calm',  from: 'red',    to: 'yellow' },
-      { name: 'clear', from: 'yellow', to: 'green'  },
-  ]});
+  var expected = { event: 'startup', from: 'none', to: 'green' }; // first expected callback
 
-  var expected = {};
   var verify_expected = function(event,from,to,a,b,c) {
     equal(event, expected.event)
     equal(from,  expected.from)
@@ -245,26 +237,35 @@ test("arguments are passed correctly to all hooks", function() {
     equal(c,     expected.c)
   };
 
-  // generic state hook
-  fsm.onchangestate   = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
+  var fsm = StateMachine.create({
+    initial: 'green',
+    events: [
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'yellow', to: 'red'    },
+      { name: 'calm',  from: 'red',    to: 'yellow' },
+      { name: 'clear', from: 'yellow', to: 'green'  }
+    ],
+    callbacks: {
 
-  // state hooks
-  fsm.onentergreen    = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
-  fsm.onleavegreen    = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
-  fsm.onenteryellow   = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
-  fsm.onleaveyellow   = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
-  fsm.onenterred      = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
-  fsm.onleavered      = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
+      onchangestate: function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
 
-  // event hooks
-  fsm.onbeforewarn    = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
-  fsm.onafterwarn     = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
-  fsm.onbeforepanic   = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
-  fsm.onafterpanic    = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
-  fsm.onbeforecalm    = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
-  fsm.onaftercalm     = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
-  fsm.onbeforeclear   = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
-  fsm.onafterclear    = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
+      onentergreen:  function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
+      onenteryellow: function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
+      onenterred:    function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
+      onleavegreen:  function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
+      onleaveyellow: function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
+      onleavered:    function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
+
+      onbeforewarn:  function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
+      onbeforepanic: function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
+      onbeforecalm:  function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
+      onbeforeclear: function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
+      onafterwarn:   function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
+      onafterpanic:  function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
+      onaftercalm:   function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
+      onafterclear:  function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); }
+    }
+  });
 
   expected = { event: 'warn', from: 'green', to: 'yellow', a: 1, b: 2, c: 3 };
   fsm.warn(1,2,3);

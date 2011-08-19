@@ -8,15 +8,17 @@ StateMachine = {
 
   create: function(cfg, target) {
 
-    var initial = (typeof cfg.initial == 'string') ? { state: cfg.initial } : cfg.initial; // allow for a simple string, or an object with { state: 'foo', event: 'setup', defer: true|false }
-    var fsm     = target || cfg.target  || {};
-    var events  = {};
+    var initial   = (typeof cfg.initial == 'string') ? { state: cfg.initial } : cfg.initial; // allow for a simple string, or an object with { state: 'foo', event: 'setup', defer: true|false }
+    var fsm       = target || cfg.target  || {};
+    var events    = cfg.events || [];
+    var callbacks = cfg.callbacks || {};
+    var map       = {};
 
     var add = function(e) {
       var from = (e.from instanceof Array) ? e.from : [e.from];
-      events[e.name] = events[e.name] || {};
+      map[e.name] = map[e.name] || {};
       for (var n = 0 ; n < from.length ; n++)
-        events[e.name][from[n]] = e;
+        map[e.name][from[n]] = e;
     };
 
     if (initial) {
@@ -24,17 +26,22 @@ StateMachine = {
       add({ name: initial.event, from: 'none', to: initial.state });
     }
 
-    for(var n = 0 ; n < cfg.events.length ; n++)
-      add(cfg.events[n]);
+    for(var n = 0 ; n < events.length ; n++)
+      add(events[n]);
 
-    for(var name in events) {
-      if (events.hasOwnProperty(name))
-        fsm[name] = StateMachine.buildEvent(name, events[name]);
+    for(var name in map) {
+      if (map.hasOwnProperty(name))
+        fsm[name] = StateMachine.buildEvent(name, map[name]);
+    }
+
+    for(var name in callbacks) {
+      if (callbacks.hasOwnProperty(name))
+        fsm[name] = callbacks[name]
     }
 
     fsm.current = 'none';
     fsm.is      = function(state) { return this.current == state; };
-    fsm.can     = function(event) { return !!events[event][this.current]; };
+    fsm.can     = function(event) { return !!map[event][this.current]; };
     fsm.cannot  = function(event) { return !this.can(event); };
 
     if (initial && !initial.defer)
@@ -111,7 +118,7 @@ StateMachine = {
         if (false === StateMachine.leaveState.call(this, name, from, to, args))
           async = true;
 
-        if (!async && this.transition) // if not async OR user already called transition method (e.g. explicitly in an onleavestate hook)
+        if (!async && this.transition) // if not async OR user already called transition method (e.g. explicitly in an onleavestate callback)
           this.transition();
       }
 

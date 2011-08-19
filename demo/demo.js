@@ -1,71 +1,78 @@
-Demo = {
+Demo = function() {
 
-  run: function() {
-    StateMachine.create({
-      target: this,
-      initial: 'green',
-      events: [
-        { name: 'warn',  from: ['green'],           to: 'yellow' },
-        { name: 'panic', from: ['green', 'yellow'], to: 'red'    },
-        { name: 'calm',  from: ['red'],             to: 'yellow' },
-        { name: 'clear', from: ['red',   'yellow'], to: 'green'  },
-    ]});
-  },
+  var output = document.getElementById('output'),
+      demo   = document.getElementById('demo'),
+      panic  = document.getElementById('panic'),
+      warn   = document.getElementById('warn'),
+      calm   = document.getElementById('calm'),
+      clear  = document.getElementById('clear'),
+      count  = 0;
 
-  onbeforestartup: function(event, from, to) { this.log("STARTING UP"); },
-  onafterstartup:  function(event, from, to) { this.log("READY");       },
+  var log = function(msg, separate) {
+    count = count + (separate ? 1 : 0);
+    output.value = count + ": " + msg + "\n" + (separate ? "\n" : "") + output.value;
+    demo.className = fsm.current;
+    panic.disabled = fsm.cannot('panic');
+    warn.disabled  = fsm.cannot('warn');
+    calm.disabled  = fsm.cannot('calm');
+    clear.disabled = fsm.cannot('clear');
+  };
 
-  onbeforewarn:    function(event, from, to) { this.log("START   EVENT: warn!",  true);  },
-  onbeforepanic:   function(event, from, to) { this.log("START   EVENT: panic!", true);  },
-  onbeforecalm:    function(event, from, to) { this.log("START   EVENT: calm!",  true);  },
-  onbeforeclear:   function(event, from, to) { this.log("START   EVENT: clear!", true);  },
+  var fsm = StateMachine.create({
 
-  onwarn:          function(event, from, to) { this.log("FINISH  EVENT: warn!");    },
-  onpanic:         function(event, from, to) { this.log("FINISH  EVENT: panic!");   },
-  oncalm:          function(event, from, to) { this.log("FINISH  EVENT: calm!");    },
-  onclear:         function(event, from, to) { this.log("FINISH  EVENT: clear!");   },
+    events: [
+      { name: 'start', from: 'none',   to: 'green'  },
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'green',  to: 'red'    },
+      { name: 'panic', from: 'yellow', to: 'red'    },
+      { name: 'calm',  from: 'red',    to: 'yellow' },
+      { name: 'clear', from: 'red',    to: 'green'  },
+      { name: 'clear', from: 'yellow', to: 'green'  },
+    ],
 
-  onleavegreen:    function(event, from, to) { this.log("LEAVE   STATE: green");  },
-  onleaveyellow:   function(event, from, to) { this.log("LEAVE   STATE: yellow"); },
-  onleavered:      function(event, from, to) { this.log("LEAVE   STATE: red");    this.asyncTransition(); return false; },
+    callbacks: {
+      onbeforestart: function(event, from, to) { log("STARTING UP"); },
+      onstart:       function(event, from, to) { log("READY");       },
 
-  ongreen:         function(event, from, to) { this.log("ENTER   STATE: green");  },
-  onyellow:        function(event, from, to) { this.log("ENTER   STATE: yellow"); },
-  onred:           function(event, from, to) { this.log("ENTER   STATE: red");    },
+      onbeforewarn:  function(event, from, to) { log("START   EVENT: warn!",  true);  },
+      onbeforepanic: function(event, from, to) { log("START   EVENT: panic!", true);  },
+      onbeforecalm:  function(event, from, to) { log("START   EVENT: calm!",  true);  },
+      onbeforeclear: function(event, from, to) { log("START   EVENT: clear!", true);  },
 
-  onchangestate:   function(event, from, to) { this.log("CHANGED STATE: " + from + " to " + to); },
+      onwarn:        function(event, from, to) { log("FINISH  EVENT: warn!");         },
+      onpanic:       function(event, from, to) { log("FINISH  EVENT: panic!");        },
+      oncalm:        function(event, from, to) { log("FINISH  EVENT: calm!");         },
+      onclear:       function(event, from, to) { log("FINISH  EVENT: clear!");        },
 
-  asyncTransition: function() {
-    var self = this;
-    self.logTransition(3);
+      onleavegreen:  function(event, from, to) { log("LEAVE   STATE: green");  },
+      onleaveyellow: function(event, from, to) { log("LEAVE   STATE: yellow"); },
+      onleavered:    function(event, from, to) { log("LEAVE   STATE: red");    async(to); return false; },
+
+      ongreen:       function(event, from, to) { log("ENTER   STATE: green");  },
+      onyellow:      function(event, from, to) { log("ENTER   STATE: yellow"); },
+      onred:         function(event, from, to) { log("ENTER   STATE: red");    },
+
+      onchangestate: function(event, from, to) { log("CHANGED STATE: " + from + " to " + to); }
+    }
+  });
+
+  var async = function(to) {
+    pending(to, 3);
     setTimeout(function() {
-      self.logTransition(2);
+      pending(to, 2);
       setTimeout(function() {
-        self.logTransition(1);
+        pending(to, 1);
         setTimeout(function() {
-          self.logTransition(0);
-          self.transition();
+          fsm.transition(); // trigger deferred state transition
         }, 1000);
       }, 1000);
     }, 1000);
-  },
+  };
 
-  logTransition: function(n) {
-    if (n)
-      this.log("PENDING STATE: " + this.transition.to + " in ..." + n);
-  },
+  var pending = function(to, n) { log("PENDING STATE: " + to + " in ..." + n); };
 
-  log: function(msg, separate) {
-    this.count = (this.count || 0) + (separate ? 1 : 0);
+  fsm.start();
+  return fsm;
 
-    var output = document.getElementById('output');
-    output.value = this.count + ": " + msg + "\n" + (separate ? "\n" : "") + output.value;
+}();
 
-    document.getElementById('demo').className = this.current;
-    document.getElementById('panic').disabled = this.cannot('panic');
-    document.getElementById('warn').disabled  = this.cannot('warn');
-    document.getElementById('calm').disabled  = this.cannot('calm');
-    document.getElementById('clear').disabled = this.cannot('clear');
-  }
-
-};

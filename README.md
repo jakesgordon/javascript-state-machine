@@ -9,27 +9,6 @@ Something like
     var fsm = StateMachine.create({
       initial: 'green',
       events: [
-        { name: 'play', from: 'menu', to: 'game', async: true },
-        { name: 'lose', from: 'game', to: 'menu'              },
-    ]});
-
-    fsm.onleavemenu = function() {
-      $('menu').fade(function() {
-        fsm.transition();
-      });
-    }
-
-    fsm.onentergame = function() {
-      // this doesn't get called until fsm.transition() is called when the menu has finished fading
-    }
-
-    fsm.play();
-
-Also possible to simply return false from onleavestate hook instead of having to declare event as async:
-
-    var fsm = StateMachine.create({
-      initial: 'green',
-      events: [
         { name: 'play', from: 'menu', to: 'game' },
         { name: 'lose', from: 'game', to: 'menu' },
     ]});
@@ -49,7 +28,7 @@ Also possible to simply return false from onleavestate hook instead of having to
 
 Or.... something else ! Have to wait and see how it pans out (without breaking existing synchronous behavior)
 
-Javascript Finite State Machine (v1.3.0)
+Javascript Finite State Machine (v2.0.0)
 ========================================
 
 This standalone javascript micro-framework provides a finite state machine for your pleasure.
@@ -105,67 +84,11 @@ along with the following members:
  * fsm.can(e)    - return true if event `e` can be fired in the current state
  * fsm.cannot(e) - return true if event `e` cannot be fired in the current state
 
-Hooks
-=====
-
->> _NOTE: I'm using the word 'hook' to avoid overloading the word 'event'._
-
-4 hooks are available if your object has methods using the following naming conventions:
-
- * onbefore**event** - fired before an event
- * onafter**event**  - fired after an event
- * onenter**state**  - fired when entering a state
- * onleave**state**  - fired when leaving a state
-
-For convenience, the 2 most useful hooks can be shortened:
-
- * on**event** - convenience shorthand for onafter**event**
- * on**state** - convenience shorthand for onenter**state**
-
-Hooks can be added after the FSM is created:
-
-    var fsm = StateMachine.create({
-      initial: 'green',
-      events: [
-        { name: 'warn',  from: 'green',  to: 'yellow' },
-        { name: 'panic', from: 'yellow', to: 'red'    },
-        { name: 'calm',  from: 'red',    to: 'yellow' },
-        { name: 'clear', from: 'yellow', to: 'green'  }
-    ]});
-
-    fsm.onpanic  = function() { alert('panic!'); };
-    fsm.onclear  = function() { alert('all clear!'); };
-    fsm.ongreen  = function() { document.body.className = 'green';  };
-    fsm.onyellow = function() { document.body.className = 'yellow'; };
-    fsm.onred    = function() { document.body.className = 'red';    };
-
-    fsm.panic()
-    fsm.clear()
-    ...
-
-*NEW in v1.3.0* is a generic `onchangestate(from,to)` hook was added to allow a single function
-to be called on all state changes:
-
-    fsm.onchangestate = function(from, to) { document.body.className = to; };
-
-
-Multiple 'from' states for a single event
-=========================================
+Multiple 'from' and 'to' states for a single event
+==================================================
 
 If an event is allowed **from** multiple states, and always transitions **to** the same
-state, then simply provide an array of states in the `from` attribute of an event:
-
-    var fsm = StateMachine.create({
-      initial: 'green',
-      events: [
-        { name: 'warn',  from: ['green'],           to: 'yellow' },
-        { name: 'panic', from: ['green', 'yellow'], to: 'red'    },
-        { name: 'calm',  from: ['red'],             to: 'yellow' },
-        { name: 'clear', from: ['red', 'yellow'],   to: 'green'  }
-    ]});
-
-Multiple 'to' states for a single event
-=======================================
+state, then simply provide an array of states in the `from` attribute of an event.
 
 If an event is allowed **from** multiple states, but should transition **to** a different
 state depending on the current state, then provide multiple event entries with
@@ -185,14 +108,90 @@ This example will create an object with 2 event methods:
  * fsm.eat()
  * fsm.rest()
 
-The `rest` event will always transition to the `hungry` state, while the `eat` event will transition to a state that is dependent on the current state.
+The `rest` event will always transition to the `hungry` state, while the `eat` event
+will transition to a state that is dependent on the current state.
+
+>> NOTE: The `rest` event in the above example can also be specified as multiple events with
+the same name if you prefer the verbose approach:
+
+    var fsm = StateMachine.create({
+      initial: 'hungry',
+      events: [
+        { name: 'eat',  from: 'hungry',    to: 'satisfied' },
+        { name: 'eat',  from: 'satisfied', to: 'full'      },
+        { name: 'eat',  from: 'full',      to: 'sick'      },
+        { name: 'rest', from: 'hungry',    to: 'hungry'    }, // NOTE: this is a no-op.
+        { name: 'rest', from: 'satisfied', to: 'hungry'    },
+        { name: 'rest', from: 'full',      to: 'hungry'    },
+        { name: 'rest', from: 'sick',      to: 'hungry'    },
+    ]});
+
+Callbacks
+=========
+
+4 callbacks are available if your state machine has methods using the following naming conventions:
+
+ * onbefore**event** - fired before an event
+ * onafter**event**  - fired after an event
+ * onenter**state**  - fired when entering a state
+ * onleave**state**  - fired when leaving a state
+
+For convenience, the 2 most useful callbacks can be shortened:
+
+ * on**event** - convenience shorthand for onafter**event**
+ * on**state** - convenience shorthand for onenter**state**
+
+In addition, a generic `onchangestate()` callback can be used to call a single function for _all_ state changes:
+
+All callbacks will be passed the same arguments:
+
+ * event name
+ * from state
+ * to state
+ * _(followed by any arguments you passed into the original event method)_
+
+Callbacks can be specified when the state machine is first created:
+
+    var fsm = StateMachine.create({
+      initial: 'green',
+      events: [
+        { name: 'warn',  from: 'green',  to: 'yellow' },
+        { name: 'panic', from: 'yellow', to: 'red'    },
+        { name: 'calm',  from: 'red',    to: 'yellow' },
+        { name: 'clear', from: 'yellow', to: 'green'  }
+      ],
+      callbacks: {
+        onpanic:  function(event, from, to) { alert('panic!');                    },
+        onclear:  function(event, from, to) { alert('all clear!');                },
+        ongreen:  function(event, from, to) { document.body.className = 'green';  },
+        onyellow: function(event, from, to) { document.body.className = 'yellow'; },
+        onred:    function(event, from, to) { document.body.className = 'red';    },
+      }
+    });
+
+    fsm.panic()
+    fsm.clear()
+    ...
+
+Additionally, they can be added and removed from the state machine at any time:
+
+    fsm.ongreen       = null;
+    fsm.onyellow      = null;
+    fsm.onred         = null;
+    fsm.onchangestate = function(event, from, to) { document.body.className = to; };
+
+Asynchronous State Transitions
+==============================
+
+ * **TODO**
 
 State Machine Classes
 =====================
 
 You can also turn all instances of a  _class_ into an FSM by applying
-the state machine functionality to the prototype object and providing
-a `startup` event for use when constructing instances:
+the state machine functionality to the prototype, including your callbacks
+in your prototype, and providing a `startup` event for use when constructing
+instances:
 
     MyFSM = function() {         // my constructor function
       this.startup();
@@ -200,8 +199,8 @@ a `startup` event for use when constructing instances:
 
     MyFSM.prototype = {
 
-      onpanic: function() { alert('panic'); },
-      onclear: function() { alert('all is clear'); },
+      onpanic: function(event, from, to) { alert('panic');        },
+      onclear: function(event, from, to) { alert('all is clear'); },
 
       // other prototype methods
 
@@ -250,7 +249,7 @@ implicit `startup` event will be created for you and fired when the state machin
     ]});
     alert(fsm.current); // "green"
 
-If your object already has a `startup` method you can change the name of the initial event
+If your object already has a `startup` method you can use a different name for the initial event
 
     var fsm = StateMachine.create({
       initial: { state: 'green', event: 'init' },

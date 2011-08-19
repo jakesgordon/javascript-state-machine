@@ -1,8 +1,10 @@
 
 Version 2.0.0 (unreleased)
 --------------------------
+
+ * consistent arguments for ALL callbacks, first 3 args are ALWAYS event name, from state and to state, followed by whatever arguments the user passed to the original event method.
  * adding support for `async` event transitions (see README)
- * added a generic `onchangestate(from,to)` hook to detect all state changes with a single callback.
+ * added a generic `onchangestate(event,from,to)` callback to detect all state changes with a single function
 
 Version 1.2.0 (June 21st 2011)
 ------------------------------
