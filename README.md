@@ -135,6 +135,11 @@ Callbacks
  * onenter**state**  - fired when entering the new state
  * onafter**event**  - fired after the event
 
+You can affect the event in 2 ways:
+
+ * return `false` from an `onbeforeevent` handler then you can cancel the event.
+ * return `false` from an `onleavestate` handler then you can perform an asynchronous state transition (see next section)
+
 For convenience, the 2 most useful callbacks can be shortened:
 
  * on**event** - convenience shorthand for onafter**event**
@@ -179,15 +184,53 @@ Additionally, they can be added and removed from the state machine at any time:
     fsm.onred         = null;
     fsm.onchangestate = function(event, from, to) { document.body.className = to; };
 
-**NOTES:**
-
- * If you return `false` from an `onbeforeevent` handler then you can cancel the event.
- * If you return `false` from an `onleavestate` handler then you can perform an asynchronous state transition (see next section)
-
 Asynchronous State Transitions
 ==============================
 
- * **TODO**
+Sometimes, you need to execute some asynchronous code during a state transition and ensure the
+new state is not entered until your code has completed.
+
+A good example of this is when you transition out of a `menu` state, perhaps you want to gradually
+fade the menu away, or slide it off the screen and don't want to transition to your `game` state
+until after that animation has been performed.
+
+**New in v2.0** you can now return `false` from your `onleavestate` handler and the state machine
+will be _'put on hold'_ until you trigger the transition when ready using the new `transition()`
+method.
+
+For example, using jQuery effects:
+
+    var fsm = StateMachine.create({
+
+      initial: 'menu',
+
+      events: [
+        { name: 'play', from: 'menu', to: 'game' },
+        { name: 'quit', from: 'game', to: 'menu' }
+      ],
+
+      callbacks: {
+
+        onentermenu: function() { $('#menu').show(); },
+        onentergame: function() { $('#game').show(); },
+
+        onleavemenu: function() {
+          $('#menu').fadeOut('fast', function() {
+            fsm.transition();
+          });
+          return false; // tell StateMachine to defer next state until we call transition (in fade callback above)
+        },
+
+        onleavegame: function() {
+          $('#game').slideDown('slow', function() {
+            fsm.transition();
+          };
+          return false; // tell StateMachine to defer next state until we call transition (in fade callback above)
+        }
+
+      }
+    });
+
 
 State Machine Classes
 =====================
@@ -206,7 +249,7 @@ instances:
       onpanic: function(event, from, to) { alert('panic');        },
       onclear: function(event, from, to) { alert('all is clear'); },
 
-      // other prototype methods
+      // my other prototype methods
 
     };
 
