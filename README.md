@@ -25,6 +25,28 @@ Something like
 
     fsm.play();
 
+Also possible to simply return false from onleavestate hook instead of having to declare event as async:
+
+    var fsm = StateMachine.create({
+      initial: 'green',
+      events: [
+        { name: 'play', from: 'menu', to: 'game' },
+        { name: 'lose', from: 'game', to: 'menu' },
+    ]});
+
+    fsm.onleavemenu = function() {
+      $('menu').fade(function() {
+        fsm.transition();
+      });
+      return false; // tell StateMachine to defer next state until we call transition (in fade callback above)
+    }
+
+    fsm.onentergame = function() {
+      // this doesn't get called until fsm.transition() is called when the menu has finished fading
+    }
+
+    fsm.play();
+
 Or.... something else ! Have to wait and see how it pans out (without breaking existing synchronous behavior)
 
 Javascript Finite State Machine (v1.3.0)
