@@ -48,32 +48,32 @@ StateMachine = {
 
   beforeEvent: function(name, args) {
     var func = this['onbefore' + name];
-    if (func && (false === func.apply(this, args)))
-      return false;
-  },
-
-  exitState: function(from, args) {
-    var func = this['onleave' + from];
     if (func)
-      func.apply(this, args);
-  },
-
-  enterState: function(to, args) {
-    var func = this['onenter' + to] || this['on' + to];
-    if (func)
-      func.apply(this, args);
-  },
-
-  changeState: function(from, to, args) {
-    var func = this['onchangestate'];
-    if (func)
-      func.apply(this, [from,to].concat(args));
+      return func.apply(this, args);
   },
 
   afterEvent: function(name, args) {
     var func = this['onafter'  + name] || this['on' + name];
     if (func)
-      func.apply(this, args);
+      return func.apply(this, args);
+  },
+
+  leaveState: function(from, args) {
+    var func = this['onleave' + from];
+    if (func)
+      return func.apply(this, args);
+  },
+
+  enterState: function(to, args) {
+    var func = this['onenter' + to] || this['on' + to];
+    if (func)
+      return func.apply(this, args);
+  },
+
+  changeState: function(from, to, args) {
+    var func = this['onchangestate'];
+    if (func)
+      return func.apply(this, [from,to].concat(args));
   },
 
   transition: function(name, from, to, args) {
@@ -96,16 +96,21 @@ StateMachine = {
       var to    = map[from].to;
       var async = map[from].async;
       var self  = this;
-      var args  = Array.prototype.slice.call(arguments);
+      var args  = Array.prototype.slice.call(arguments); // turn arguments into pure array
 
       if (this.current != to) {
-        if (StateMachine.beforeEvent.call(this, name, args) === false)
+
+        if (false === StateMachine.beforeEvent.call(this, name, args))
           return;
+
         this.transition      = function() { StateMachine.transition.call(self, name, from, to, args); self.transition = null; };
         this.transition.from = from;
         this.transition.to   = to;
-        StateMachine.exitState.call(this, this.current, arguments);
-        if (!async && this.transition) // if not async OR user already called transition method (e.g. in an onleavestate hook)
+
+        if (false === StateMachine.leaveState.call(this, this.current, args))
+          async = true;
+
+        if (!async && this.transition) // if not async OR user already called transition method (e.g. explicitly in an onleavestate hook)
           this.transition();
       }
 
