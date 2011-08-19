@@ -17,7 +17,7 @@ StateMachine = {
       events[e.name] = events[e.name] || {};
       for (var n = 0 ; n < from.length ; n++)
         events[e.name][from[n]] = e;
-    }
+    };
 
     if (initial) {
       initial.event = initial.event || 'startup';
@@ -29,7 +29,7 @@ StateMachine = {
 
     for(var name in events) {
       if (events.hasOwnProperty(name))
-        fsm[name] = this.buildEvent(name, events[name]);
+        fsm[name] = StateMachine.buildEvent(name, events[name]);
     }
 
     fsm.current = 'none';
@@ -41,48 +41,48 @@ StateMachine = {
       fsm[initial.event]();
 
     return fsm;
+
   },
 
-  //---------------------------------------------------------------------------
+  //===========================================================================
+
+  beforeEvent: function(name, args) {
+    var func = this['onbefore' + name];
+    if (func && (false === func.apply(this, args)))
+      return false;
+  },
+
+  exitState: function(from, args) {
+    var func = this['onleave' + from];
+    if (func)
+      func.apply(this, args);
+  },
+
+  enterState: function(to, args) {
+    var func = this['onenter' + to] || this['on' + to];
+    if (func)
+      func.apply(this, args);
+  },
+
+  changeState: function(from, to, args) {
+    var func = this['onchangestate'];
+    if (func)
+      func.apply(this, [from,to].concat(args));
+  },
+
+  afterEvent: function(name, args) {
+    var func = this['onafter'  + name] || this['on' + name];
+    if (func)
+      func.apply(this, args);
+  },
+
+  transition: function(from, to, args) {
+    this.current = to;
+    StateMachine.enterState.call(this, to, args);
+    StateMachine.changeState.call(this, from, to, args);
+  },
 
   buildEvent: function(name, map) {
-
-    var beforeEvent = function(name, args) {
-      var func = this['onbefore' + name];
-      if (func && (false === func.apply(this, args)))
-        return false;
-    };
-
-    var exitState = function(from, args) {
-      var func = this['onleave' + from];
-      if (func)
-        func.apply(this, args);
-    };
-
-    var enterState = function(to, args) {
-      var func = this['onenter' + to] || this['on' + to];
-      if (func)
-        func.apply(this, args);
-    };
-
-    var changeState = function(from, to, args) {
-      var func = this['onchangestate'];
-      if (func)
-        func.apply(this, [from,to].concat(args));
-    };
-
-    var afterEvent = function(name, args) {
-      var func = this['onafter'  + name] || this['on' + name];
-      if (func)
-        func.apply(this, args);
-    };
-
-    var transition = function(from, to, args) {
-      this.current = to;
-      enterState.call(this, to, args);
-      changeState.call(this, from, to, args);
-    };
-
     return function() {
 
       if (this.cannot(name))
@@ -94,25 +94,22 @@ StateMachine = {
       var self  = this;
       var args  = Array.prototype.slice.call(arguments);
 
-      if (beforeEvent.call(this, name, args) === false)
+      if (StateMachine.beforeEvent.call(this, name, args) === false)
         return;
 
       if (this.current != to) {
-
-        this.transition = function() { transition.call(self, from, to, args); self.transition = null; };
-
-        exitState.call(this, this.current, arguments);
-
+        this.transition = function() { StateMachine.transition.call(self, from, to, args); self.transition = null; };
+        StateMachine.exitState.call(this, this.current, arguments);
         if (!async)
           this.transition();
       }
 
-      afterEvent.call(this, name, arguments);
-    }
+      StateMachine.afterEvent.call(this, name, arguments);
 
+    };
   }
 
-  //---------------------------------------------------------------------------
+  //===========================================================================
 
 };
 
