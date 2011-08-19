@@ -1,33 +1,3 @@
-EXPERIMENTAL BRANCH
-===================
-
-I'm experimenting with providing async event transitions. E.g. If you want to fade out a UI element between transitions you might
-want to start fading during an `onleavestate` handler, but not trigger the next `onenterstate` handler until your fade has finished.
-
-Something like
-
-    var fsm = StateMachine.create({
-      initial: 'green',
-      events: [
-        { name: 'play', from: 'menu', to: 'game' },
-        { name: 'lose', from: 'game', to: 'menu' },
-    ]});
-
-    fsm.onleavemenu = function() {
-      $('menu').fade(function() {
-        fsm.transition();
-      });
-      return false; // tell StateMachine to defer next state until we call transition (in fade callback above)
-    }
-
-    fsm.onentergame = function() {
-      // this doesn't get called until fsm.transition() is called when the menu has finished fading
-    }
-
-    fsm.play();
-
-Or.... something else ! Have to wait and see how it pans out (without breaking existing synchronous behavior)
-
 Javascript Finite State Machine (v2.0.0)
 ========================================
 
@@ -88,8 +58,8 @@ Multiple 'from' and 'to' states for a single event
 ==================================================
 
 If an event is allowed **from** multiple states, and always transitions to the same
-state, then simply provide an array of states in the `from` attribute of an event. If
-an event is allowed from multiple states, but should transition **to** a different
+state, then simply provide an array of states in the `from` attribute of an event. However,
+if an event is allowed from multiple states, but should transition **to** a different
 state depending on the current state, then provide multiple event entries with
 the same name:
 
@@ -137,8 +107,8 @@ Callbacks
 
 You can affect the event in 2 ways:
 
- * return `false` from an `onbeforeevent` handler then you can cancel the event.
- * return `false` from an `onleavestate` handler then you can perform an asynchronous state transition (see next section)
+ * return `false` from an `onbeforeevent` handler to cancel the event.
+ * return `false` from an `onleavestate` handler to perform an asynchronous state transition (see next section)
 
 For convenience, the 2 most useful callbacks can be shortened:
 
@@ -195,7 +165,7 @@ fade the menu away, or slide it off the screen and don't want to transition to y
 until after that animation has been performed.
 
 **New in v2.0** you can now return `false` from your `onleavestate` handler and the state machine
-will be _'put on hold'_ until you trigger the transition when ready using the new `transition()`
+will be _'put on hold'_ until you are ready to trigger the transition using the new `transition()`
 method.
 
 For example, using jQuery effects:
@@ -218,14 +188,14 @@ For example, using jQuery effects:
           $('#menu').fadeOut('fast', function() {
             fsm.transition();
           });
-          return false; // tell StateMachine to defer next state until we call transition (in fade callback above)
+          return false; // tell StateMachine to defer next state until we call transition (in fadeOut callback above)
         },
 
         onleavegame: function() {
           $('#game').slideDown('slow', function() {
             fsm.transition();
           };
-          return false; // tell StateMachine to defer next state until we call transition (in fade callback above)
+          return false; // tell StateMachine to defer next state until we call transition (in slideDown callback above)
         }
 
       }
@@ -240,7 +210,7 @@ the state machine functionality to the prototype, including your callbacks
 in your prototype, and providing a `startup` event for use when constructing
 instances:
 
-    MyFSM = function() {         // my constructor function
+    MyFSM = function() {    // my constructor function
       this.startup();
     };
 
