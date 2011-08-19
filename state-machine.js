@@ -76,10 +76,11 @@ StateMachine = {
       func.apply(this, args);
   },
 
-  transition: function(from, to, args) {
+  transition: function(name, from, to, args) {
     this.current = to;
     StateMachine.enterState.call(this, to, args);
     StateMachine.changeState.call(this, from, to, args);
+    StateMachine.afterEvent.call(this, name, args);
   },
 
   buildEvent: function(name, map) {
@@ -97,19 +98,16 @@ StateMachine = {
       var self  = this;
       var args  = Array.prototype.slice.call(arguments);
 
-      if (StateMachine.beforeEvent.call(this, name, args) === false)
-        return;
-
       if (this.current != to) {
-        this.transition      = function() { StateMachine.transition.call(self, from, to, args); self.transition = null; };
+        if (StateMachine.beforeEvent.call(this, name, args) === false)
+          return;
+        this.transition      = function() { StateMachine.transition.call(self, name, from, to, args); self.transition = null; };
         this.transition.from = from;
         this.transition.to   = to;
         StateMachine.exitState.call(this, this.current, arguments);
         if (!async && this.transition) // if not async OR user already called transition method (e.g. in an onleavestate hook)
           this.transition();
       }
-
-      StateMachine.afterEvent.call(this, name, arguments);
 
     };
   }

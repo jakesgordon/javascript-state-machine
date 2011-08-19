@@ -1,4 +1,5 @@
-Version 1.3.0 (unreleased)
+
+Version 2.0.0 (unreleased)
 --------------------------
  * adding support for `async` event transitions (see README)
  * added a generic `onchangestate(from,to)` hook to detect all state changes with a single callback.

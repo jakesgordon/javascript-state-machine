@@ -8,12 +8,12 @@ Something like
 
     fsm.onleavemenu = function() {
       $('menu').fade(function() {
-        fsm.next();
+        fsm.transition();
       });
     }
 
     fsm.onentergame = function() {
-      // this doesn't get called until fsm.next() is called when the menu has finished fading
+      // this doesn't get called until fsm.transition() is called when the menu has finished fading
     }
 
 Or.... something else ! Have to wait and see how it pans out (without breaking existing synchronous behavior)

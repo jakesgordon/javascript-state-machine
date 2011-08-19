@@ -157,3 +157,57 @@ test("state transition fired without completing previous transition", function()
 
 //-----------------------------------------------------------------------------
 
+test("hooks are called when appropriate", function() {
+
+  var fsm = StateMachine.create({
+    initial: 'green',
+    events: [
+      { name: 'warn',  from: 'green',  to: 'yellow', async: true },
+      { name: 'panic', from: 'yellow', to: 'red',    async: true },
+      { name: 'calm',  from: 'red',    to: 'yellow', async: true },
+      { name: 'clear', from: 'yellow', to: 'green',  async: true },
+  ]});
+
+  var called = [];
+
+  // generic state hook
+  fsm.onchangestate = function(from,to) { called.push('onchange from ' + from + ' to ' + to); };
+
+  // state hooks
+  fsm.onentergreen    = function() { called.push('onentergreen');     };
+  fsm.onleavegreen    = function() { called.push('onleavegreen');     };
+  fsm.onenteryellow   = function() { called.push('onenteryellow');    };
+  fsm.onleaveyellow   = function() { called.push('onleaveyellow');    };
+  fsm.onenterred      = function() { called.push('onenterred');       };
+  fsm.onleavered      = function() { called.push('onleavered');       };
+
+  // event hooks
+  fsm.onbeforewarn    = function() { called.push('onbeforewarn');     };
+  fsm.onafterwarn     = function() { called.push('onafterwarn');      };
+  fsm.onbeforepanic   = function() { called.push('onbeforepanic');    };
+  fsm.onafterpanic    = function() { called.push('onafterpanic');     };
+  fsm.onbeforecalm    = function() { called.push('onbeforecalm');     };
+  fsm.onaftercalm     = function() { called.push('onaftercalm');      };
+  fsm.onbeforeclear   = function() { called.push('onbeforeclear');    };
+  fsm.onafterclear    = function() { called.push('onafterclear');     };
+
+  called = [];
+  fsm.warn();       deepEqual(called, ['onbeforewarn', 'onleavegreen']);
+  fsm.transition(); deepEqual(called, ['onbeforewarn', 'onleavegreen', 'onenteryellow', 'onchange from green to yellow', 'onafterwarn']);
+
+  called = [];
+  fsm.panic();      deepEqual(called, ['onbeforepanic', 'onleaveyellow']);
+  fsm.transition(); deepEqual(called, ['onbeforepanic', 'onleaveyellow', 'onenterred', 'onchange from yellow to red', 'onafterpanic']);
+
+  called = [];
+  fsm.calm();       deepEqual(called, ['onbeforecalm', 'onleavered']);
+  fsm.transition(); deepEqual(called, ['onbeforecalm', 'onleavered', 'onenteryellow', 'onchange from red to yellow', 'onaftercalm']);
+
+  called = [];
+  fsm.clear();      deepEqual(called, ['onbeforeclear', 'onleaveyellow']);
+  fsm.transition(); deepEqual(called, ['onbeforeclear', 'onleaveyellow', 'onentergreen', 'onchange from yellow to green', 'onafterclear']);
+
+});
+
+//-----------------------------------------------------------------------------
+
