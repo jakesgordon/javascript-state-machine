@@ -77,6 +77,8 @@ along with the following members:
 Hooks
 =====
 
+>> _NOTE: I'm using the word 'hook' to avoid overloading the word 'event'._
+
 4 hooks are available if your object has methods using the following naming conventions:
 
  * onbefore**event** - fired before an event

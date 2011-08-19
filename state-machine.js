@@ -68,7 +68,7 @@ StateMachine = {
     var changeState = function(from, to, args) {
       var func = this['onchangestate'];
       if (func)
-        func.call(this, from, to);
+        func.apply(this, [from,to].concat(args));
     };
 
     var afterEvent = function(name, args) {
@@ -80,7 +80,7 @@ StateMachine = {
     var transition = function(from, to, args) {
       this.current = to;
       enterState.call(this, to, args);
-      changeState.call(this, from, to);
+      changeState.call(this, from, to, args);
     };
 
     return function() {
@@ -91,14 +91,15 @@ StateMachine = {
       var from  = this.current;
       var to    = map[from].to;
       var async = map[from].async;
+      var self  = this;
+      var args  = Array.prototype.slice.call(arguments);
 
-      if (beforeEvent.call(this, name) === false)
+      if (beforeEvent.call(this, name, args) === false)
         return;
 
       if (this.current != to) {
 
-        var self = this;
-        this.transition = function() { transition.call(self, from, to, arguments); self.transition = null; };
+        this.transition = function() { transition.call(self, from, to, args); self.transition = null; };
 
         exitState.call(this, this.current, arguments);
 
