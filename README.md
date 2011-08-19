@@ -1,3 +1,23 @@
+EXPERIMENTAL BRANCH
+===================
+
+I'm experimenting with providing async event transitions. E.g. If you want to fade out a UI element between transitions you might
+want to start fading during an `onleavestate` handler, but not trigger the next `onenterstate` handler until your fade has finished.
+
+Something like
+
+    fsm.onleavemenu = function() {
+      $('menu').fade(function() {
+        fsm.next();
+      });
+    }
+
+    fsm.onentergame = function() {
+      // this doesn't get called until fsm.next() is called when the menu has finished fading
+    }
+
+Or.... something else ! Have to wait and see how it pans out (without breaking existing synchronous behavior)
+
 Javascript Finite State Machine (v1.3.0)
 ========================================
 

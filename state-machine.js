@@ -16,7 +16,7 @@ StateMachine = {
       var from = (e.from instanceof Array) ? e.from : [e.from];
       events[e.name] = events[e.name] || {};
       for (var n = 0 ; n < from.length ; n++)
-        events[e.name][from[n]] = e.to;
+        events[e.name][from[n]] = e;
     }
 
     if (initial) {
@@ -47,39 +47,66 @@ StateMachine = {
 
   buildEvent: function(name, map) {
 
+    var beforeEvent = function(name, args) {
+      var func = this['onbefore' + name];
+      if (func && (false === func.apply(this, args)))
+        return false;
+    };
+
+    var exitState = function(from, args) {
+      var func = this['onleave' + from];
+      if (func)
+        func.apply(this, args);
+    };
+
+    var enterState = function(to, args) {
+      var func = this['onenter' + to] || this['on' + to];
+      if (func)
+        func.apply(this, args);
+    };
+
+    var changeState = function(from, to, args) {
+      var func = this['onchangestate'];
+      if (func)
+        func.call(this, from, to);
+    };
+
+    var afterEvent = function(name, args) {
+      var func = this['onafter'  + name] || this['on' + name];
+      if (func)
+        func.apply(this, args);
+    };
+
+    var transition = function(from, to, args) {
+      this.current = to;
+      enterState.call(this, to, args);
+      changeState.call(this, from, to);
+    };
+
     return function() {
 
       if (this.cannot(name))
         throw "event " + name + " innapropriate in current state " + this.current;
 
-      var from = this.current;
-      var to   = map[from];
+      var from  = this.current;
+      var to    = map[from].to;
+      var async = map[from].async;
 
-      var beforeEvent = this['onbefore' + name];
-      if (beforeEvent && (false === beforeEvent.apply(this, arguments)))
+      if (beforeEvent.call(this, name) === false)
         return;
 
       if (this.current != to) {
 
-        var exitState = this['onleave'  + this.current];
-        if (exitState)
-          exitState.apply(this, arguments);
+        var self = this;
+        this.transition = function() { transition.call(self, from, to, arguments); self.transition = null; };
 
-        this.current = to;
+        exitState.call(this, this.current, arguments);
 
-        var enterState = this['onenter' + to] || this['on' + to];
-        if (enterState)
-          enterState.apply(this, arguments);
-
-        var changeState = this['onchangestate'];
-        if (changeState)
-          changeState.call(this, from, to);
-
+        if (!async)
+          this.transition();
       }
 
-      var afterEvent = this['onafter'  + name] || this['on' + name];
-      if (afterEvent)
-        afterEvent.apply(this, arguments);
+      afterEvent.call(this, name, arguments);
     }
 
   }
