@@ -83,18 +83,6 @@ will transition to a state that is dependent on the current state.
 >> NOTE: The `rest` event in the above example can also be specified as multiple events with
 the same name if you prefer the verbose approach:
 
-    var fsm = StateMachine.create({
-      initial: 'hungry',
-      events: [
-        { name: 'eat',  from: 'hungry',    to: 'satisfied' },
-        { name: 'eat',  from: 'satisfied', to: 'full'      },
-        { name: 'eat',  from: 'full',      to: 'sick'      },
-        { name: 'rest', from: 'hungry',    to: 'hungry'    }, // NOTE: this is a no-op.
-        { name: 'rest', from: 'satisfied', to: 'hungry'    },
-        { name: 'rest', from: 'full',      to: 'hungry'    },
-        { name: 'rest', from: 'sick',      to: 'hungry'    },
-    ]});
-
 Callbacks
 =========
 
