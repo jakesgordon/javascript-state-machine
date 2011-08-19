@@ -130,10 +130,10 @@ Callbacks
 
 4 callbacks are available if your state machine has methods using the following naming conventions:
 
- * onbefore**event** - fired before an event
- * onafter**event**  - fired after an event
- * onenter**state**  - fired when entering a state
- * onleave**state**  - fired when leaving a state
+ * onbefore**event** - fired before the event
+ * onleave**state**  - fired when leaving the old state
+ * onenter**state**  - fired when entering the new state
+ * onafter**event**  - fired after the event
 
 For convenience, the 2 most useful callbacks can be shortened:
 
@@ -179,6 +179,16 @@ Additionally, they can be added and removed from the state machine at any time:
     fsm.onred         = null;
     fsm.onchangestate = function(event, from, to) { document.body.className = to; };
 
+**NOTES:**
+
+ * If you return `false` from an `onbeforeevent` handler then you can cancel the event.
+ * If you return `false` from an `onleavestate` handler then you can perform an asynchronous state transition (see next section)
+
+Asynchronous State Transitions
+==============================
+
+ * **TODO**
+
 State Machine Classes
 =====================
 
@@ -212,11 +222,6 @@ instances:
 
 
 This should be easy to adjust to fit your appropriate mechanism for object construction.
-
-Asynchronous State Transitions
-==============================
-
- * **TODO**
 
 Initialization Options
 ======================

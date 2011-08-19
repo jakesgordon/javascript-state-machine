@@ -18,7 +18,7 @@ StateMachine = {
       var from = (e.from instanceof Array) ? e.from : [e.from];
       map[e.name] = map[e.name] || {};
       for (var n = 0 ; n < from.length ; n++)
-        map[e.name][from[n]] = e;
+        map[e.name][from[n]] = e.to;
     };
 
     if (initial) {
@@ -41,7 +41,7 @@ StateMachine = {
 
     fsm.current = 'none';
     fsm.is      = function(state) { return this.current == state; };
-    fsm.can     = function(event) { return !!map[event][this.current]; };
+    fsm.can     = function(event) { return !!map[event][this.current] && !this.transition; };
     fsm.cannot  = function(event) { return !this.can(event); };
 
     if (initial && !initial.defer)
@@ -83,25 +83,17 @@ StateMachine = {
       return func.apply(this, [name, from, to].concat(args));
   },
 
-  transition: function(name, from, to, args) {
-    this.current = to;
-    StateMachine.enterState.call(this, name, from, to, args);
-    StateMachine.changeState.call(this, name, from, to, args);
-    StateMachine.afterEvent.call(this, name, from, to, args);
-  },
-
   buildEvent: function(name, map) {
     return function() {
 
       if (this.transition)
-        throw "event " + name + " innapropriate because previous transition (" + this.transition.event + ") from " + this.transition.from + " to " + this.transition.to + " did not complete"
+        throw "event " + name + " innapropriate because previous transition did not complete"
 
       if (this.cannot(name))
         throw "event " + name + " innapropriate in current state " + this.current;
 
       var from  = this.current;
-      var to    = map[from].to;
-      var self  = this;
+      var to    = map[from];
       var args  = Array.prototype.slice.call(arguments); // turn arguments into pure array
 
       if (this.current != to) {
@@ -109,10 +101,14 @@ StateMachine = {
         if (false === StateMachine.beforeEvent.call(this, name, from, to, args))
           return;
 
-        this.transition       = function() { StateMachine.transition.call(self, name, from, to, args); self.transition = null; };
-        this.transition.event = name;
-        this.transition.from  = from;
-        this.transition.to    = to;
+        var self = this;
+        this.transition = function() { // prepare transition method for use either lower down, or by caller if they want an async transition (indicated by a false return value from leaveState)
+          self.transition = null; // this method should only ever be called once
+          self.current = to;
+          StateMachine.enterState.call( self, name, from, to, args);
+          StateMachine.changeState.call(self, name, from, to, args);
+          StateMachine.afterEvent.call( self, name, from, to, args);
+        };
 
         if (false !== StateMachine.leaveState.call(this, name, from, to, args)) {
           if (this.transition) // in case user manually called it but forgot to return false

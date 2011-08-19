@@ -240,7 +240,7 @@ test("state transition fired without completing previous transition", function()
   fsm.transition(); equals(fsm.current, 'yellow', "warn event should transition from green to yellow");
   fsm.panic();      equals(fsm.current, 'yellow', "should still be yellow because we haven't transitioned yet");
 
-  raises(fsm.calm.bind(fsm), /event calm innapropriate because previous transition \(panic\) from yellow to red did not complete/);
+  raises(fsm.calm.bind(fsm), /event calm innapropriate because previous transition did not complete/);
 
 });
 
@@ -298,4 +298,64 @@ test("callbacks are ordered correctly", function() {
 });
 
 //-----------------------------------------------------------------------------
+
+test("cannot fire event during existing transition", function() {
+
+  var fsm = StateMachine.create({
+    initial: 'green',
+    events: [
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'yellow', to: 'red'    },
+      { name: 'calm',  from: 'red',    to: 'yellow' },
+      { name: 'clear', from: 'yellow', to: 'green'  }
+    ],
+    callbacks: {
+      onleavegreen:  function() { return false; },
+      onleaveyellow: function() { return false; },
+      onleavered:    function() { return false; }
+    }
+  });
+
+  equals(fsm.current,     'green',  "initial state should be green");
+  equals(fsm.can('warn'),  true,    "should be able to warn");
+  equals(fsm.can('panic'), false,   "should NOT be able to panic");
+  equals(fsm.can('calm'),  false,   "should NOT be able to calm");
+  equals(fsm.can('clear'), false,   "should NOT be able to clear");
+
+  fsm.warn();
+
+  equals(fsm.current,     'green',  "should still be green because we haven't transitioned yet");
+  equals(fsm.can('warn'),  false,   "should NOT be able to warn  - during transition");
+  equals(fsm.can('panic'), false,   "should NOT be able to panic - during transition");
+  equals(fsm.can('calm'),  false,   "should NOT be able to calm  - during transition");
+  equals(fsm.can('clear'), false,   "should NOT be able to clear - during transition");
+
+  fsm.transition();
+
+  equals(fsm.current,     'yellow', "warn event should transition from green to yellow");
+  equals(fsm.can('warn'),  false,   "should NOT be able to warn");
+  equals(fsm.can('panic'), true,    "should be able to panic");
+  equals(fsm.can('calm'),  false,   "should NOT be able to calm");
+  equals(fsm.can('clear'), true,    "should be able to clear");
+
+  fsm.panic();
+
+  equals(fsm.current,     'yellow', "should still be yellow because we haven't transitioned yet");
+  equals(fsm.can('warn'),  false,   "should NOT be able to warn  - during transition");
+  equals(fsm.can('panic'), false,   "should NOT be able to panic - during transition");
+  equals(fsm.can('calm'),  false,   "should NOT be able to calm  - during transition");
+  equals(fsm.can('clear'), false,   "should NOT be able to clear - during transition");
+
+  fsm.transition();
+
+  equals(fsm.current,     'red',    "panic event should transition from yellow to red");
+  equals(fsm.can('warn'),  false,   "should NOT be able to warn");
+  equals(fsm.can('panic'), false,   "should NOT be able to panic");
+  equals(fsm.can('calm'),  true,    "should be able to calm");
+  equals(fsm.can('clear'), false,   "should NOT be able to clear");
+
+});
+
+//-----------------------------------------------------------------------------
+
 
