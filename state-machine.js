@@ -94,14 +94,13 @@ StateMachine = {
     return function() {
 
       if (this.transition)
-        throw "event " + name + " innapropriate because previous async transition (" + this.transition.event + ") from " + this.transition.from + " to " + this.transition.to + " did not complete"
+        throw "event " + name + " innapropriate because previous transition (" + this.transition.event + ") from " + this.transition.from + " to " + this.transition.to + " did not complete"
 
       if (this.cannot(name))
         throw "event " + name + " innapropriate in current state " + this.current;
 
       var from  = this.current;
       var to    = map[from].to;
-      var async = map[from].async;
       var self  = this;
       var args  = Array.prototype.slice.call(arguments); // turn arguments into pure array
 
@@ -115,11 +114,10 @@ StateMachine = {
         this.transition.from  = from;
         this.transition.to    = to;
 
-        if (false === StateMachine.leaveState.call(this, name, from, to, args))
-          async = true;
-
-        if (!async && this.transition) // if not async OR user already called transition method (e.g. explicitly in an onleavestate callback)
-          this.transition();
+        if (false !== StateMachine.leaveState.call(this, name, from, to, args)) {
+          if (this.transition) // in case user manually called it but forgot to return false
+            this.transition();
+        }
       }
 
     };

@@ -9,11 +9,17 @@ test("state transitions", function() {
   var fsm = StateMachine.create({
     initial: 'green',
     events: [
-      { name: 'warn',  from: 'green',  to: 'yellow', async: true },
-      { name: 'panic', from: 'yellow', to: 'red',    async: true },
-      { name: 'calm',  from: 'red',    to: 'yellow', async: true },
-      { name: 'clear', from: 'yellow', to: 'green',  async: true }
-  ]});
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'yellow', to: 'red'    },
+      { name: 'calm',  from: 'red',    to: 'yellow' },
+      { name: 'clear', from: 'yellow', to: 'green'  }
+    ],
+    callbacks: {
+      onleavegreen:  function() { return false; },
+      onleaveyellow: function() { return false; },
+      onleavered:    function() { return false; }
+    }
+  });
 
                     equals(fsm.current, 'green',  "initial state should be green");
   fsm.warn();       equals(fsm.current, 'green',  "should still be green because we haven't transitioned yet");
@@ -36,11 +42,17 @@ test("state transitions with delays", function() {
   var fsm = StateMachine.create({
     initial: 'green',
     events: [
-      { name: 'warn',  from: 'green',  to: 'yellow', async: true },
-      { name: 'panic', from: 'yellow', to: 'red',    async: true },
-      { name: 'calm',  from: 'red',    to: 'yellow', async: true },
-      { name: 'clear', from: 'yellow', to: 'green',  async: true }
-  ]});
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'yellow', to: 'red'    },
+      { name: 'calm',  from: 'red',    to: 'yellow' },
+      { name: 'clear', from: 'yellow', to: 'green'  }
+    ],
+    callbacks: {
+      onleavegreen:  function() { return false; },
+      onleaveyellow: function() { return false; },
+      onleavered:    function() { return false; }
+    }
+  });
 
                             equals(fsm.current, 'green',  "initial state should be green");
   fsm.warn();               equals(fsm.current, 'green',  "should still be green because we haven't transitioned yet");
@@ -65,20 +77,20 @@ test("state transitions with delays", function() {
 
 //-----------------------------------------------------------------------------
 
-test("state transition fired imediately during onleavestate callback", function() {
+test("state transition fired during onleavestate callback - immediate", function() {
 
   var fsm = StateMachine.create({
     initial: 'green',
     events: [
-      { name: 'warn',  from: 'green',  to: 'yellow', async: true },
-      { name: 'panic', from: 'yellow', to: 'red',    async: true },
-      { name: 'calm',  from: 'red',    to: 'yellow', async: true },
-      { name: 'clear', from: 'yellow', to: 'green',  async: true }
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'yellow', to: 'red'    },
+      { name: 'calm',  from: 'red',    to: 'yellow' },
+      { name: 'clear', from: 'yellow', to: 'green'  }
     ],
     callbacks: {
-      onleavegreen:  function() { this.transition(); },
-      onleaveyellow: function() { this.transition(); },
-      onleavered:    function() { this.transition(); }
+      onleavegreen:  function() { this.transition(); return false; },
+      onleaveyellow: function() { this.transition(); return false; },
+      onleavered:    function() { this.transition(); return false; }
     }
   });
 
@@ -93,17 +105,17 @@ test("state transition fired imediately during onleavestate callback", function(
 
 //-----------------------------------------------------------------------------
 
-test("state transition fired during onleavestate callback with delay", function() {
+test("state transition fired during onleavestate callback - with delay", function() {
 
   stop(); // doing async stuff - dont run next qunit test until I call start() below
 
   var fsm = StateMachine.create({
     initial: 'green',
     events: [
-      { name: 'panic', from: 'green', to: 'red', async: true }
+      { name: 'panic', from: 'green', to: 'red' }
     ],
     callbacks: {
-      onleavegreen: function() { setTimeout(function() { fsm.transition(); }, 10); },
+      onleavegreen: function() { setTimeout(function() { fsm.transition(); }, 10); return false; },
       onenterred:   function() { 
         equals(fsm.current, 'red', "panic event should transition from green to red");
         start();
@@ -118,30 +130,7 @@ test("state transition fired during onleavestate callback with delay", function(
 
 //-----------------------------------------------------------------------------
 
-test("state transition fired during onleavestate callback - with MIXED async and non-async transitions!", function() {
-
-  var fsm = StateMachine.create({
-    initial: 'green',
-    events: [
-      { name: 'warn',   from: 'green',           to: 'yellow', async: true }, // leave green     async
-      { name: 'panic',  from: 'green',           to: 'red'                 }, // leave green non-async
-      { name: 'reset',  from: ['yellow', 'red'], to: 'green'               }
-    ],
-    callbacks: {
-      onleavegreen: function() { this.transition(); }
-    }
-  });
-
-               equals(fsm.current, 'green',  "initial state should be green");
-  fsm.warn();  equals(fsm.current, 'yellow', "warn  event should transition from green  to yellow");
-  fsm.reset(); equals(fsm.current, 'green',  "reset event should transition from yellow to green");
-  fsm.panic(); equals(fsm.current, 'red',    "panic event should transition from green  to red");
-
-});
-
-//-----------------------------------------------------------------------------
-
-test("state transitions using onleavestate run-time return value instead of design-time async attribute", function() {
+test("state transition fired during onleavestate callback - but forgot to return false!", function() {
 
   var fsm = StateMachine.create({
     initial: 'green',
@@ -150,7 +139,36 @@ test("state transitions using onleavestate run-time return value instead of desi
       { name: 'panic', from: 'yellow', to: 'red'    },
       { name: 'calm',  from: 'red',    to: 'yellow' },
       { name: 'clear', from: 'yellow', to: 'green'  }
-  ]});
+    ],
+    callbacks: {
+      onleavegreen:  function() { this.transition(); /* return false; */ },
+      onleaveyellow: function() { this.transition(); /* return false; */ },
+      onleavered:    function() { this.transition(); /* return false; */ }
+    }
+  });
+
+  equals(fsm.current, 'green', "initial state should be green");
+
+  fsm.warn();  equals(fsm.current, 'yellow', "warn  event should transition from green  to yellow");
+  fsm.panic(); equals(fsm.current, 'red',    "panic event should transition from yellow to red");
+  fsm.calm();  equals(fsm.current, 'yellow', "calm  event should transition from red    to yellow");
+  fsm.clear(); equals(fsm.current, 'green',  "clear event should transition from yellow to green");
+
+});
+
+//-----------------------------------------------------------------------------
+
+test("state transitions sometimes synchronous and sometimes asynchronous", function() {
+
+  var fsm = StateMachine.create({
+    initial: 'green',
+    events: [
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'yellow', to: 'red'    },
+      { name: 'calm',  from: 'red',    to: 'yellow' },
+      { name: 'clear', from: 'yellow', to: 'green'  }
+    ]
+  });
 
   // default behavior is synchronous
 
@@ -205,18 +223,24 @@ test("state transition fired without completing previous transition", function()
   var fsm = StateMachine.create({
     initial: 'green',
     events: [
-      { name: 'warn',  from: 'green',  to: 'yellow', async: true },
-      { name: 'panic', from: 'yellow', to: 'red',    async: true },
-      { name: 'calm',  from: 'red',    to: 'yellow', async: true },
-      { name: 'clear', from: 'yellow', to: 'green',  async: true }
-  ]});
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'yellow', to: 'red'    },
+      { name: 'calm',  from: 'red',    to: 'yellow' },
+      { name: 'clear', from: 'yellow', to: 'green'  }
+    ],
+    callbacks: {
+      onleavegreen:  function() { return false; },
+      onleaveyellow: function() { return false; },
+      onleavered:    function() { return false; }
+    }
+  });
 
                     equals(fsm.current, 'green',  "initial state should be green");
   fsm.warn();       equals(fsm.current, 'green',  "should still be green because we haven't transitioned yet");
   fsm.transition(); equals(fsm.current, 'yellow', "warn event should transition from green to yellow");
   fsm.panic();      equals(fsm.current, 'yellow', "should still be yellow because we haven't transitioned yet");
 
-  raises(fsm.calm.bind(fsm), /event calm innapropriate because previous async transition \(panic\) from yellow to red did not complete/);
+  raises(fsm.calm.bind(fsm), /event calm innapropriate because previous transition \(panic\) from yellow to red did not complete/);
 
 });
 
@@ -229,29 +253,29 @@ test("callbacks are ordered correctly", function() {
   var fsm = StateMachine.create({
     initial: 'green',
     events: [
-      { name: 'warn',  from: 'green',  to: 'yellow', async: true },
-      { name: 'panic', from: 'yellow', to: 'red',    async: true },
-      { name: 'calm',  from: 'red',    to: 'yellow', async: true },
-      { name: 'clear', from: 'yellow', to: 'green',  async: true },
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'yellow', to: 'red'    },
+      { name: 'calm',  from: 'red',    to: 'yellow' },
+      { name: 'clear', from: 'yellow', to: 'green'  },
     ],
     callbacks: {
       onchangestate: function(event,from,to) { called.push('onchange from ' + from + ' to ' + to); },
 
-      onentergreen:  function() { called.push('onentergreen');     },
-      onleavegreen:  function() { called.push('onleavegreen');     },
-      onenteryellow: function() { called.push('onenteryellow');    },
-      onleaveyellow: function() { called.push('onleaveyellow');    },
-      onenterred:    function() { called.push('onenterred');       },
-      onleavered:    function() { called.push('onleavered');       },
+      onentergreen:  function() { called.push('onentergreen');                },
+      onenteryellow: function() { called.push('onenteryellow');               },
+      onenterred:    function() { called.push('onenterred');                  },
+      onleavegreen:  function() { called.push('onleavegreen');  return false; },
+      onleaveyellow: function() { called.push('onleaveyellow'); return false; },
+      onleavered:    function() { called.push('onleavered');    return false; },
 
-      onbeforewarn:  function() { called.push('onbeforewarn');     },
-      onafterwarn:   function() { called.push('onafterwarn');      },
-      onbeforepanic: function() { called.push('onbeforepanic');    },
-      onafterpanic:  function() { called.push('onafterpanic');     },
-      onbeforecalm:  function() { called.push('onbeforecalm');     },
-      onaftercalm:   function() { called.push('onaftercalm');      },
-      onbeforeclear: function() { called.push('onbeforeclear');    },
-      onafterclear:  function() { called.push('onafterclear');     }
+      onbeforewarn:  function() { called.push('onbeforewarn');                },
+      onbeforepanic: function() { called.push('onbeforepanic');               },
+      onbeforecalm:  function() { called.push('onbeforecalm');                },
+      onbeforeclear: function() { called.push('onbeforeclear');               },
+      onafterwarn:   function() { called.push('onafterwarn');                 },
+      onafterpanic:  function() { called.push('onafterpanic');                },
+      onaftercalm:   function() { called.push('onaftercalm');                 },
+      onafterclear:  function() { called.push('onafterclear');                }
     }
   });
 

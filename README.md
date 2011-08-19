@@ -87,10 +87,9 @@ along with the following members:
 Multiple 'from' and 'to' states for a single event
 ==================================================
 
-If an event is allowed **from** multiple states, and always transitions **to** the same
-state, then simply provide an array of states in the `from` attribute of an event.
-
-If an event is allowed **from** multiple states, but should transition **to** a different
+If an event is allowed **from** multiple states, and always transitions to the same
+state, then simply provide an array of states in the `from` attribute of an event. If
+an event is allowed from multiple states, but should transition **to** a different
 state depending on the current state, then provide multiple event entries with
 the same name:
 
@@ -145,9 +144,9 @@ In addition, a generic `onchangestate()` callback can be used to call a single f
 
 All callbacks will be passed the same arguments:
 
- * event name
- * from state
- * to state
+ * **event** name
+ * **from** state
+ * **to** state
  * _(followed by any arguments you passed into the original event method)_
 
 Callbacks can be specified when the state machine is first created:
@@ -161,16 +160,16 @@ Callbacks can be specified when the state machine is first created:
         { name: 'clear', from: 'yellow', to: 'green'  }
       ],
       callbacks: {
-        onpanic:  function(event, from, to) { alert('panic!');                    },
-        onclear:  function(event, from, to) { alert('all clear!');                },
-        ongreen:  function(event, from, to) { document.body.className = 'green';  },
-        onyellow: function(event, from, to) { document.body.className = 'yellow'; },
-        onred:    function(event, from, to) { document.body.className = 'red';    },
+        onpanic:  function(event, from, to, msg) { alert('panic! ' + msg);               },
+        onclear:  function(event, from, to, msg) { alert('thanks to ' + msg);            },
+        ongreen:  function(event, from, to)      { document.body.className = 'green';    },
+        onyellow: function(event, from, to)      { document.body.className = 'yellow';   },
+        onred:    function(event, from, to)      { document.body.className = 'red';      },
       }
     });
 
-    fsm.panic()
-    fsm.clear()
+    fsm.panic('killer bees');
+    fsm.clear('sedatives in the honey pots');
     ...
 
 Additionally, they can be added and removed from the state machine at any time:
@@ -179,11 +178,6 @@ Additionally, they can be added and removed from the state machine at any time:
     fsm.onyellow      = null;
     fsm.onred         = null;
     fsm.onchangestate = function(event, from, to) { document.body.className = to; };
-
-Asynchronous State Transitions
-==============================
-
- * **TODO**
 
 State Machine Classes
 =====================
@@ -218,6 +212,11 @@ instances:
 
 
 This should be easy to adjust to fit your appropriate mechanism for object construction.
+
+Asynchronous State Transitions
+==============================
+
+ * **TODO**
 
 Initialization Options
 ======================
