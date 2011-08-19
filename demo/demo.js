@@ -12,25 +12,28 @@ Demo = {
     ]});
   },
 
-  onbeforestartup: function() { this.log("STATE MACHINE IS STARTING UP"); },
+  onbeforestartup: function(event, from, to) { this.log("STARTING UP"); },
+  onafterstartup:  function(event, from, to) { this.log("READY");       },
 
-  onbeforewarn:    function() { this.log("START EVENT: warn!",  true);  },
-  onbeforepanic:   function() { this.log("START EVENT: panic!", true); },
-  onbeforecalm:    function() { this.log("START EVENT: calm!",  true);  },
-  onbeforeclear:   function() { this.log("START EVENT: clear!", true); },
+  onbeforewarn:    function(event, from, to) { this.log("START   EVENT: warn!",  true);  },
+  onbeforepanic:   function(event, from, to) { this.log("START   EVENT: panic!", true);  },
+  onbeforecalm:    function(event, from, to) { this.log("START   EVENT: calm!",  true);  },
+  onbeforeclear:   function(event, from, to) { this.log("START   EVENT: clear!", true);  },
 
-  onwarn:          function() { this.log("FINISH EVENT: warn!");  },
-  onpanic:         function() { this.log("FINISH EVENT: panic!"); },
-  oncalm:          function() { this.log("FINISH EVENT: calm!");  },
-  onclear:         function() { this.log("FINISH EVENT: clear!"); },
+  onwarn:          function(event, from, to) { this.log("FINISH  EVENT: warn!");    },
+  onpanic:         function(event, from, to) { this.log("FINISH  EVENT: panic!");   },
+  oncalm:          function(event, from, to) { this.log("FINISH  EVENT: calm!");    },
+  onclear:         function(event, from, to) { this.log("FINISH  EVENT: clear!");   },
 
-  onleavegreen:    function() { this.log("LEAVE STATE: green");  },
-  onleaveyellow:   function() { this.log("LEAVE STATE: yellow"); },
-  onleavered:      function() { this.log("LEAVE STATE: red");    this.asyncTransition(); return false; },
+  onleavegreen:    function(event, from, to) { this.log("LEAVE   STATE: green");  },
+  onleaveyellow:   function(event, from, to) { this.log("LEAVE   STATE: yellow"); },
+  onleavered:      function(event, from, to) { this.log("LEAVE   STATE: red");    this.asyncTransition(); return false; },
 
-  ongreen:         function() { this.log("ENTER STATE: green");  },
-  onyellow:        function() { this.log("ENTER STATE: yellow"); },
-  onred:           function() { this.log("ENTER STATE: red");    },
+  ongreen:         function(event, from, to) { this.log("ENTER   STATE: green");  },
+  onyellow:        function(event, from, to) { this.log("ENTER   STATE: yellow"); },
+  onred:           function(event, from, to) { this.log("ENTER   STATE: red");    },
+
+  onchangestate:   function(event, from, to) { this.log("CHANGED STATE: " + from + " to " + to); },
 
   asyncTransition: function() {
     var self = this;
@@ -49,7 +52,7 @@ Demo = {
 
   logTransition: function(n) {
     if (n)
-      this.log("PENDING " + this.transition.event + " from " + this.transition.from + " to " + this.transition.to + " in : " + n + "...");
+      this.log("PENDING STATE: " + this.transition.to + " in ..." + n);
   },
 
   log: function(msg, separate) {

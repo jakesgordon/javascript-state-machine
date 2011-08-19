@@ -183,7 +183,7 @@ test("hooks are called when appropriate", function() {
   var called = [];
 
   // generic state hook
-  fsm.onchangestate = function(from,to) { called.push('onchange from ' + from + ' to ' + to); };
+  fsm.onchangestate = function(event,from,to) { called.push('onchange from ' + from + ' to ' + to); };
 
   // state hooks
   fsm.onentergreen    = function() { called.push('onentergreen');     };
@@ -235,44 +235,48 @@ test("arguments are passed correctly to all hooks", function() {
       { name: 'clear', from: 'yellow', to: 'green'  },
   ]});
 
-  var called = [];
+  var expected = {};
+  var verify_expected = function(event,from,to,a,b,c) {
+    equal(event, expected.event)
+    equal(from,  expected.from)
+    equal(to,    expected.to)
+    equal(a,     expected.a)
+    equal(b,     expected.b)
+    equal(c,     expected.c)
+  };
 
   // generic state hook
-  fsm.onchangestate = function(from,to,a,b,c) { called.push('onchange from ' + from + ' to ' + to + ' ' + (a+b+c)); };
+  fsm.onchangestate   = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
 
   // state hooks
-  fsm.onentergreen    = function(a,b,c) { called.push('onentergreen '  + (a+b+c)); };
-  fsm.onleavegreen    = function(a,b,c) { called.push('onleavegreen '  + (a+b+c)); };
-  fsm.onenteryellow   = function(a,b,c) { called.push('onenteryellow ' + (a+b+c)); };
-  fsm.onleaveyellow   = function(a,b,c) { called.push('onleaveyellow ' + (a+b+c)); };
-  fsm.onenterred      = function(a,b,c) { called.push('onenterred '    + (a+b+c)); };
-  fsm.onleavered      = function(a,b,c) { called.push('onleavered '    + (a+b+c)); };
+  fsm.onentergreen    = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
+  fsm.onleavegreen    = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
+  fsm.onenteryellow   = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
+  fsm.onleaveyellow   = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
+  fsm.onenterred      = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
+  fsm.onleavered      = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
 
   // event hooks
-  fsm.onbeforewarn    = function(a,b,c) { called.push('onbeforewarn '  + (a+b+c)); };
-  fsm.onafterwarn     = function(a,b,c) { called.push('onafterwarn '   + (a+b+c)); };
-  fsm.onbeforepanic   = function(a,b,c) { called.push('onbeforepanic ' + (a+b+c)); };
-  fsm.onafterpanic    = function(a,b,c) { called.push('onafterpanic '  + (a+b+c)); };
-  fsm.onbeforecalm    = function(a,b,c) { called.push('onbeforecalm '  + (a+b+c)); };
-  fsm.onaftercalm     = function(a,b,c) { called.push('onaftercalm '   + (a+b+c)); };
-  fsm.onbeforeclear   = function(a,b,c) { called.push('onbeforeclear ' + (a+b+c)); };
-  fsm.onafterclear    = function(a,b,c) { called.push('onafterclear '  + (a+b+c)); };
+  fsm.onbeforewarn    = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
+  fsm.onafterwarn     = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
+  fsm.onbeforepanic   = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
+  fsm.onafterpanic    = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
+  fsm.onbeforecalm    = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
+  fsm.onaftercalm     = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
+  fsm.onbeforeclear   = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
+  fsm.onafterclear    = function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); };
 
-  called = [];
+  expected = { event: 'warn', from: 'green', to: 'yellow', a: 1, b: 2, c: 3 };
   fsm.warn(1,2,3);
-  deepEqual(called, ['onbeforewarn 6', 'onleavegreen 6', 'onenteryellow 6', 'onchange from green to yellow 6', 'onafterwarn 6']);
 
-  called = [];
+  expected = { event: 'panic', from: 'yellow', to: 'red', a: 4, b: 5, c: 6 };
   fsm.panic(4,5,6);
-  deepEqual(called, ['onbeforepanic 15', 'onleaveyellow 15', 'onenterred 15', 'onchange from yellow to red 15', 'onafterpanic 15']);
 
-  called = [];
-  fsm.calm(0,0,1);
-  deepEqual(called, ['onbeforecalm 1', 'onleavered 1', 'onenteryellow 1', 'onchange from red to yellow 1', 'onaftercalm 1']);
+  expected = { event: 'calm', from: 'red', to: 'yellow', a: 'foo', b: 'bar', c: null };
+  fsm.calm('foo', 'bar');
 
-  called = [];
-  fsm.clear("a", "b", "c");
-  deepEqual(called, ['onbeforeclear abc', 'onleaveyellow abc', 'onentergreen abc', 'onchange from yellow to green abc', 'onafterclear abc']);
+  expected = { event: 'clear', from: 'yellow', to: 'green', a: null, b: null, c: null };
+  fsm.clear();
 
 });
 

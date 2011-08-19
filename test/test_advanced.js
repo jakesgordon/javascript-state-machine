@@ -80,7 +80,7 @@ test("hooks are called when appropriate for multiple 'from' and 'to' transitions
   var called = [];
 
   // generic state hook
-  fsm.onchangestate = function(from,to) { called.push('onchange from ' + from + ' to ' + to); };
+  fsm.onchangestate = function(event,from,to) { called.push('onchange from ' + from + ' to ' + to); };
 
   // state hooks
   fsm.onenterhungry    = function() { called.push('onenterhungry');    };
@@ -128,7 +128,7 @@ test("hooks are called when appropriate for prototype based state machine", func
   myFSM.prototype = {
 
     // generic state hook
-    onchangestate: function(from,to) { this.called.push('onchange from ' + from + ' to ' + to); },
+    onchangestate: function(event,from,to) { this.called.push('onchange from ' + from + ' to ' + to); },
 
     // state hooks
     onentergreen:   function() { this.called.push('onentergreen');  },

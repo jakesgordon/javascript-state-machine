@@ -172,7 +172,7 @@ test("state transitions using onleavestate run-time return value instead of desi
 
   // this allows you to make on-the-fly decisions about whether async or not ...
 
-  fsm.onleavegreen = function(async) {
+  fsm.onleavegreen = function(event, from, to, async) {
     if (async) {
       setTimeout(function() {
         fsm.transition(); equals(fsm.current, 'yellow', "warn event should transition from green to yellow");
@@ -230,7 +230,7 @@ test("hooks are called when appropriate", function() {
   var called = [];
 
   // generic state hook
-  fsm.onchangestate = function(from,to) { called.push('onchange from ' + from + ' to ' + to); };
+  fsm.onchangestate = function(event,from,to) { called.push('onchange from ' + from + ' to ' + to); };
 
   // state hooks
   fsm.onentergreen    = function() { called.push('onentergreen');     };

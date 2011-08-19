@@ -4,21 +4,21 @@ module("special initialization options", {
 
   setup: function() {
     this.called = [];
-    this.onchangestate   = function(from,to) { this.called.push('onchange from ' + from + ' to ' + to); };
-    this.onbeforeinit    = function()        { this.called.push("onbeforeinit");                        };
-    this.onafterinit     = function()        { this.called.push("onafterinit");                         };
-    this.onbeforestartup = function()        { this.called.push("onbeforestartup");                     };
-    this.onafterstartup  = function()        { this.called.push("onafterstartup");                      };
-    this.onbeforepanic   = function()        { this.called.push("onbeforepanic");                       };
-    this.onafterpanic    = function()        { this.called.push("onafterpanic");                        };
-    this.onbeforecalm    = function()        { this.called.push("onbeforecalm");                        };
-    this.onaftercalm     = function()        { this.called.push("onaftercalm");                         };
-    this.onenternone     = function()        { this.called.push("onenternone");                         };
-    this.onentergreen    = function()        { this.called.push("onentergreen");                        };
-    this.onenterred      = function()        { this.called.push("onenterred");                          };
-    this.onleavenone     = function()        { this.called.push("onleavenone");                         };
-    this.onleavegreen    = function()        { this.called.push("onleavegreen");                        };
-    this.onleavered      = function()        { this.called.push("onleavered");                          };
+    this.onchangestate   = function(event,from,to) { this.called.push('onchange from ' + from + ' to ' + to); };
+    this.onbeforeinit    = function()              { this.called.push("onbeforeinit");                        };
+    this.onafterinit     = function()              { this.called.push("onafterinit");                         };
+    this.onbeforestartup = function()              { this.called.push("onbeforestartup");                     };
+    this.onafterstartup  = function()              { this.called.push("onafterstartup");                      };
+    this.onbeforepanic   = function()              { this.called.push("onbeforepanic");                       };
+    this.onafterpanic    = function()              { this.called.push("onafterpanic");                        };
+    this.onbeforecalm    = function()              { this.called.push("onbeforecalm");                        };
+    this.onaftercalm     = function()              { this.called.push("onaftercalm");                         };
+    this.onenternone     = function()              { this.called.push("onenternone");                         };
+    this.onentergreen    = function()              { this.called.push("onentergreen");                        };
+    this.onenterred      = function()              { this.called.push("onenterred");                          };
+    this.onleavenone     = function()              { this.called.push("onleavenone");                         };
+    this.onleavegreen    = function()              { this.called.push("onleavegreen");                        };
+    this.onleavered      = function()              { this.called.push("onleavered");                          };
   }
 
 });
