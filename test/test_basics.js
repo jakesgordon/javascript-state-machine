@@ -224,6 +224,56 @@ test("callbacks are ordered correctly", function() {
 
 //-----------------------------------------------------------------------------
 
+test("callbacks are ordered correctly - for same state transition", function() {
+
+  var called = [];
+
+  var fsm = StateMachine.create({
+    initial: 'waiting',
+    events: [
+      { name: 'data',    from: ['waiting', 'receipt'], to: 'receipt' },
+      { name: 'nothing', from: ['waiting', 'receipt'], to: 'waiting' },
+      { name: 'error',   from: ['waiting', 'receipt'], to: 'error'   } // bad practice to have event name same as state name - but I'll let it slide just this once
+    ],
+    callbacks: {
+      onchangestate: function(event,from,to) { called.push('onchange from ' + from + ' to ' + to); },
+
+      onenterwaiting: function() { called.push('onenterwaiting');   },
+      onenterreceipt: function() { called.push('onenterreceipt');   },
+      onentererror:   function() { called.push('onentererror');     },
+      onleavewaiting: function() { called.push('onleavewaiting');   },
+      onleavereceipt: function() { called.push('onleavereceipt');   },
+      onleaveerror:   function() { called.push('onleaveerror');     },
+
+      onbeforedata:    function() { called.push('onbeforedata');    },
+      onbeforenothing: function() { called.push('onbeforenothing'); },
+      onbeforeerror:   function() { called.push('onbeforeerror');   },
+      onafterdata:     function() { called.push('onafterdata');     },
+      onafternothing:  function() { called.push('onafternothing');  },
+      onaftereerror:   function() { called.push('onaftererror');    },
+    }
+  });
+
+  called = [];
+  fsm.data();
+  deepEqual(called, ['onbeforedata', 'onleavewaiting', 'onenterreceipt', 'onchange from waiting to receipt', 'onafterdata']);
+
+  called = [];
+  fsm.data();                                         // same-state transition
+  deepEqual(called, ['onbeforedata', 'onafterdata']); // so now enter/leave/change state callbacks are fired
+
+  called = [];
+  fsm.data();                                         // same-state transition
+  deepEqual(called, ['onbeforedata', 'onafterdata']); // so now enter/leave/change state callbacks are fired
+
+  called = [];
+  fsm.nothing();
+  deepEqual(called, ['onbeforenothing', 'onleavereceipt', 'onenterwaiting', 'onchange from receipt to waiting', 'onafternothing']);
+
+});
+
+//-----------------------------------------------------------------------------
+
 test("callback arguments are correct", function() {
 
   var expected = { event: 'startup', from: 'none', to: 'green' }; // first expected callback
