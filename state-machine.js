@@ -96,10 +96,10 @@ StateMachine = {
       var to    = map[from];
       var args  = Array.prototype.slice.call(arguments); // turn arguments into pure array
 
-      if (this.current != to) {
+      if (false === StateMachine.beforeEvent.call(this, name, from, to, args))
+        return;
 
-        if (false === StateMachine.beforeEvent.call(this, name, from, to, args))
-          return;
+      if (from !== to) {
 
         var self = this;
         this.transition = function() { // prepare transition method for use either lower down, or by caller if they want an async transition (indicated by a false return value from leaveState)
@@ -114,7 +114,11 @@ StateMachine = {
           if (this.transition) // in case user manually called it but forgot to return false
             this.transition();
         }
+
+        return; // transition method took care of (or, if async, will take care of) the afterEvent, DONT fall through
       }
+
+      StateMachine.afterEvent.call(this, name, from, to, args); // this is only ever called if there was NO transition (e.g. if from === to)
 
     };
   }
