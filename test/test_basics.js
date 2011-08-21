@@ -260,11 +260,11 @@ test("callbacks are ordered correctly - for same state transition", function() {
 
   called = [];
   fsm.data();                                         // same-state transition
-  deepEqual(called, ['onbeforedata', 'onafterdata']); // so now enter/leave/change state callbacks are fired
+  deepEqual(called, ['onbeforedata', 'onafterdata']); // so NO enter/leave/change state callbacks are fired
 
   called = [];
   fsm.data();                                         // same-state transition
-  deepEqual(called, ['onbeforedata', 'onafterdata']); // so now enter/leave/change state callbacks are fired
+  deepEqual(called, ['onbeforedata', 'onafterdata']); // so NO enter/leave/change state callbacks are fired
 
   called = [];
   fsm.nothing();
