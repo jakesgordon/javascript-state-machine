@@ -240,7 +240,7 @@ test("state transition fired without completing previous transition", function()
   fsm.transition(); equals(fsm.current, 'yellow', "warn event should transition from green to yellow");
   fsm.panic();      equals(fsm.current, 'yellow', "should still be yellow because we haven't transitioned yet");
 
-  raises(fsm.calm.bind(fsm), /event calm innapropriate because previous transition did not complete/);
+  raises(fsm.calm.bind(fsm), /event calm inappropriate because previous transition did not complete/);
 
 });
 
