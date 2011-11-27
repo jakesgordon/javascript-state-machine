@@ -282,6 +282,22 @@ same as the first example in this section where you simply define your own start
 
 So you have a number of choices available to you when initializing your state machine.
 
+Handling Failures
+======================
+
+By default, if you try to call an event method that is not allowed in the current state, the state machine will throw an exception. If you prefer to handle the problem yourself, you can define a custom `error` handler, which takes a single event name parameter:
+
+    var fsm = StateMachine.create({
+      initial: 'green',
+      error: function(eventName) {
+        return 'event ' + eventName + ' not allowed in current state ' + this.current;
+      },
+      events: [
+        { name: 'panic', from: 'green', to: 'red'   },
+        { name: 'calm',  from: 'red',   to: 'green' },
+    ]});
+    alert(fsm.calm()); // "event calm not allowed in current state green"
+
 Release Notes
 =============
 
