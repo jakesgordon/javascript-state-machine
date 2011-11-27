@@ -26,7 +26,7 @@ test("standalone state machine", function() {
 
 //-----------------------------------------------------------------------------
 
-test("targetted state machine", function() {
+test("targeted state machine", function() {
 
   StateMachine.create({
     target:  this,
