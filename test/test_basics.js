@@ -26,7 +26,7 @@ test("standalone state machine", function() {
 
 //-----------------------------------------------------------------------------
 
-test("targetted state machine", function() {
+test("targeted state machine", function() {
 
   StateMachine.create({
     target:  this,
@@ -119,7 +119,7 @@ test("can & cannot", function() {
 
 //-----------------------------------------------------------------------------
 
-test("innapropriate events", function() {
+test("inappropriate events", function() {
 
   var fsm = StateMachine.create({
     initial: 'green',
@@ -131,18 +131,18 @@ test("innapropriate events", function() {
 
   equals(fsm.current, 'green', "initial state should be green");
 
-  raises(fsm.panic.bind(fsm), /event panic innapropriate in current state green/);
-  raises(fsm.calm.bind(fsm),  /event calm innapropriate in current state green/);
+  raises(fsm.panic.bind(fsm), /event panic inappropriate in current state green/);
+  raises(fsm.calm.bind(fsm),  /event calm inappropriate in current state green/);
 
   fsm.warn();
   equals(fsm.current, 'yellow', "current state should be yellow");
-  raises(fsm.warn.bind(fsm), /event warn innapropriate in current state yellow/);
-  raises(fsm.calm.bind(fsm), /event calm innapropriate in current state yellow/);
+  raises(fsm.warn.bind(fsm), /event warn inappropriate in current state yellow/);
+  raises(fsm.calm.bind(fsm), /event calm inappropriate in current state yellow/);
 
   fsm.panic();
   equals(fsm.current, 'red', "current state should be red");
-  raises(fsm.warn.bind(fsm),  /event warn innapropriate in current state red/);
-  raises(fsm.panic.bind(fsm), /event panic innapropriate in current state red/);
+  raises(fsm.warn.bind(fsm),  /event warn inappropriate in current state red/);
+  raises(fsm.panic.bind(fsm), /event panic inappropriate in current state red/);
 
 });
 
