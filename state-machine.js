@@ -87,10 +87,10 @@ StateMachine = {
     return function() {
 
       if (this.transition)
-        throw "event " + name + " innapropriate because previous transition did not complete"
+        throw "event " + name + " inappropriate because previous transition did not complete"
 
       if (this.cannot(name))
-        throw "event " + name + " innapropriate in current state " + this.current;
+        throw "event " + name + " inappropriate in current state " + this.current;
 
       var from  = this.current;
       var to    = map[from];
