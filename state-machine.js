@@ -2,7 +2,7 @@ StateMachine = {
 
   //---------------------------------------------------------------------------
 
-  VERSION: "2.0.0",
+  VERSION: "2.0.1",
 
   //---------------------------------------------------------------------------
 
@@ -31,7 +31,7 @@ StateMachine = {
 
     for(var name in map) {
       if (map.hasOwnProperty(name))
-        fsm[name] = StateMachine.buildEvent(name, map[name], cfg.error);
+        fsm[name] = StateMachine.buildEvent(name, map[name]);
     }
 
     for(var name in callbacks) {
@@ -43,6 +43,7 @@ StateMachine = {
     fsm.is      = function(state) { return this.current == state; };
     fsm.can     = function(event) { return !!map[event][this.current] && !this.transition; };
     fsm.cannot  = function(event) { return !this.can(event); };
+    fsm.error   = cfg.error || function(eventName, error) { throw error; };
 
     if (initial && !initial.defer)
       fsm[initial.event]();
@@ -53,69 +54,52 @@ StateMachine = {
 
   //===========================================================================
 
-  beforeEvent: function(name, from, to, args) {
-    var func = this['onbefore' + name];
-    if (func)
-      return func.apply(this, [name, from, to].concat(args));
+  doCallback: function(fsm, func, name, from, to, args) {
+    if (func) {
+      try {
+        return func.apply(fsm, [name, from, to].concat(args));
+      }
+      catch(e) {
+        fsm.error(name, e);
+      }
+    }
   },
 
-  afterEvent: function(name, from, to, args) {
-    var func = this['onafter'  + name] || this['on' + name];
-    if (func)
-      return func.apply(this, [name, from, to].concat(args));
-  },
+  beforeEvent: function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onbefore' + name],                     name, from, to, args); },
+  afterEvent:  function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onafter'  + name] || fsm['on' + name], name, from, to, args); },
+  leaveState:  function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onleave'  + from],                     name, from, to, args); },
+  enterState:  function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onenter'  + to]   || fsm['on' + to],   name, from, to, args); },
+  changeState: function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onchangestate'],                       name, from, to, args); },
 
-  leaveState: function(name, from, to, args) {
-    var func = this['onleave' + from];
-    if (func)
-      return func.apply(this, [name, from, to].concat(args));
-  },
 
-  enterState: function(name, from, to, args) {
-    var func = this['onenter' + to] || this['on' + to];
-    if (func)
-      return func.apply(this, [name, from, to].concat(args));
-  },
-
-  changeState: function(name, from, to, args) {
-    var func = this['onchangestate'];
-    if (func)
-      return func.apply(this, [name, from, to].concat(args));
-  },
-
-  buildEvent: function(name, map, errorHandler) {
+  buildEvent: function(name, map) {
     return function() {
 
       if (this.transition)
-        throw "event " + name + " inappropriate because previous transition did not complete"
+        return this.error(name, "event " + name + " inappropriate because previous transition did not complete");
 
-      if (this.cannot(name)) {
-        if (errorHandler) {
-          return errorHandler.call(this, name);
-        } else {
-          throw "event " + name + " inappropriate in current state " + this.current;
-        }
-      }
+      if (this.cannot(name))
+        return this.error(name, "event " + name + " inappropriate in current state " + this.current);
 
       var from  = this.current;
       var to    = map[from];
       var args  = Array.prototype.slice.call(arguments); // turn arguments into pure array
 
-      if (false === StateMachine.beforeEvent.call(this, name, from, to, args))
+      if (false === StateMachine.beforeEvent(this, name, from, to, args))
         return;
 
       if (from !== to) {
 
-        var self = this;
+        var fsm = this;
         this.transition = function() { // prepare transition method for use either lower down, or by caller if they want an async transition (indicated by a false return value from leaveState)
-          self.transition = null; // this method should only ever be called once
-          self.current = to;
-          StateMachine.enterState.call( self, name, from, to, args);
-          StateMachine.changeState.call(self, name, from, to, args);
-          StateMachine.afterEvent.call( self, name, from, to, args);
+          fsm.transition = null; // this method should only ever be called once
+          fsm.current = to;
+          StateMachine.enterState( fsm, name, from, to, args);
+          StateMachine.changeState(fsm, name, from, to, args);
+          StateMachine.afterEvent( fsm, name, from, to, args);
         };
 
-        if (false !== StateMachine.leaveState.call(this, name, from, to, args)) {
+        if (false !== StateMachine.leaveState(this, name, from, to, args)) {
           if (this.transition) // in case user manually called it but forgot to return false
             this.transition();
         }
@@ -123,7 +107,7 @@ StateMachine = {
         return; // transition method took care of (or, if async, will take care of) the afterEvent, DONT fall through
       }
 
-      StateMachine.afterEvent.call(this, name, from, to, args); // this is only ever called if there was NO transition (e.g. if from === to)
+      StateMachine.afterEvent(this, name, from, to, args); // this is only ever called if there was NO transition (e.g. if from === to)
 
     };
   }

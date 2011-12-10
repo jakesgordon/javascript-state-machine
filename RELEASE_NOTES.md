@@ -1,3 +1,10 @@
+Version 2.0.1 (unreleased)
+--------------------------
+
+ * extended custom error callback to handle any exceptions caused by caller provided callbacks
+ * added custom error callback to override exception when an illegal state transition is attempted (thanks to cboone)
+ * fixed typos (thanks to cboone)
+ * fixed issue #4 - ensure before/after event hooks are called even if the event doesn't result in a state change 
 
 Version 2.0.0 (August 19th 2011)
 --------------------------------
