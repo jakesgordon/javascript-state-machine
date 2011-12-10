@@ -148,6 +148,38 @@ test("inappropriate events", function() {
 
 //-----------------------------------------------------------------------------
 
+test("inappropriate event handling can be customized", function() {
+
+  var fsm = StateMachine.create({
+    error: function(eventName) {
+      return 'event ' + eventName + ' inappropriate in current state ' + this.current;
+    },
+    initial: 'green',
+    events: [
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'yellow', to: 'red'    },
+      { name: 'calm',  from: 'red',    to: 'yellow' }
+  ]});
+
+  equals(fsm.current, 'green', "initial state should be green");
+
+  equals(fsm.panic(), 'event panic inappropriate in current state green');
+  equals(fsm.calm(),  'event calm inappropriate in current state green');
+
+  fsm.warn();
+  equals(fsm.current, 'yellow', "current state should be yellow");
+  equals(fsm.warn(), 'event warn inappropriate in current state yellow');
+  equals(fsm.calm(), 'event calm inappropriate in current state yellow');
+  
+  fsm.panic();
+  equals(fsm.current, 'red', "current state should be red");
+  equals(fsm.warn(),  'event warn inappropriate in current state red');
+  equals(fsm.panic(), 'event panic inappropriate in current state red');
+
+});
+
+//-----------------------------------------------------------------------------
+
 test("event is cancelable", function() {
 
   var fsm = StateMachine.create({

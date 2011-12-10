@@ -31,7 +31,7 @@ StateMachine = {
 
     for(var name in map) {
       if (map.hasOwnProperty(name))
-        fsm[name] = StateMachine.buildEvent(name, map[name]);
+        fsm[name] = StateMachine.buildEvent(name, map[name], cfg.error);
     }
 
     for(var name in callbacks) {
@@ -83,14 +83,19 @@ StateMachine = {
       return func.apply(this, [name, from, to].concat(args));
   },
 
-  buildEvent: function(name, map) {
+  buildEvent: function(name, map, errorHandler) {
     return function() {
 
       if (this.transition)
         throw "event " + name + " inappropriate because previous transition did not complete"
 
-      if (this.cannot(name))
-        throw "event " + name + " inappropriate in current state " + this.current;
+      if (this.cannot(name)) {
+        if (errorHandler) {
+          return errorHandler.call(this, name);
+        } else {
+          throw "event " + name + " inappropriate in current state " + this.current;
+        }
+      }
 
       var from  = this.current;
       var to    = map[from];
