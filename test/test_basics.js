@@ -281,3 +281,24 @@ test("callback arguments are correct", function() {
 
 });
 
+//-----------------------------------------------------------------------------
+
+test("any events", function() {
+
+  var fsm = StateMachine.create({
+    initial: 'stopped',
+    events: [
+      { name: 'prepare', from: 'stopped',      to: 'ready'   },
+      { name: 'start',   from: 'ready',        to: 'running' },
+      { name: 'resume',  from: 'paused',       to: 'running' },
+      { name: 'pause',   from: 'running',      to: 'paused'  },
+      { name: 'stop',    /* any from state */  to: 'stopped' }
+  ]});
+
+  fsm.prepare(); equals(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
+  fsm.stop();    equals(fsm.current, 'stopped', "stop event should transition from ready to stopped");
+  fsm.prepare(); equals(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
+  fsm.start();   equals(fsm.current, 'running', "start event should transition from red to yellow");
+  fsm.stop();    equals(fsm.current, 'stopped', "stop event should transition from running to stopped");
+
+});
