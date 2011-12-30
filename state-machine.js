@@ -13,12 +13,17 @@ StateMachine = {
     var events    = cfg.events || [];
     var callbacks = cfg.callbacks || {};
     var map       = {};
+    var anymap    = {};
 
     var add = function(e) {
-      var from = (e.from instanceof Array) ? e.from : [e.from];
-      map[e.name] = map[e.name] || {};
-      for (var n = 0 ; n < from.length ; n++)
-        map[e.name][from[n]] = e.to;
+      if (!e.from) {
+        anymap[e.name] = e.to;
+      } else {
+        var from = (e.from instanceof Array) ? e.from : [e.from];
+        map[e.name] = map[e.name] || {};
+        for (var n = 0 ; n < from.length ; n++)
+          map[e.name][from[n]] = e.to;
+      }
     };
 
     if (initial) {
@@ -34,6 +39,11 @@ StateMachine = {
         fsm[name] = StateMachine.buildEvent(name, map[name]);
     }
 
+    for(var name in anymap) {
+      if (anymap.hasOwnProperty(name))
+        fsm[name] = StateMachine.buildEvent(name, null, anymap[name]);
+    }
+
     for(var name in callbacks) {
       if (callbacks.hasOwnProperty(name))
         fsm[name] = callbacks[name]
@@ -41,7 +51,7 @@ StateMachine = {
 
     fsm.current = 'none';
     fsm.is      = function(state) { return this.current == state; };
-    fsm.can     = function(event) { return !!map[event][this.current] && !this.transition; };
+    fsm.can     = function(event) { return (!!anymap[event] || !!map[event][this.current]) && !this.transition; };
     fsm.cannot  = function(event) { return !this.can(event); };
 
     if (initial && !initial.defer)
@@ -83,7 +93,7 @@ StateMachine = {
       return func.apply(this, [name, from, to].concat(args));
   },
 
-  buildEvent: function(name, map) {
+  buildEvent: function(name, map, anyto) {
     return function() {
 
       if (this.transition)
@@ -93,7 +103,7 @@ StateMachine = {
         throw "event " + name + " innapropriate in current state " + this.current;
 
       var from  = this.current;
-      var to    = map[from];
+      var to    = map ? map[from] : anyto;
       var args  = Array.prototype.slice.call(arguments); // turn arguments into pure array
 
       if (this.current != to) {
