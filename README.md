@@ -287,18 +287,18 @@ Handling Failures
 
 By default, if you try to call an event method that is not allowed in the current state, the
 state machine will throw an exception. If you prefer to handle the problem yourself, you can
-define a custom `error` handler, which takes a single event name parameter:
+define a custom `error` handler:
 
     var fsm = StateMachine.create({
       initial: 'green',
-      error: function(eventName) {
-        return 'event ' + eventName + ' not allowed in current state ' + this.current;
+      error: function(eventName, from, to, args, errorCode, errorMessage) {
+        return 'event ' + eventName + ' was naughty :- ' + errorMessage;
       },
       events: [
         { name: 'panic', from: 'green', to: 'red'   },
         { name: 'calm',  from: 'red',   to: 'green' },
     ]});
-    alert(fsm.calm()); // "event calm not allowed in current state green"
+    alert(fsm.calm()); // "event calm was naughty :- event not allowed in current state green"
 
 Release Notes
 =============

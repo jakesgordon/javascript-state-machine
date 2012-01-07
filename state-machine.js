@@ -6,6 +6,14 @@ StateMachine = {
 
   //---------------------------------------------------------------------------
 
+  Error: {
+    INVALID_TRANSITION: 100, // caller tried to fire an event that was innapropriate in the current state
+    PENDING_TRANSITION: 200, // caller tried to fire an event while an async transition was still pending
+    INVALID_CALLBACK:   300, // caller provided callback function threw an exception
+  },
+
+  //---------------------------------------------------------------------------
+
   create: function(cfg, target) {
 
     var initial   = (typeof cfg.initial == 'string') ? { state: cfg.initial } : cfg.initial; // allow for a simple string, or an object with { state: 'foo', event: 'setup', defer: true|false }
@@ -43,7 +51,7 @@ StateMachine = {
     fsm.is      = function(state) { return this.current == state; };
     fsm.can     = function(event) { return !!map[event][this.current] && !this.transition; };
     fsm.cannot  = function(event) { return !this.can(event); };
-    fsm.error   = cfg.error || function(eventName, error) { throw error; };
+    fsm.error   = cfg.error || function(name, from, to, args, error, msg) { throw msg; }; // default behavior when something unexpected happens is to throw an exception, but caller can override this behavior if desired (see github issue #3)
 
     if (initial && !initial.defer)
       fsm[initial.event]();
@@ -60,7 +68,7 @@ StateMachine = {
         return func.apply(fsm, [name, from, to].concat(args));
       }
       catch(e) {
-        fsm.error(name, e);
+        return fsm.error(name, from, to, args, StateMachine.Error.INVALID_CALLBACK, "an exception occurred in a caller-provided callback function");
       }
     }
   },
@@ -76,10 +84,10 @@ StateMachine = {
     return function() {
 
       if (this.transition)
-        return this.error(name, "event " + name + " inappropriate because previous transition did not complete");
+        return this.error(name, from, to, args, StateMachine.Error.PENDING_TRANSITION, "event " + name + " inappropriate because previous transition did not complete");
 
       if (this.cannot(name))
-        return this.error(name, "event " + name + " inappropriate in current state " + this.current);
+        return this.error(name, from, to, args, StateMachine.Error.INVALID_TRANSITION, "event " + name + " inappropriate in current state " + this.current);
 
       var from  = this.current;
       var to    = map[from];

@@ -151,7 +151,7 @@ test("inappropriate events", function() {
 test("inappropriate event handling can be customized", function() {
 
   var fsm = StateMachine.create({
-    error: function(eventName, message) { return message; }, // return error message instead of throwing an exception
+    error: function(e, name, from, to, args, msg) { return msg; }, // return error message instead of throwing an exception
     initial: 'green',
     events: [
       { name: 'warn',  from: 'green',  to: 'yellow' },
