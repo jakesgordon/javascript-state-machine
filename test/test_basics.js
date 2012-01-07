@@ -361,3 +361,31 @@ test("callback arguments are correct", function() {
 
 });
 
+//-----------------------------------------------------------------------------
+
+test("no-op transitions (github issue #5)", function() {
+
+  var fsm = StateMachine.create({
+    initial: 'green',
+    events: [
+      { name: 'noop',  from: 'green',               }, // NOTE: no 'to' option specified
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'yellow', to: 'red'    },
+      { name: 'calm',  from: 'red',    to: 'yellow' },
+      { name: 'clear', from: 'yellow', to: 'green'  }
+  ]});
+
+  equals(fsm.current, 'green', "initial state should be green");
+
+  ok(fsm.can('noop'), "should be able to noop from green state")
+  ok(fsm.can('warn'), "should be able to warn from green state")
+
+  fsm.noop(); equals(fsm.current, 'green',  "noop event should not cause a transition (there is no 'to' specified)");
+  fsm.warn(); equals(fsm.current, 'yellow', "warn event should transition from green to yellow");
+
+  ok(fsm.cannot('noop'), "should NOT be able to noop from yellow state")
+  ok(fsm.cannot('warn'), "should NOT be able to warn from yellow state")
+  
+});
+
+

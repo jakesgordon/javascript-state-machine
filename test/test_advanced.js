@@ -18,7 +18,7 @@ test("multiple 'from' states for the same event", function() {
   equals(fsm.current, 'green', "initial state should be green");
 
   ok(fsm.can('warn'),     "should be able to warn from green state")
-  ok(fsm.can('panic'),    "should NOT be able to panic from green state")
+  ok(fsm.can('panic'),    "should be able to panic from green state")
   ok(fsm.cannot('calm'),  "should NOT be able to calm from green state")
   ok(fsm.cannot('clear'), "should NOT be able to clear from green state")
 
@@ -61,6 +61,48 @@ test("multiple 'to' states for the same event", function() {
 
   fsm.rest();
   equals(fsm.current, 'hungry');
+
+});
+
+//-----------------------------------------------------------------------------
+
+test("no-op transitions (github issue #5) with multiple from states", function() {
+
+  var fsm = StateMachine.create({
+    initial: 'green',
+    events: [
+      { name: 'warn',  from: 'green',             to: 'yellow' },
+      { name: 'panic', from: ['green', 'yellow'], to: 'red'    },
+      { name: 'noop',  from: ['green', 'yellow']               }, // NOTE: 'to' not specified
+      { name: 'calm',  from: 'red',               to: 'yellow' },
+      { name: 'clear', from: ['yellow', 'red'],   to: 'green'  },
+  ]});
+
+  equals(fsm.current, 'green', "initial state should be green");
+
+  ok(fsm.can('warn'),     "should be able to warn from green state")
+  ok(fsm.can('panic'),    "should be able to panic from green state")
+  ok(fsm.can('noop'),     "should be able to noop from green state")
+  ok(fsm.cannot('calm'),  "should NOT be able to calm from green state")
+  ok(fsm.cannot('clear'), "should NOT be able to clear from green state")
+
+  fsm.noop();  equals(fsm.current, 'green',  "noop  event should not transition");
+  fsm.warn();  equals(fsm.current, 'yellow', "warn  event should transition from green  to yellow");
+
+  ok(fsm.cannot('warn'),  "should NOT be able to warn  from yellow state")
+  ok(fsm.can('panic'),    "should     be able to panic from yellow state")
+  ok(fsm.can('noop'),     "should     be able to noop  from yellow state")
+  ok(fsm.cannot('calm'),  "should NOT be able to calm  from yellow state")
+  ok(fsm.can('clear'),    "should     be able to clear from yellow state")
+
+  fsm.noop();  equals(fsm.current, 'yellow', "noop  event should not transition");
+  fsm.panic(); equals(fsm.current, 'red',    "panic event should transition from yellow to red");
+
+  ok(fsm.cannot('warn'),  "should NOT be able to warn  from red state")
+  ok(fsm.cannot('panic'), "should NOT be able to panic from red state")
+  ok(fsm.cannot('noop'),  "should NOT be able to noop  from red state")
+  ok(fsm.can('calm'),     "should     be able to calm  from red state")
+  ok(fsm.can('clear'),    "should     be able to clear from red state")
 
 });
 

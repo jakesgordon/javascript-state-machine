@@ -26,7 +26,7 @@ StateMachine = {
       var from = (e.from instanceof Array) ? e.from : [e.from];
       map[e.name] = map[e.name] || {};
       for (var n = 0 ; n < from.length ; n++)
-        map[e.name][from[n]] = e.to;
+        map[e.name][from[n]] = e.to || from[n]; // allow no-op transition if 'to' is not specified
     };
 
     if (initial) {
