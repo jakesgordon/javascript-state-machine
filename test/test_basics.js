@@ -448,4 +448,36 @@ test("missing 'from' allows event from any state (github issue #11) ", function(
 
 });
 
+//-----------------------------------------------------------------------------
+
+test("event return values (github issue #12) ", function() {
+
+  var fsm = StateMachine.create({
+    initial: 'stopped',
+    events: [
+      { name: 'prepare', from: 'stopped', to: 'ready'   },
+      { name: 'fake',    from: 'ready',   to: 'running' },
+      { name: 'start',   from: 'ready',   to: 'running' }
+    ],
+    callbacks: {
+      onbeforefake: function(event,from,to,a,b,c) { return false; }, // this event will be cancelled
+      onleaveready: function(event,from,to,a,b,c) { return false; }  // this state transition is ASYNC
+    }
+  });
+
+  equals(fsm.current, 'stopped', "initial state should be stopped");
+
+  equals(fsm.prepare(), StateMachine.SUCCEEDED, "expected event to have SUCCEEDED");
+  equals(fsm.current,   'ready',                "prepare event should transition from stopped to ready");
+
+  equals(fsm.fake(),    StateMachine.CANCELLED, "expected event to have been CANCELLED");
+  equals(fsm.current,   'ready',                "cancelled event should not cause a transition");
+
+  equals(fsm.start(),   StateMachine.ASYNC,     "expected event to cause an ASYNC transition");
+  equals(fsm.current,   'ready',                "async transition hasn't happened yet");
+
+  equals(fsm.transition(), StateMachine.SUCCEEDED, "expected async transition to have SUCCEEDED");
+  equals(fsm.current,      'running',              "async transition should now be complete");
+
+});
 

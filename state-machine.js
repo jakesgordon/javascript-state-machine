@@ -6,6 +6,13 @@ StateMachine = {
 
   //---------------------------------------------------------------------------
 
+  Result: {
+    SUCCEEDED:    1, // the event transitioned successfully from one state to another
+    NOTRANSITION: 2, // the event was successfull but no state transition was necessary
+    CANCELLED:    3, // the event was cancelled by the caller in a beforeEvent callback
+    ASYNC:        4, // the event is asynchronous and the caller is in control of when the transition occurs
+  },
+
   Error: {
     INVALID_TRANSITION: 100, // caller tried to fire an event that was innapropriate in the current state
     PENDING_TRANSITION: 200, // caller tried to fire an event while an async transition was still pending
@@ -85,18 +92,18 @@ StateMachine = {
   buildEvent: function(name, map) {
     return function() {
 
+      var from  = this.current;
+      var to    = map[from] || map[StateMachine.WILDCARD] || from;
+      var args  = Array.prototype.slice.call(arguments); // turn arguments into pure array
+
       if (this.transition)
         return this.error(name, from, to, args, StateMachine.Error.PENDING_TRANSITION, "event " + name + " inappropriate because previous transition did not complete");
 
       if (this.cannot(name))
         return this.error(name, from, to, args, StateMachine.Error.INVALID_TRANSITION, "event " + name + " inappropriate in current state " + this.current);
 
-      var from  = this.current;
-      var to    = map[from] || map[StateMachine.WILDCARD] || from;
-      var args  = Array.prototype.slice.call(arguments); // turn arguments into pure array
-
       if (false === StateMachine.beforeEvent(this, name, from, to, args))
-        return;
+        return StateMachine.CANCELLED;
 
       if (from !== to) {
 
@@ -107,18 +114,20 @@ StateMachine = {
           StateMachine.enterState( fsm, name, from, to, args);
           StateMachine.changeState(fsm, name, from, to, args);
           StateMachine.afterEvent( fsm, name, from, to, args);
+          return StateMachine.SUCCEEDED;
         };
 
         if (false !== StateMachine.leaveState(this, name, from, to, args)) {
           if (this.transition) // in case user manually called it but forgot to return false
-            this.transition();
+            return this.transition();
         }
 
-        return; // transition method took care of (or, if async, will take care of) the afterEvent, DONT fall through
+        return StateMachine.ASYNC; // transition method took care of (or, if async, will take care of) the afterEvent, DONT fall through
       }
 
       StateMachine.afterEvent(this, name, from, to, args); // this is only ever called if there was NO transition (e.g. if from === to)
 
+      return StateMachine.SUCCEEDED;
     };
   }
 
