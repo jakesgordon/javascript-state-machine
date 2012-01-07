@@ -2,7 +2,7 @@ StateMachine = {
 
   //---------------------------------------------------------------------------
 
-  VERSION: "2.0.1",
+  VERSION: "2.1.0",
 
   //---------------------------------------------------------------------------
 
@@ -11,6 +11,8 @@ StateMachine = {
     PENDING_TRANSITION: 200, // caller tried to fire an event while an async transition was still pending
     INVALID_CALLBACK:   300, // caller provided callback function threw an exception
   },
+
+  WILDCARD: '*',
 
   //---------------------------------------------------------------------------
 
@@ -23,7 +25,7 @@ StateMachine = {
     var map       = {};
 
     var add = function(e) {
-      var from = (e.from instanceof Array) ? e.from : [e.from];
+      var from = (e.from instanceof Array) ? e.from : (e.from ? [e.from] : [StateMachine.WILDCARD]); // allow 'wildcard' transition if 'from' is not specified
       map[e.name] = map[e.name] || {};
       for (var n = 0 ; n < from.length ; n++)
         map[e.name][from[n]] = e.to || from[n]; // allow no-op transition if 'to' is not specified
@@ -49,7 +51,7 @@ StateMachine = {
 
     fsm.current = 'none';
     fsm.is      = function(state) { return this.current == state; };
-    fsm.can     = function(event) { return !!map[event][this.current] && !this.transition; };
+    fsm.can     = function(event) { return !this.transition && (map[event].hasOwnProperty(this.current) || map[event].hasOwnProperty(StateMachine.WILDCARD)); }
     fsm.cannot  = function(event) { return !this.can(event); };
     fsm.error   = cfg.error || function(name, from, to, args, error, msg) { throw msg; }; // default behavior when something unexpected happens is to throw an exception, but caller can override this behavior if desired (see github issue #3)
 
@@ -90,7 +92,7 @@ StateMachine = {
         return this.error(name, from, to, args, StateMachine.Error.INVALID_TRANSITION, "event " + name + " inappropriate in current state " + this.current);
 
       var from  = this.current;
-      var to    = map[from];
+      var to    = map[from] || map[StateMachine.WILDCARD] || from;
       var args  = Array.prototype.slice.call(arguments); // turn arguments into pure array
 
       if (false === StateMachine.beforeEvent(this, name, from, to, args))

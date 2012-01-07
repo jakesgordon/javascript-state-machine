@@ -368,7 +368,7 @@ test("no-op transitions (github issue #5)", function() {
   var fsm = StateMachine.create({
     initial: 'green',
     events: [
-      { name: 'noop',  from: 'green',               }, // NOTE: no 'to' option specified
+      { name: 'noop',  from: 'green',  /* no-op */  },
       { name: 'warn',  from: 'green',  to: 'yellow' },
       { name: 'panic', from: 'yellow', to: 'red'    },
       { name: 'calm',  from: 'red',    to: 'yellow' },
@@ -386,6 +386,66 @@ test("no-op transitions (github issue #5)", function() {
   ok(fsm.cannot('noop'), "should NOT be able to noop from yellow state")
   ok(fsm.cannot('warn'), "should NOT be able to warn from yellow state")
   
+});
+
+//-----------------------------------------------------------------------------
+
+test("wildcard 'from' allows event from any state (github issue #11)", function() {
+
+  var fsm = StateMachine.create({
+    initial: 'stopped',
+    events: [
+      { name: 'prepare', from: 'stopped',      to: 'ready'   },
+      { name: 'start',   from: 'ready',        to: 'running' },
+      { name: 'resume',  from: 'paused',       to: 'running' },
+      { name: 'pause',   from: 'running',      to: 'paused'  },
+      { name: 'stop',    from: '*',            to: 'stopped' }
+  ]});
+
+  equals(fsm.current, 'stopped', "initial state should be stopped");
+
+  fsm.prepare(); equals(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
+  fsm.stop();    equals(fsm.current, 'stopped', "stop event should transition from ready to stopped");
+
+  fsm.prepare(); equals(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
+  fsm.start();   equals(fsm.current, 'running', "start event should transition from ready to running");
+  fsm.stop();    equals(fsm.current, 'stopped', "stop event should transition from running to stopped");
+
+  fsm.prepare(); equals(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
+  fsm.start();   equals(fsm.current, 'running', "start event should transition from ready to running");
+  fsm.pause();   equals(fsm.current, 'paused',  "pause event should transition from running to paused");
+  fsm.stop();    equals(fsm.current, 'stopped', "stop event should transition from paused to stopped");
+
+});
+
+//-----------------------------------------------------------------------------
+
+test("missing 'from' allows event from any state (github issue #11) ", function() {
+
+  var fsm = StateMachine.create({
+    initial: 'stopped',
+    events: [
+      { name: 'prepare', from: 'stopped',      to: 'ready'   },
+      { name: 'start',   from: 'ready',        to: 'running' },
+      { name: 'resume',  from: 'paused',       to: 'running' },
+      { name: 'pause',   from: 'running',      to: 'paused'  },
+      { name: 'stop',    /* any from state */  to: 'stopped' }
+  ]});
+
+  equals(fsm.current, 'stopped', "initial state should be stopped");
+
+  fsm.prepare(); equals(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
+  fsm.stop();    equals(fsm.current, 'stopped', "stop event should transition from ready to stopped");
+
+  fsm.prepare(); equals(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
+  fsm.start();   equals(fsm.current, 'running', "start event should transition from ready to running");
+  fsm.stop();    equals(fsm.current, 'stopped', "stop event should transition from running to stopped");
+
+  fsm.prepare(); equals(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
+  fsm.start();   equals(fsm.current, 'running', "start event should transition from ready to running");
+  fsm.pause();   equals(fsm.current, 'paused',  "pause event should transition from running to paused");
+  fsm.stop();    equals(fsm.current, 'stopped', "stop event should transition from paused to stopped");
+
 });
 
 
