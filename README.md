@@ -1,4 +1,4 @@
-Javascript Finite State Machine (v2.0.1)
+Javascript Finite State Machine (v2.1.0)
 ========================================
 
 This standalone javascript micro-framework provides a finite state machine for your pleasure.
@@ -80,8 +80,11 @@ This example will create an object with 2 event methods:
 The `rest` event will always transition to the `hungry` state, while the `eat` event
 will transition to a state that is dependent on the current state.
 
+>> NOTE: The `rest` event could use a wildcard '*' for the 'from' state if it should be
+allowed from any current state.
+
 >> NOTE: The `rest` event in the above example can also be specified as multiple events with
-the same name if you prefer the verbose approach:
+the same name if you prefer the verbose approach.
 
 Callbacks
 =========

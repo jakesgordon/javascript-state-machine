@@ -1,6 +1,9 @@
-Version 2.0.1 (unreleased)
---------------------------
+Version 2.1.0 (January 7th 2012)
+--------------------------------
 
+ * Added explicit return values for event methods (issue #12)
+ * Added support for wildcard events that can be fired 'from' any state (issue #11)
+ * Added support for no-op events that transition 'to' the same state  (issue #5)
  * extended custom error callback to handle any exceptions caused by caller provided callbacks
  * added custom error callback to override exception when an illegal state transition is attempted (thanks to cboone)
  * fixed typos (thanks to cboone)
