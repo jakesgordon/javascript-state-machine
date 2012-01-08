@@ -1,6 +1,7 @@
 Version 2.1.0 (January 7th 2012)
 --------------------------------
 
+ * Wrapped in self executing function to be more easily used with loaders like `require.js` or `curl.js` (issue #15)
  * Allow event to be cancelled by returning `false` from `onleavestate` handler (issue #13) - WARNING: this breaks backward compatibility for async transitions (you now need to return `StateMachine.ASYNC` instead of `false`)
  * Added explicit return values for event methods (issue #12)
  * Added support for wildcard events that can be fired 'from' any state (issue #11)
