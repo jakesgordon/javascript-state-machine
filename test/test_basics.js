@@ -460,8 +460,8 @@ test("event return values (github issue #12) ", function() {
       { name: 'start',   from: 'ready',   to: 'running' }
     ],
     callbacks: {
-      onbeforefake: function(event,from,to,a,b,c) { return false; }, // this event will be cancelled
-      onleaveready: function(event,from,to,a,b,c) { return false; }  // this state transition is ASYNC
+      onbeforefake: function(event,from,to,a,b,c) { return false;              }, // this event will be cancelled
+      onleaveready: function(event,from,to,a,b,c) { return StateMachine.ASYNC; } // this state transition is ASYNC
     }
   });
 

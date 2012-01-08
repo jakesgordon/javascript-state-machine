@@ -1,6 +1,7 @@
 Version 2.1.0 (January 7th 2012)
 --------------------------------
 
+ * Allow event to be cancelled by returning `false` from `onleavestate` handler (issue #13) - WARNING: this breaks backward compatibility for async transitions (you now need to return `StateMachine.ASYNC` instead of `false`)
  * Added explicit return values for event methods (issue #12)
  * Added support for wildcard events that can be fired 'from' any state (issue #11)
  * Added support for no-op events that transition 'to' the same state  (issue #5)

@@ -15,9 +15,9 @@ test("state transitions", function() {
       { name: 'clear', from: 'yellow', to: 'green'  }
     ],
     callbacks: {
-      onleavegreen:  function() { return false; },
-      onleaveyellow: function() { return false; },
-      onleavered:    function() { return false; }
+      onleavegreen:  function() { return StateMachine.ASYNC; },
+      onleaveyellow: function() { return StateMachine.ASYNC; },
+      onleavered:    function() { return StateMachine.ASYNC; }
     }
   });
 
@@ -48,9 +48,9 @@ test("state transitions with delays", function() {
       { name: 'clear', from: 'yellow', to: 'green'  }
     ],
     callbacks: {
-      onleavegreen:  function() { return false; },
-      onleaveyellow: function() { return false; },
-      onleavered:    function() { return false; }
+      onleavegreen:  function() { return StateMachine.ASYNC; },
+      onleaveyellow: function() { return StateMachine.ASYNC; },
+      onleavered:    function() { return StateMachine.ASYNC; }
     }
   });
 
@@ -88,9 +88,9 @@ test("state transition fired during onleavestate callback - immediate", function
       { name: 'clear', from: 'yellow', to: 'green'  }
     ],
     callbacks: {
-      onleavegreen:  function() { this.transition(); return false; },
-      onleaveyellow: function() { this.transition(); return false; },
-      onleavered:    function() { this.transition(); return false; }
+      onleavegreen:  function() { this.transition(); return StateMachine.ASYNC; },
+      onleaveyellow: function() { this.transition(); return StateMachine.ASYNC; },
+      onleavered:    function() { this.transition(); return StateMachine.ASYNC; }
     }
   });
 
@@ -115,7 +115,7 @@ test("state transition fired during onleavestate callback - with delay", functio
       { name: 'panic', from: 'green', to: 'red' }
     ],
     callbacks: {
-      onleavegreen: function() { setTimeout(function() { fsm.transition(); }, 10); return false; },
+      onleavegreen: function() { setTimeout(function() { fsm.transition(); }, 10); return StateMachine.ASYNC; },
       onenterred:   function() { 
         equals(fsm.current, 'red', "panic event should transition from green to red");
         start();
@@ -130,7 +130,7 @@ test("state transition fired during onleavestate callback - with delay", functio
 
 //-----------------------------------------------------------------------------
 
-test("state transition fired during onleavestate callback - but forgot to return false!", function() {
+test("state transition fired during onleavestate callback - but forgot to return ASYNC!", function() {
 
   var fsm = StateMachine.create({
     initial: 'green',
@@ -141,9 +141,9 @@ test("state transition fired during onleavestate callback - but forgot to return
       { name: 'clear', from: 'yellow', to: 'green'  }
     ],
     callbacks: {
-      onleavegreen:  function() { this.transition(); /* return false; */ },
-      onleaveyellow: function() { this.transition(); /* return false; */ },
-      onleavered:    function() { this.transition(); /* return false; */ }
+      onleavegreen:  function() { this.transition(); /* return StateMachine.ASYNC; */ },
+      onleaveyellow: function() { this.transition(); /* return StateMachine.ASYNC; */ },
+      onleavered:    function() { this.transition(); /* return StateMachine.ASYNC; */ }
     }
   });
 
@@ -178,11 +178,11 @@ test("state transitions sometimes synchronous and sometimes asynchronous", funct
   fsm.calm();       equals(fsm.current, 'yellow', "calm event should transition from red to yellow");
   fsm.clear();      equals(fsm.current, 'green',  "clear event should transition from yellow to green");
 
-  // but add callbacks that return false and it magically becomes asynchronous
+  // but add callbacks that return ASYNC and it magically becomes asynchronous
 
-  fsm.onleavegreen  = function() { return false; }
-  fsm.onleaveyellow = function() { return false; }
-  fsm.onleavered    = function() { return false; }
+  fsm.onleavegreen  = function() { return StateMachine.ASYNC; }
+  fsm.onleaveyellow = function() { return StateMachine.ASYNC; }
+  fsm.onleavered    = function() { return StateMachine.ASYNC; }
 
                     equals(fsm.current, 'green',  "initial state should be green");
   fsm.warn();       equals(fsm.current, 'green',  "should still be green because we haven't transitioned yet");
@@ -202,7 +202,7 @@ test("state transitions sometimes synchronous and sometimes asynchronous", funct
         fsm.transition(); equals(fsm.current, 'yellow', "warn event should transition from green to yellow");
         start(); // move on to next test
       }, 10);
-      return false;
+      return StateMachine.ASYNC;
     }
   }
   fsm.onleaveyellow = fsm.onleavered = null;
@@ -229,9 +229,9 @@ test("state transition fired without completing previous transition", function()
       { name: 'clear', from: 'yellow', to: 'green'  }
     ],
     callbacks: {
-      onleavegreen:  function() { return false; },
-      onleaveyellow: function() { return false; },
-      onleavered:    function() { return false; }
+      onleavegreen:  function() { return StateMachine.ASYNC; },
+      onleaveyellow: function() { return StateMachine.ASYNC; },
+      onleavered:    function() { return StateMachine.ASYNC; }
     }
   });
 
@@ -261,12 +261,12 @@ test("callbacks are ordered correctly", function() {
     callbacks: {
       onchangestate: function(event,from,to) { called.push('onchange from ' + from + ' to ' + to); },
 
-      onentergreen:  function() { called.push('onentergreen');                },
-      onenteryellow: function() { called.push('onenteryellow');               },
-      onenterred:    function() { called.push('onenterred');                  },
-      onleavegreen:  function() { called.push('onleavegreen');  return false; },
-      onleaveyellow: function() { called.push('onleaveyellow'); return false; },
-      onleavered:    function() { called.push('onleavered');    return false; },
+      onentergreen:  function() { called.push('onentergreen');                             },
+      onenteryellow: function() { called.push('onenteryellow');                            },
+      onenterred:    function() { called.push('onenterred');                               },
+      onleavegreen:  function() { called.push('onleavegreen');  return StateMachine.ASYNC; },
+      onleaveyellow: function() { called.push('onleaveyellow'); return StateMachine.ASYNC; },
+      onleavered:    function() { called.push('onleavered');    return StateMachine.ASYNC; },
 
       onbeforewarn:  function() { called.push('onbeforewarn');                },
       onbeforepanic: function() { called.push('onbeforepanic');               },
@@ -310,9 +310,9 @@ test("cannot fire event during existing transition", function() {
       { name: 'clear', from: 'yellow', to: 'green'  }
     ],
     callbacks: {
-      onleavegreen:  function() { return false; },
-      onleaveyellow: function() { return false; },
-      onleavered:    function() { return false; }
+      onleavegreen:  function() { return StateMachine.ASYNC; },
+      onleaveyellow: function() { return StateMachine.ASYNC; },
+      onleavered:    function() { return StateMachine.ASYNC; }
     }
   });
 

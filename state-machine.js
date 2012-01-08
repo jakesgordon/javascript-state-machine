@@ -20,6 +20,7 @@ StateMachine = {
   },
 
   WILDCARD: '*',
+  ASYNC: 'async',
 
   //---------------------------------------------------------------------------
 
@@ -105,29 +106,35 @@ StateMachine = {
       if (false === StateMachine.beforeEvent(this, name, from, to, args))
         return StateMachine.CANCELLED;
 
-      if (from !== to) {
-
-        var fsm = this;
-        this.transition = function() { // prepare transition method for use either lower down, or by caller if they want an async transition (indicated by a false return value from leaveState)
-          fsm.transition = null; // this method should only ever be called once
-          fsm.current = to;
-          StateMachine.enterState( fsm, name, from, to, args);
-          StateMachine.changeState(fsm, name, from, to, args);
-          StateMachine.afterEvent( fsm, name, from, to, args);
-          return StateMachine.SUCCEEDED;
-        };
-
-        if (false !== StateMachine.leaveState(this, name, from, to, args)) {
-          if (this.transition) // in case user manually called it but forgot to return false
-            return this.transition();
-        }
-
-        return StateMachine.ASYNC; // transition method took care of (or, if async, will take care of) the afterEvent, DONT fall through
+      if (from === to) {
+        StateMachine.afterEvent(this, name, from, to, args);
+        return StateMachine.NOTRANSITION;
       }
 
-      StateMachine.afterEvent(this, name, from, to, args); // this is only ever called if there was NO transition (e.g. if from === to)
+      // prepare a transition method for use EITHER lower down, or by caller if they want an async transition (indicated by an ASYNC return value from leaveState)
+      var fsm = this;
+      this.transition = function() {
+        fsm.transition = null; // this method should only ever be called once
+        fsm.current = to;
+        StateMachine.enterState( fsm, name, from, to, args);
+        StateMachine.changeState(fsm, name, from, to, args);
+        StateMachine.afterEvent( fsm, name, from, to, args);
+      };
 
-      return StateMachine.SUCCEEDED;
+      var leave = StateMachine.leaveState(this, name, from, to, args);
+      if (false === leave) {
+        this.transition = null;
+        return StateMachine.CANCELLED;
+      }
+      else if ("async" === leave) {
+        return StateMachine.ASYNC;
+      }
+      else {
+        if (this.transition)
+          this.transition(); // in case user manually called transition() but forgot to return ASYNC
+        return StateMachine.SUCCEEDED;
+      }
+
     };
   }
 

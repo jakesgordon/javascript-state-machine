@@ -96,10 +96,11 @@ Callbacks
  * onenter**state**  - fired when entering the new state
  * onafter**event**  - fired after the event
 
-You can affect the event in 2 ways:
+You can affect the event in 3 ways:
 
  * return `false` from an `onbeforeevent` handler to cancel the event.
- * return `false` from an `onleavestate` handler to perform an asynchronous state transition (see next section)
+ * return `false` from an `onleavestate` handler to cancel the event.
+ * return `ASYNC` from an `onleavestate` handler to perform an asynchronous state transition (see next section)
 
 For convenience, the 2 most useful callbacks can be shortened:
 
@@ -155,7 +156,7 @@ A good example of this is when you transition out of a `menu` state, perhaps you
 fade the menu away, or slide it off the screen and don't want to transition to your `game` state
 until after that animation has been performed.
 
-**New in v2.0** you can now return `false` from your `onleavestate` handler and the state machine
+You can now return `StateMachine.ASYNC` from your `onleavestate` handler and the state machine
 will be _'put on hold'_ until you are ready to trigger the transition using the new `transition()`
 method.
 
@@ -179,14 +180,14 @@ For example, using jQuery effects:
           $('#menu').fadeOut('fast', function() {
             fsm.transition();
           });
-          return false; // tell StateMachine to defer next state until we call transition (in fadeOut callback above)
+          return StateMachine.ASYNC; // tell StateMachine to defer next state until we call transition (in fadeOut callback above)
         },
 
         onleavegame: function() {
           $('#game').slideDown('slow', function() {
             fsm.transition();
           };
-          return false; // tell StateMachine to defer next state until we call transition (in slideDown callback above)
+          return StateMachine.ASYNC; // tell StateMachine to defer next state until we call transition (in slideDown callback above)
         }
 
       }
