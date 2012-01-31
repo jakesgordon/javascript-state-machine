@@ -12,13 +12,13 @@
       SUCCEEDED:    1, // the event transitioned successfully from one state to another
       NOTRANSITION: 2, // the event was successfull but no state transition was necessary
       CANCELLED:    3, // the event was cancelled by the caller in a beforeEvent callback
-      ASYNC:        4, // the event is asynchronous and the caller is in control of when the transition occurs
+      ASYNC:        4 // the event is asynchronous and the caller is in control of when the transition occurs
     },
 
     Error: {
       INVALID_TRANSITION: 100, // caller tried to fire an event that was innapropriate in the current state
       PENDING_TRANSITION: 200, // caller tried to fire an event while an async transition was still pending
-      INVALID_CALLBACK:   300, // caller provided callback function threw an exception
+      INVALID_CALLBACK:   300 // caller provided callback function threw an exception
     },
 
     WILDCARD: '*',
