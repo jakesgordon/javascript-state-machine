@@ -151,7 +151,7 @@ test("inappropriate events", function() {
 test("inappropriate event handling can be customized", function() {
 
   var fsm = StateMachine.create({
-    error: function(e, name, from, to, args, msg) { return msg; }, // return error message instead of throwing an exception
+    error: function(name, from, to, args, error, msg) { return msg; }, // return error message instead of throwing an exception
     initial: 'green',
     events: [
       { name: 'warn',  from: 'green',  to: 'yellow' },
@@ -359,6 +359,26 @@ test("callback arguments are correct", function() {
   expected = { event: 'clear', from: 'yellow', to: 'green', a: null, b: null, c: null };
   fsm.clear();
 
+});
+
+//-----------------------------------------------------------------------------
+
+test("exceptions in caller-provided callbacks are not swallowed (github issue #17)", function() {
+
+  var fsm = StateMachine.create({
+    initial: 'green',
+    events: [
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'yellow', to: 'red'    },
+      { name: 'calm',  from: 'red',    to: 'yellow' }
+    ],
+    callbacks: {
+      onenteryellow: function() { throw 'oops'; }
+    }});
+
+    equals(fsm.current, 'green', "initial state should be green");
+
+    raises(fsm.warn.bind(fsm), /oops/);
 });
 
 //-----------------------------------------------------------------------------

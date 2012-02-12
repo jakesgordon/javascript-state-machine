@@ -63,7 +63,7 @@
       fsm.is      = function(state) { return this.current == state; };
       fsm.can     = function(event) { return !this.transition && (map[event].hasOwnProperty(this.current) || map[event].hasOwnProperty(StateMachine.WILDCARD)); }
       fsm.cannot  = function(event) { return !this.can(event); };
-      fsm.error   = cfg.error || function(name, from, to, args, error, msg) { throw msg; }; // default behavior when something unexpected happens is to throw an exception, but caller can override this behavior if desired (see github issue #3)
+      fsm.error   = cfg.error || function(name, from, to, args, error, msg, e) { throw e || msg; }; // default behavior when something unexpected happens is to throw an exception, but caller can override this behavior if desired (see github issue #3 and #17)
 
       if (initial && !initial.defer)
         fsm[initial.event]();
@@ -80,7 +80,7 @@
           return func.apply(fsm, [name, from, to].concat(args));
         }
         catch(e) {
-          return fsm.error(name, from, to, args, StateMachine.Error.INVALID_CALLBACK, "an exception occurred in a caller-provided callback function");
+          return fsm.error(name, from, to, args, StateMachine.Error.INVALID_CALLBACK, "an exception occurred in a caller-provided callback function", e);
         }
       }
     },
