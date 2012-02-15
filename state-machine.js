@@ -145,7 +145,7 @@
   //===========================================================================
 
   if ("function" === typeof define) {
-    define("statemachine", [], function() { return StateMachine; });
+    define([], function() { return StateMachine; });
   }
   else {
     window.StateMachine = StateMachine;
