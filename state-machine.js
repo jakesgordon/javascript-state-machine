@@ -1,6 +1,6 @@
 (function (window) {
 
-  StateMachine = {
+  var StateMachine = {
 
     //---------------------------------------------------------------------------
 
@@ -145,7 +145,7 @@
   //===========================================================================
 
   if ("function" === typeof define) {
-    define([], function() { return StateMachine; });
+    define(function(require) { return StateMachine; });
   }
   else {
     window.StateMachine = StateMachine;
