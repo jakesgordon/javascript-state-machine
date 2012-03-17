@@ -48,45 +48,6 @@ test("targeted state machine", function() {
 
 //-----------------------------------------------------------------------------
 
-test("prototype based state machine", function() {
-
-  myFSM = function() {
-    this.startup();
-  };
-
-  StateMachine.create({
-    target: myFSM.prototype,
-    events: [
-      { name: 'startup', from: 'none',   to: 'green'  },
-      { name: 'warn',    from: 'green',  to: 'yellow' },
-      { name: 'panic',   from: 'yellow', to: 'red'    },
-      { name: 'clear',   from: 'yellow', to: 'green'  }
-    ]
-  });
-
-  var a = new myFSM();
-  var b = new myFSM();
-
-  equal(a.current, 'green', 'start with correct state');
-  equal(b.current, 'green', 'start with correct state');
-
-  a.warn();
-
-  equal(a.current, 'yellow', 'maintain independent current state');
-  equal(b.current, 'green',  'maintain independent current state');
-
-  ok(a.hasOwnProperty('current'), "each instance should have its own current state");
-  ok(b.hasOwnProperty('current'), "each instance should have its own current state");
-  ok(!a.hasOwnProperty('warn'),   "each instance should NOT have its own event methods");
-  ok(!b.hasOwnProperty('warn'),   "each instance should NOT have its own event methods");
-  ok(a.warn === b.warn,           "each instance should share event methods");
-  ok(a.warn === a.__proto__.warn, "each instance event methods come from its shared prototype");
-  ok(b.warn === b.__proto__.warn, "each instance event methods come from its shared prototype");
-
-});
-
-//-----------------------------------------------------------------------------
-
 test("can & cannot", function() {
 
   var fsm = StateMachine.create({

@@ -228,6 +228,9 @@ instances:
 
 This should be easy to adjust to fit your appropriate mechanism for object construction.
 
+>> _NOTE: the `startup` event can be given any name, but it must be present in some form to 
+   ensure that each instance constructed is initialized with its own unique `current` state._
+
 Initialization Options
 ======================
 
@@ -285,6 +288,12 @@ Of course, we have now come full circle, this last example is pretty much functi
 same as the first example in this section where you simply define your own startup event.
 
 So you have a number of choices available to you when initializing your state machine.
+
+>> _IMPORTANT NOTE: if you are using the pattern described in the previous section "State Machine
+   Classes", and wish to declare an `initial` state in this manner, you MUST use the `defer: true`
+   attribute and manually call the starting event in your constructor function. This will ensure
+   that each instance gets its own unique `current` state, rather than an (unwanted) shared
+   `current` state on the prototype object itself._
 
 Handling Failures
 ======================
