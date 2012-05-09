@@ -46,7 +46,7 @@ Demo = function() {
 
       onleavegreen:  function(event, from, to) { log("LEAVE   STATE: green");  },
       onleaveyellow: function(event, from, to) { log("LEAVE   STATE: yellow"); },
-      onleavered:    function(event, from, to) { log("LEAVE   STATE: red");    async(to); return false; },
+      onleavered:    function(event, from, to) { log("LEAVE   STATE: red");    async(to); return StateMachine.ASYNC; },
 
       ongreen:       function(event, from, to) { log("ENTER   STATE: green");  },
       onyellow:      function(event, from, to) { log("ENTER   STATE: yellow"); },

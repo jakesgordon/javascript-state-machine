@@ -1,4 +1,4 @@
-Javascript Finite State Machine (v2.1.0)
+Javascript Finite State Machine (v2.2.0)
 ========================================
 
 This standalone javascript micro-framework provides a finite state machine for your pleasure.
@@ -193,6 +193,7 @@ For example, using jQuery effects:
       }
     });
 
+>> _NOTE: If you decide to cancel the ASYNC event, you can call `fsm.transition.cancel();`
 
 State Machine Classes
 =====================

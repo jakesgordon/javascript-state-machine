@@ -246,6 +246,45 @@ test("state transition fired without completing previous transition", function()
 
 //-----------------------------------------------------------------------------
 
+test("state transition can be cancelled (github issue #22)", function() {
+
+  var fsm = StateMachine.create({
+    initial: 'green',
+    events: [
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'yellow', to: 'red'    },
+      { name: 'calm',  from: 'red',    to: 'yellow' },
+      { name: 'clear', from: 'yellow', to: 'green'  }
+    ],
+    callbacks: {
+      onleavegreen:  function() { return StateMachine.ASYNC; },
+      onleaveyellow: function() { return StateMachine.ASYNC; },
+      onleavered:    function() { return StateMachine.ASYNC; }
+    }
+  });
+
+                    equals(fsm.current, 'green',  "initial state should be green");
+  fsm.warn();       equals(fsm.current, 'green',  "should still be green because we haven't transitioned yet");
+  fsm.transition(); equals(fsm.current, 'yellow', "warn event should transition from green to yellow");
+  fsm.panic();      equals(fsm.current, 'yellow', "should still be yellow because we haven't transitioned yet");
+                    equals(fsm.can('panic'), false, "but cannot panic a 2nd time because a transition is still pending")
+
+  raises(fsm.panic.bind(fsm), /event panic inappropriate because previous transition did not complete/);
+
+  fsm.transition.cancel();
+
+  equals(fsm.current,     'yellow', "should still be yellow because we cancelled the async transition");
+  equals(fsm.can('panic'), true,    "can now panic again because we cancelled previous async transition");
+
+  fsm.panic();
+  fsm.transition();
+
+  equals(fsm.current, 'red', "should finally be red now that we completed the async transition");
+
+});
+
+//-----------------------------------------------------------------------------
+
 test("callbacks are ordered correctly", function() {
 
   var called = [];

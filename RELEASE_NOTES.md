@@ -1,3 +1,8 @@
+Version 2.2.0 (unreleased)
+--------------------------
+
+ * Allow async event transition to be cancelled (issue #22)
+
 Version 2.1.0 (January 7th 2012)
 --------------------------------
 

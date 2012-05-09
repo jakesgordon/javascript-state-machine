@@ -4,7 +4,7 @@
 
     //---------------------------------------------------------------------------
 
-    VERSION: "2.1.0",
+    VERSION: "2.2.0",
 
     //---------------------------------------------------------------------------
 
@@ -122,6 +122,10 @@
           StateMachine.changeState(fsm, name, from, to, args);
           StateMachine.afterEvent( fsm, name, from, to, args);
         };
+        this.transition.cancel = function() { // provide a way for caller to cancel async transition if desired (issue #22)
+          fsm.transition = null;
+          StateMachine.afterEvent(fsm, name, from, to, args);
+        }
 
         var leave = StateMachine.leaveState(this, name, from, to, args);
         if (false === leave) {
