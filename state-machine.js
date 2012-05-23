@@ -108,11 +108,11 @@
           return this.error(name, from, to, args, StateMachine.Error.INVALID_TRANSITION, "event " + name + " inappropriate in current state " + this.current);
 
         if (false === StateMachine.beforeEvent(this, name, from, to, args))
-          return StateMachine.CANCELLED;
+          return StateMachine.Result.CANCELLED;
 
         if (from === to) {
           StateMachine.afterEvent(this, name, from, to, args);
-          return StateMachine.NOTRANSITION;
+          return StateMachine.Result.NOTRANSITION;
         }
 
         // prepare a transition method for use EITHER lower down, or by caller if they want an async transition (indicated by an ASYNC return value from leaveState)
@@ -132,7 +132,7 @@
         var leave = StateMachine.leaveState(this, name, from, to, args);
         if (false === leave) {
           this.transition = null;
-          return StateMachine.CANCELLED;
+          return StateMachine.Result.CANCELLED;
         }
         else if ("async" === leave) {
           return StateMachine.ASYNC;
@@ -140,7 +140,7 @@
         else {
           if (this.transition)
             this.transition(); // in case user manually called transition() but forgot to return ASYNC
-          return StateMachine.SUCCEEDED;
+          return StateMachine.Result.SUCCEEDED;
         }
 
       };
