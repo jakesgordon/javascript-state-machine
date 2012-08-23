@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 
-module("special initialization options", {
+QUnit.module("special initialization options", {
 
   setup: function() {
     this.called = [];
