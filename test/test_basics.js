@@ -448,16 +448,16 @@ test("event return values (github issue #12) ", function() {
 
   equals(fsm.current, 'stopped', "initial state should be stopped");
 
-  equals(fsm.prepare(), StateMachine.SUCCEEDED, "expected event to have SUCCEEDED");
+  equals(fsm.prepare(), StateMachine.Result.SUCCEEDED, "expected event to have SUCCEEDED");
   equals(fsm.current,   'ready',                "prepare event should transition from stopped to ready");
 
-  equals(fsm.fake(),    StateMachine.CANCELLED, "expected event to have been CANCELLED");
+  equals(fsm.fake(),    StateMachine.Result.CANCELLED, "expected event to have been CANCELLED");
   equals(fsm.current,   'ready',                "cancelled event should not cause a transition");
 
-  equals(fsm.start(),   StateMachine.ASYNC,     "expected event to cause an ASYNC transition");
+  equals(fsm.start(),   StateMachine.Result.ASYNC,     "expected event to cause an ASYNC transition");
   equals(fsm.current,   'ready',                "async transition hasn't happened yet");
 
-  equals(fsm.transition(), StateMachine.SUCCEEDED, "expected async transition to have SUCCEEDED");
+  equals(fsm.transition(), StateMachine.Result.SUCCEEDED, "expected async transition to have SUCCEEDED");
   equals(fsm.current,      'running',              "async transition should now be complete");
 
 });
