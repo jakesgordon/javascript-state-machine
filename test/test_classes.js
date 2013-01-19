@@ -90,3 +90,28 @@ test("github issue 19", function() {
 
 });
 
+asyncTest("calling event from global scope (timeout) with subclassed state machine", 1, function () {
+  var myFSM = function() {
+    this.startup();
+	this.ok = function () { ok(true, "Yup"); };
+  };
+
+  myFSM.prototype = {
+    onwarn: function() { this.ok(); }
+  }
+
+  StateMachine.create({
+    target: myFSM.prototype,
+    events: [
+      { name: 'startup', from: 'none',   to: 'green'  },
+      { name: 'warn',    from: 'green',  to: 'yellow' },
+      { name: 'panic',   from: 'yellow', to: 'red'    },
+      { name: 'clear',   from: 'yellow', to: 'green'  }
+    ]
+  });
+
+  var a = new myFSM();
+
+  setTimeout(function () { a.warn(); }, 0);
+  setTimeout(start, 0);
+});
