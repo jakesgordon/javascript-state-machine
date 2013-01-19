@@ -462,3 +462,22 @@ test("event return values (github issue #12) ", function() {
 
 });
 
+asyncTest("calling event from global scope (timeout)", 1, function() {
+  var fsm = StateMachine.create({
+    initial: 'green',
+    events: [
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'yellow', to: 'red'    },
+      { name: 'calm',  from: 'red',    to: 'yellow' },
+      { name: 'clear', from: 'yellow', to: 'green'  }
+    ],
+    callbacks: {
+      onwarn: function () {
+        ok(true, "reached on warn handler");
+      }
+    }
+  });
+
+  setTimeout(fsm.warn, 0);
+  setTimeout(start, 0);
+});
