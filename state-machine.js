@@ -28,7 +28,7 @@
 
     create: function(cfg, target) {
 
-      var initial   = (typeof cfg.initial == 'string') ? { state: cfg.initial } : cfg.initial; // allow for a simple string, or an object with { state: 'foo', event: 'setup', defer: true|false }
+      var initial   = (typeof cfg.initial === 'string') ? { state: cfg.initial } : cfg.initial; // allow for a simple string, or an object with { state: 'foo', event: 'setup', defer: true|false }
       var fsm       = target || cfg.target  || {};
       var events    = cfg.events || [];
       var callbacks = cfg.callbacks || {};
@@ -56,12 +56,12 @@
 
       for(var name in callbacks) {
         if (callbacks.hasOwnProperty(name))
-          fsm[name] = callbacks[name]
+          fsm[name] = callbacks[name];
       }
 
       fsm.current = 'none';
-      fsm.is      = function(state) { return this.current == state; };
-      fsm.can     = function(event) { return !this.transition && (map[event].hasOwnProperty(this.current) || map[event].hasOwnProperty(StateMachine.WILDCARD)); }
+      fsm.is      = function(state) { return this.current === state; };
+      fsm.can     = function(event) { return !this.transition && (map[event].hasOwnProperty(this.current) || map[event].hasOwnProperty(StateMachine.WILDCARD)); };
       fsm.cannot  = function(event) { return !this.can(event); };
       fsm.error   = cfg.error || function(name, from, to, args, error, msg, e) { throw e || msg; }; // default behavior when something unexpected happens is to throw an exception, but caller can override this behavior if desired (see github issue #3 and #17)
 
@@ -106,11 +106,11 @@
           return this.error(name, from, to, args, StateMachine.Error.INVALID_TRANSITION, "event " + name + " inappropriate in current state " + this.current);
 
         if (false === StateMachine.beforeEvent(this, name, from, to, args))
-          return StateMachine.CANCELLED;
+          return StateMachine.Result.CANCELLED;
 
         if (from === to) {
           StateMachine.afterEvent(this, name, from, to, args);
-          return StateMachine.NOTRANSITION;
+          return StateMachine.Result.NOTRANSITION;
         }
 
         // prepare a transition method for use EITHER lower down, or by caller if they want an async transition (indicated by an ASYNC return value from leaveState)
@@ -125,20 +125,20 @@
         this.transition.cancel = function() { // provide a way for caller to cancel async transition if desired (issue #22)
           fsm.transition = null;
           StateMachine.afterEvent(fsm, name, from, to, args);
-        }
+        };
 
         var leave = StateMachine.leaveState(this, name, from, to, args);
         if (false === leave) {
           this.transition = null;
-          return StateMachine.CANCELLED;
+          return StateMachine.Result.CANCELLED;
         }
         else if ("async" === leave) {
-          return StateMachine.ASYNC;
+          return StateMachine.Result.ASYNC;
         }
         else {
           if (this.transition)
             this.transition(); // in case user manually called transition() but forgot to return ASYNC
-          return StateMachine.SUCCEEDED;
+          return StateMachine.Result.SUCCEEDED;
         }
 
       };
