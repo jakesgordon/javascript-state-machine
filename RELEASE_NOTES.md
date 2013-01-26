@@ -1,6 +1,7 @@
 Version 2.2.0 (unreleased)
 --------------------------
 
+ * Fixed 'undefined' event return codes (issue #34) - pull from gentooboontoo (thanks!)
  * Allow async event transition to be cancelled (issue #22)
 
 Version 2.1.0 (January 7th 2012)
