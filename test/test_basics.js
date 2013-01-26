@@ -174,8 +174,14 @@ test("callbacks are ordered correctly", function() {
     ],
     callbacks: {
 
-      onchangestate: function(event,from,to) { called.push('onchange from ' + from + ' to ' + to); },
+      // generic callbacks
+      onbeforeevent: function(event,frmo,to) { called.push('onbefore(' + event + ')'); },
+      onafterevent:  function(event,frmo,to) { called.push('onafter('  + event + ')'); },
+      onleavestate:  function(event,from,to) { called.push('onleave('  + from + ')'); },
+      onenterstate:  function(event,from,to) { called.push('onenter('  + to   + ')'); },
+      onchangestate: function(event,from,to) { called.push('onchange(' + from + ',' + to + ')'); },
 
+      // specific state callbacks
       onentergreen:  function() { called.push('onentergreen');     },
       onenteryellow: function() { called.push('onenteryellow');    },
       onenterred:    function() { called.push('onenterred');       },
@@ -183,6 +189,7 @@ test("callbacks are ordered correctly", function() {
       onleaveyellow: function() { called.push('onleaveyellow');    },
       onleavered:    function() { called.push('onleavered');       },
 
+      // specific event callbacks
       onbeforewarn:  function() { called.push('onbeforewarn');     },
       onbeforepanic: function() { called.push('onbeforepanic');    },
       onbeforecalm:  function() { called.push('onbeforecalm');     },
@@ -197,19 +204,59 @@ test("callbacks are ordered correctly", function() {
 
   called = [];
   fsm.warn();
-  deepEqual(called, ['onbeforewarn', 'onleavegreen', 'onenteryellow', 'onchange from green to yellow', 'onafterwarn']);
+  deepEqual(called, [
+    'onbeforewarn',
+    'onbefore(warn)',
+    'onleavegreen',
+    'onleave(green)',
+    'onenteryellow',
+    'onenter(yellow)',
+    'onchange(green,yellow)',
+    'onafterwarn',
+    'onafter(warn)'
+  ]);
 
   called = [];
   fsm.panic();
-  deepEqual(called, ['onbeforepanic', 'onleaveyellow', 'onenterred', 'onchange from yellow to red', 'onafterpanic']);
+  deepEqual(called, [
+    'onbeforepanic',
+    'onbefore(panic)',
+    'onleaveyellow',
+    'onleave(yellow)',
+    'onenterred',
+    'onenter(red)',
+    'onchange(yellow,red)',
+    'onafterpanic',
+    'onafter(panic)'
+  ]);
 
   called = [];
   fsm.calm();
-  deepEqual(called, ['onbeforecalm', 'onleavered', 'onenteryellow', 'onchange from red to yellow', 'onaftercalm']);
+  deepEqual(called, [
+    'onbeforecalm',
+    'onbefore(calm)',
+    'onleavered',
+    'onleave(red)',
+    'onenteryellow',
+    'onenter(yellow)',
+    'onchange(red,yellow)',
+    'onaftercalm',
+    'onafter(calm)'
+  ]);
 
   called = [];
   fsm.clear();
-  deepEqual(called, ['onbeforeclear', 'onleaveyellow', 'onentergreen', 'onchange from yellow to green', 'onafterclear']);
+  deepEqual(called, [
+    'onbeforeclear',
+    'onbefore(clear)',
+    'onleaveyellow',
+    'onleave(yellow)',
+    'onentergreen',
+    'onenter(green)',
+    'onchange(yellow,green)',
+    'onafterclear',
+    'onafter(clear)'
+  ]);
 
 });
 
@@ -227,8 +274,15 @@ test("callbacks are ordered correctly - for same state transition", function() {
       { name: 'error',   from: ['waiting', 'receipt'], to: 'error'   } // bad practice to have event name same as state name - but I'll let it slide just this once
     ],
     callbacks: {
-      onchangestate: function(event,from,to) { called.push('onchange from ' + from + ' to ' + to); },
 
+      // generic callbacks
+      onbeforeevent: function(event,frmo,to) { called.push('onbefore(' + event + ')'); },
+      onafterevent:  function(event,frmo,to) { called.push('onafter('  + event + ')'); },
+      onleavestate:  function(event,from,to) { called.push('onleave('  + from + ')'); },
+      onenterstate:  function(event,from,to) { called.push('onenter('  + to   + ')'); },
+      onchangestate: function(event,from,to) { called.push('onchange(' + from + ',' + to + ')'); },
+
+      // specific state callbacks
       onenterwaiting: function() { called.push('onenterwaiting');   },
       onenterreceipt: function() { called.push('onenterreceipt');   },
       onentererror:   function() { called.push('onentererror');     },
@@ -236,6 +290,7 @@ test("callbacks are ordered correctly - for same state transition", function() {
       onleavereceipt: function() { called.push('onleavereceipt');   },
       onleaveerror:   function() { called.push('onleaveerror');     },
 
+      // specific event callbacks
       onbeforedata:    function() { called.push('onbeforedata');    },
       onbeforenothing: function() { called.push('onbeforenothing'); },
       onbeforeerror:   function() { called.push('onbeforeerror');   },
@@ -247,19 +302,49 @@ test("callbacks are ordered correctly - for same state transition", function() {
 
   called = [];
   fsm.data();
-  deepEqual(called, ['onbeforedata', 'onleavewaiting', 'onenterreceipt', 'onchange from waiting to receipt', 'onafterdata']);
+  deepEqual(called, [
+    'onbeforedata',
+    'onbefore(data)',
+    'onleavewaiting',
+    'onleave(waiting)',
+    'onenterreceipt',
+    'onenter(receipt)',
+    'onchange(waiting,receipt)',
+    'onafterdata',
+    'onafter(data)'
+  ]);
 
   called = [];
-  fsm.data();                                         // same-state transition
-  deepEqual(called, ['onbeforedata', 'onafterdata']); // so NO enter/leave/change state callbacks are fired
+  fsm.data();           // same-state transition
+  deepEqual(called, [   // so NO enter/leave/change state callbacks are fired
+    'onbeforedata',
+    'onbefore(data)',
+    'onafterdata',
+    'onafter(data)'
+  ]);
 
   called = [];
-  fsm.data();                                         // same-state transition
-  deepEqual(called, ['onbeforedata', 'onafterdata']); // so NO enter/leave/change state callbacks are fired
+  fsm.data();           // same-state transition
+  deepEqual(called, [   // so NO enter/leave/change state callbacks are fired
+    'onbeforedata',
+    'onbefore(data)',
+    'onafterdata',
+    'onafter(data)'
+  ]);
 
   called = [];
   fsm.nothing();
-  deepEqual(called, ['onbeforenothing', 'onleavereceipt', 'onenterwaiting', 'onchange from receipt to waiting', 'onafternothing']);
+  deepEqual(called, [
+    'onbeforenothing',
+    'onbefore(nothing)',
+    'onleavereceipt',
+    'onleave(receipt)',
+    'onenterwaiting',
+    'onenter(waiting)',
+    'onchange(receipt,waiting)',
+    'onafternothing',
+    'onafter(nothing)'
+  ]);
 
 });
 
@@ -288,8 +373,14 @@ test("callback arguments are correct", function() {
     ],
     callbacks: {
 
+      // generic callbacks
+      onbeforeevent: function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
+      onafterevent:  function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
+      onleavestate:  function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
+      onenterstate:  function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
       onchangestate: function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
 
+      // specific state callbacks
       onentergreen:  function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
       onenteryellow: function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
       onenterred:    function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
@@ -297,6 +388,7 @@ test("callback arguments are correct", function() {
       onleaveyellow: function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
       onleavered:    function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
 
+      // specific event callbacks
       onbeforewarn:  function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
       onbeforepanic: function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },
       onbeforecalm:  function(event,from,to,a,b,c) { verify_expected(event,from,to,a,b,c); },

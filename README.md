@@ -89,25 +89,47 @@ the same name if you prefer the verbose approach.
 Callbacks
 =========
 
-4 callbacks are available if your state machine has methods using the following naming conventions:
+4 types of callback are available using the following naming conventions:
 
- * onbefore**event** - fired before the event
- * onleave**state**  - fired when leaving the old state
- * onenter**state**  - fired when entering the new state
- * onafter**event**  - fired after the event
+ * `onbeforeEVENT` - fired before the event
+ * `onleaveSTATE`  - fired when leaving the old state
+ * `onenterSTATE`  - fired when entering the new state
+ * `onafterEVENT`  - fired after the event
+
+>> (using your specific EVENT and STATE names)
 
 You can affect the event in 3 ways:
 
- * return `false` from an `onbeforeevent` handler to cancel the event.
- * return `false` from an `onleavestate` handler to cancel the event.
- * return `ASYNC` from an `onleavestate` handler to perform an asynchronous state transition (see next section)
+ * return `false` from an `onbeforeEVENT` handler to cancel the event.
+ * return `false` from an `onleaveSTATE` handler to cancel the event.
+ * return `ASYNC` from an `onleaveSTATE` handler to perform an asynchronous state transition (see next section)
 
 For convenience, the 2 most useful callbacks can be shortened:
 
- * on**event** - convenience shorthand for onafter**event**
- * on**state** - convenience shorthand for onenter**state**
+ * `onEVENT` - convenience shorthand for `onafterEVENT`
+ * `onSTATE` - convenience shorthand for `onenterSTATE`
 
-In addition, a generic `onchangestate()` callback can be used to call a single function for _all_ state changes:
+In addition, 4 general-purpose callbacks can be used to capture **all** event and state changes:
+
+ * `onbeforeevent` - fired before any event
+ * `onleavestate`  - fired when leaving any state
+ * `onenterstate`  - fired when entering any state
+ * `onafterevent`  - fired after any event
+
+The order in which callbacks occur is as follows:
+
+>> assume event **go** transitions from **red** state to **green**
+
+ * `onbeforego`    - specific handler for the **go** event only
+ * `onbeforeevent` - generic  handler for all events
+ * `onleavered`    - specific handler for the **red** state only
+ * `onleavestate`  - generic  handler for all states
+ * `onentergreen`  - specific handler for the **green** state only
+ * `onenterstate`  - generic  handler for all states
+ * `onaftergo`     - specific handler for the **go** event only
+ * `onafterevent`  - generic  handler for all events
+
+>> NOTE: the legacy `onchangestate` handler has been deprecated and will be removed in a future version
 
 All callbacks will be passed the same arguments:
 
@@ -141,10 +163,10 @@ Callbacks can be specified when the state machine is first created:
 
 Additionally, they can be added and removed from the state machine at any time:
 
-    fsm.ongreen       = null;
-    fsm.onyellow      = null;
-    fsm.onred         = null;
-    fsm.onchangestate = function(event, from, to) { document.body.className = to; };
+    fsm.ongreen      = null;
+    fsm.onyellow     = null;
+    fsm.onred        = null;
+    fsm.onenterstate = function(event, from, to) { document.body.className = to; };
 
 Asynchronous State Transitions
 ==============================

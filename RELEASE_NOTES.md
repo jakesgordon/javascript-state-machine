@@ -1,6 +1,8 @@
 Version 2.2.0 (unreleased)
 --------------------------
 
+ * Added generic event callbacks 'onbeforeevent' and 'onafterevent' (issue #28)
+ * Added generic state callbacks 'onleavestate' and 'onenterstate'  (issue #28)
  * Fixed 'undefined' event return codes (issue #34) - pull from gentooboontoo (thanks!)
  * Allow async event transition to be cancelled (issue #22)
 

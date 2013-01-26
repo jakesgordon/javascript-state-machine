@@ -121,8 +121,15 @@ test("callbacks are called when appropriate for multiple 'from' and 'to' transit
       { name: 'rest', from: ['hungry', 'satisfied', 'full', 'sick'], to: 'hungry'    },
     ],
     callbacks: {
-      onchangestate: function(event,from,to) { called.push('onchange from ' + from + ' to ' + to); },
 
+      // generic callbacks
+      onbeforeevent: function(event,from,to) { called.push('onbefore(' + event + ')'); },
+      onafterevent:  function(event,from,to) { called.push('onafter('  + event + ')'); },
+      onleavestate:  function(event,from,to) { called.push('onleave('  + from  + ')'); },
+      onenterstate:  function(event,from,to) { called.push('onenter('  + to    + ')'); },
+      onchangestate: function(event,from,to) { called.push('onchange(' + from + ',' + to + ')'); },
+
+      // specific state callbacks
       onenterhungry:    function() { called.push('onenterhungry');    },
       onleavehungry:    function() { called.push('onleavehungry');    },
       onentersatisfied: function() { called.push('onentersatisfied'); },
@@ -132,6 +139,7 @@ test("callbacks are called when appropriate for multiple 'from' and 'to' transit
       onentersick:      function() { called.push('onentersick');      },
       onleavesick:      function() { called.push('onleavesick');      },
 
+      // specific event callbacks
       onbeforeeat:      function() { called.push('onbeforeeat');      },
       onaftereat:       function() { called.push('onaftereat');       },
       onbeforerest:     function() { called.push('onbeforerest');     },
@@ -141,19 +149,59 @@ test("callbacks are called when appropriate for multiple 'from' and 'to' transit
 
   called = [];
   fsm.eat();
-  deepEqual(called, ['onbeforeeat', 'onleavehungry', 'onentersatisfied', 'onchange from hungry to satisfied', 'onaftereat']);
+  deepEqual(called, [
+    'onbeforeeat',
+    'onbefore(eat)',
+    'onleavehungry',
+    'onleave(hungry)',
+    'onentersatisfied',
+    'onenter(satisfied)',
+    'onchange(hungry,satisfied)',
+    'onaftereat',
+    'onafter(eat)'
+  ]);
 
   called = [];
   fsm.eat();
-  deepEqual(called, ['onbeforeeat', 'onleavesatisfied', 'onenterfull', 'onchange from satisfied to full', 'onaftereat']);
+  deepEqual(called, [
+    'onbeforeeat',
+    'onbefore(eat)',
+    'onleavesatisfied',
+    'onleave(satisfied)',
+    'onenterfull',
+    'onenter(full)',
+    'onchange(satisfied,full)',
+    'onaftereat',
+    'onafter(eat)',
+  ]);
 
   called = [];
   fsm.eat();
-  deepEqual(called, ['onbeforeeat', 'onleavefull', 'onentersick', 'onchange from full to sick', 'onaftereat']);
+  deepEqual(called, [
+    'onbeforeeat',
+    'onbefore(eat)',
+    'onleavefull',
+    'onleave(full)',
+    'onentersick',
+    'onenter(sick)',
+    'onchange(full,sick)',
+    'onaftereat',
+    'onafter(eat)'
+  ]);
 
   called = [];
   fsm.rest();
-  deepEqual(called, ['onbeforerest', 'onleavesick', 'onenterhungry', 'onchange from sick to hungry', 'onafterrest']);
+  deepEqual(called, [
+    'onbeforerest',
+    'onbefore(rest)',
+    'onleavesick',
+    'onleave(sick)',
+    'onenterhungry',
+    'onenter(hungry)',
+    'onchange(sick,hungry)',
+    'onafterrest',
+    'onafter(rest)'
+  ]);
 
 });
 
@@ -168,8 +216,16 @@ test("callbacks are called when appropriate for prototype based state machine", 
 
   myFSM.prototype = {
 
-    onchangestate: function(event,from,to) { this.called.push('onchange from ' + from + ' to ' + to); },
+    // generic callbacks
+    onbeforeevent: function(event,from,to) { this.called.push('onbefore(' + event + ')'); },
+    onafterevent:  function(event,from,to) { this.called.push('onafter('  + event + ')'); },
+    onleavestate:  function(event,from,to) { this.called.push('onleave('  + from  + ')'); },
+    onenterstate:  function(event,from,to) { this.called.push('onenter('  + to    + ')'); },
+    onchangestate: function(event,from,to) { this.called.push('onchange(' + from + ',' + to + ')'); },
 
+    // specific state callbacks
+    onenternone:    function() { this.called.push('onenternone');   },
+    onleavenone:    function() { this.called.push('onleavenone');   },
     onentergreen:   function() { this.called.push('onentergreen');  },
     onleavegreen:   function() { this.called.push('onleavegreen');  },
     onenteryellow : function() { this.called.push('onenteryellow'); },
@@ -177,6 +233,7 @@ test("callbacks are called when appropriate for prototype based state machine", 
     onenterred:     function() { this.called.push('onenterred');    },
     onleavered:     function() { this.called.push('onleavered');    },
 
+    // specific event callbacks
     onbeforestartup: function() { this.called.push('onbeforestartup'); },
     onafterstartup:  function() { this.called.push('onafterstartup');  },
     onbeforewarn:    function() { this.called.push('onbeforewarn');    },
@@ -203,16 +260,19 @@ test("callbacks are called when appropriate for prototype based state machine", 
   equal(a.current, 'green', 'start with correct state');
   equal(b.current, 'green', 'start with correct state');
 
-  deepEqual(a.called, ['onbeforestartup', 'onentergreen', 'onchange from none to green', 'onafterstartup']);
-  deepEqual(b.called, ['onbeforestartup', 'onentergreen', 'onchange from none to green', 'onafterstartup']);
+  deepEqual(a.called, ['onbeforestartup', 'onbefore(startup)', 'onleavenone', 'onleave(none)', 'onentergreen', 'onenter(green)', 'onchange(none,green)', 'onafterstartup', 'onafter(startup)']);
+  deepEqual(b.called, ['onbeforestartup', 'onbefore(startup)', 'onleavenone', 'onleave(none)', 'onentergreen', 'onenter(green)', 'onchange(none,green)', 'onafterstartup', 'onafter(startup)']);
+
+  a.called = [];
+  b.called = [];
 
   a.warn();
 
   equal(a.current, 'yellow', 'maintain independent current state');
   equal(b.current, 'green',  'maintain independent current state');
 
-  deepEqual(a.called, ['onbeforestartup', 'onentergreen', 'onchange from none to green', 'onafterstartup', 'onbeforewarn', 'onleavegreen', 'onenteryellow', 'onchange from green to yellow', 'onafterwarn']);
-  deepEqual(b.called, ['onbeforestartup', 'onentergreen', 'onchange from none to green', 'onafterstartup']);
+  deepEqual(a.called, ['onbeforewarn', 'onbefore(warn)', 'onleavegreen', 'onleave(green)', 'onenteryellow', 'onenter(yellow)', 'onchange(green,yellow)', 'onafterwarn', 'onafter(warn)']);
+  deepEqual(b.called, []);
 
 });
 
