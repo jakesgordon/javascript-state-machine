@@ -90,6 +90,7 @@
     leaveState:  function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onleave'  + from],                     name, from, to, args); },
     enterState:  function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onenter'  + to]   || fsm['on' + to],   name, from, to, args); },
     changeState: function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onchangestate'],                       name, from, to, args); },
+    everyEvent: function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['oneveryevent'], name, from, to, args); },
 
 
     buildEvent: function(name, map) {
@@ -109,6 +110,7 @@
           return StateMachine.Result.CANCELLED;
 
         if (from === to) {
+          StateMachine.everyEvent( fsm, name, from, to, args);
           StateMachine.afterEvent(this, name, from, to, args);
           return StateMachine.Result.NOTRANSITION;
         }
@@ -118,6 +120,7 @@
         this.transition = function() {
           fsm.transition = null; // this method should only ever be called once
           fsm.current = to;
+          StateMachine.everyEvent( fsm, name, from, to, args);
           StateMachine.enterState( fsm, name, from, to, args);
           StateMachine.changeState(fsm, name, from, to, args);
           StateMachine.afterEvent( fsm, name, from, to, args);
