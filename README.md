@@ -274,7 +274,7 @@ state and you would need to provide an event to take it out of this state:
     fsm.startup();
     alert(fsm.current); // "green"
 
-If you specify the name of your initial event (as in all the earlier examples), then an
+If you specify the name of your initial state (as in all the earlier examples), then an
 implicit `startup` event will be created for you and fired when the state machine is constructed.
 
     var fsm = StateMachine.create({

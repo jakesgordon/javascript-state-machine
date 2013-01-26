@@ -80,6 +80,37 @@ test("can & cannot", function() {
 
 //-----------------------------------------------------------------------------
 
+test("is", function() {
+
+  var fsm = StateMachine.create({
+    initial: 'green',
+    events: [
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'yellow', to: 'red'    },
+      { name: 'calm',  from: 'red',    to: 'yellow' },
+      { name: 'clear', from: 'yellow', to: 'green'  }
+  ]});
+
+  equals(fsm.current, 'green', "initial state should be green");
+
+  equals(fsm.is('green'),           true,   'current state should match');
+  equals(fsm.is('yellow'),          false,  'current state should NOT match');
+  equals(fsm.is(['green',  'red']), true,   'current state should match when included in array');
+  equals(fsm.is(['yellow', 'red']), false,  'current state should NOT match when not included in array');
+
+  fsm.warn();
+
+  equals(fsm.current, 'yellow', "current state should be yellow");
+
+  equals(fsm.is('green'),           false, 'current state should NOT match');
+  equals(fsm.is('yellow'),          true,  'current state should match');
+  equals(fsm.is(['green',  'red']), false, 'current state should NOT match when not included in array');
+  equals(fsm.is(['yellow', 'red']), true,  'current state should match when included in array');
+
+});
+
+//-----------------------------------------------------------------------------
+
 test("inappropriate events", function() {
 
   var fsm = StateMachine.create({
