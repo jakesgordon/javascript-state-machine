@@ -12,7 +12,7 @@
       SUCCEEDED:    1, // the event transitioned successfully from one state to another
       NOTRANSITION: 2, // the event was successfull but no state transition was necessary
       CANCELLED:    3, // the event was cancelled by the caller in a beforeEvent callback
-      ASYNC:        4  // the event is asynchronous and the caller is in control of when the transition occurs
+      PENDING:      4  // the event is asynchronous and the caller is in control of when the transition occurs
     },
 
     Error: {
@@ -134,7 +134,7 @@
           return StateMachine.Result.CANCELLED;
         }
         else if (StateMachine.ASYNC === leave) {
-          return StateMachine.Result.ASYNC;
+          return StateMachine.Result.PENDING;
         }
         else {
           if (this.transition) // need to check in case user manually called transition() but forgot to return StateMachine.ASYNC

@@ -454,7 +454,7 @@ test("event return values (github issue #12) ", function() {
   equals(fsm.fake(),    StateMachine.Result.CANCELLED, "expected event to have been CANCELLED");
   equals(fsm.current,   'ready',                       "cancelled event should not cause a transition");
 
-  equals(fsm.start(),   StateMachine.Result.ASYNC,     "expected event to cause an ASYNC transition");
+  equals(fsm.start(),   StateMachine.Result.PENDING,   "expected event to cause a PENDING asynchronous transition");
   equals(fsm.current,   'ready',                       "async transition hasn't happened yet");
 
   equals(fsm.transition(), StateMachine.Result.SUCCEEDED, "expected async transition to have SUCCEEDED");
