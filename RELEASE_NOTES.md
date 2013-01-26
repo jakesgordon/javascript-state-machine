@@ -1,6 +1,7 @@
 Version 2.2.0 (unreleased)
 --------------------------
  
+ * Added optional `final` state(s) and `isFinished()` helper method (issue #23)
  * extended `fsm.is()` to accept an array of states (in addition to a single state)
  * Added generic event callbacks 'onbeforeevent' and 'onafterevent' (issue #28)
  * Added generic state callbacks 'onleavestate' and 'onenterstate'  (issue #28)

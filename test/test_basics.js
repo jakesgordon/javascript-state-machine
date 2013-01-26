@@ -111,6 +111,53 @@ test("is", function() {
 
 //-----------------------------------------------------------------------------
 
+test("isFinished", function() {
+
+  var fsm = StateMachine.create({
+    initial: 'green', terminal: 'red',
+    events: [
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'yellow', to: 'red'    }
+  ]});
+
+  equals(fsm.current,     'green');
+  equals(fsm.isFinished(), false);
+
+  fsm.warn();
+  equals(fsm.current,     'yellow');
+  equals(fsm.isFinished(), false);
+
+  fsm.panic();
+  equals(fsm.current,     'red');
+  equals(fsm.isFinished(), true);
+
+});
+
+//-----------------------------------------------------------------------------
+
+test("isFinished - without specifying terminal state", function() {
+
+  var fsm = StateMachine.create({
+    initial: 'green',
+    events: [
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'yellow', to: 'red'    }
+  ]});
+
+  equals(fsm.current,     'green');
+  equals(fsm.isFinished(), false);
+
+  fsm.warn();
+  equals(fsm.current,     'yellow');
+  equals(fsm.isFinished(), false);
+
+  fsm.panic();
+  equals(fsm.current,     'red');
+  equals(fsm.isFinished(), false);
+
+});
+//-----------------------------------------------------------------------------
+
 test("inappropriate events", function() {
 
   var fsm = StateMachine.create({

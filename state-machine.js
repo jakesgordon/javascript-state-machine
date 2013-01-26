@@ -38,6 +38,7 @@
     create: function(cfg, target) {
 
       var initial   = (typeof cfg.initial == 'string') ? { state: cfg.initial } : cfg.initial; // allow for a simple string, or an object with { state: 'foo', event: 'setup', defer: true|false }
+      var terminal  = cfg.terminal || cfg['final'];
       var fsm       = target || cfg.target  || {};
       var events    = cfg.events || [];
       var callbacks = cfg.callbacks || {};
@@ -73,6 +74,8 @@
       fsm.can     = function(event) { return !this.transition && (map[event].hasOwnProperty(this.current) || map[event].hasOwnProperty(StateMachine.WILDCARD)); }
       fsm.cannot  = function(event) { return !this.can(event); };
       fsm.error   = cfg.error || function(name, from, to, args, error, msg, e) { throw e || msg; }; // default behavior when something unexpected happens is to throw an exception, but caller can override this behavior if desired (see github issue #3 and #17)
+
+      fsm.isFinished = function() { return this.is(terminal); };
 
       if (initial && !initial.defer)
         fsm[initial.event]();
