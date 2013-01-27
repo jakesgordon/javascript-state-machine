@@ -1,5 +1,5 @@
-Version 2.2.0 (unreleased)
---------------------------
+Version 2.2.0 (January 26th 2013)
+---------------------------------
  
  * Added optional `final` state(s) and `isFinished()` helper method (issue #23)
  * extended `fsm.is()` to accept an array of states (in addition to a single state)
@@ -7,6 +7,7 @@ Version 2.2.0 (unreleased)
  * Added generic state callbacks 'onleavestate' and 'onenterstate'  (issue #28)
  * Fixed 'undefined' event return codes (issue #34) - pull from gentooboontoo (thanks!)
  * Allow async event transition to be cancelled (issue #22)
+ * [read more...](http://codeincomplete.com/posts/2013/1/26/javascript_state_machine_v2_2_0/)
 
 Version 2.1.0 (January 7th 2012)
 --------------------------------
