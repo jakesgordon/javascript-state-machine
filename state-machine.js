@@ -194,6 +194,9 @@
   if ("function" === typeof define) {
     define(function(require) { return StateMachine; });
   }
+  else if ("undefined" !== typeof module && module.exports) {
+    module.exports = StateMachine;
+  }
   else {
     window.StateMachine = StateMachine;
   }
