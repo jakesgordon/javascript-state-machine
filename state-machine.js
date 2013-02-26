@@ -66,12 +66,12 @@
 
       for(var name in callbacks) {
         if (callbacks.hasOwnProperty(name))
-          fsm[name] = callbacks[name]
+          fsm[name] = callbacks[name];
       }
 
       fsm.current = 'none';
       fsm.is      = function(state) { return (state instanceof Array) ? (state.indexOf(this.current) >= 0) : (this.current === state); };
-      fsm.can     = function(event) { return !this.transition && (map[event].hasOwnProperty(this.current) || map[event].hasOwnProperty(StateMachine.WILDCARD)); }
+      fsm.can     = function(event) { return !this.transition && (map[event].hasOwnProperty(this.current) || map[event].hasOwnProperty(StateMachine.WILDCARD)); };
       fsm.cannot  = function(event) { return !this.can(event); };
       fsm.error   = cfg.error || function(name, from, to, args, error, msg, e) { throw e || msg; }; // default behavior when something unexpected happens is to throw an exception, but caller can override this behavior if desired (see github issue #3 and #17)
 
@@ -97,16 +97,19 @@
       }
     },
 
-    beforeAnyEvent:  function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onbeforeevent'],                       name, from, to, args); },
-    afterAnyEvent:   function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onafterevent'] || fsm['onevent'],      name, from, to, args); },
-    leaveAnyState:   function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onleavestate'],                        name, from, to, args); },
-    enterAnyState:   function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onenterstate'] || fsm['onstate'],      name, from, to, args); },
-    changeState:     function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onchangestate'],                       name, from, to, args); },
+    beforeAnyEvent:   function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onbeforeevent'],                       name, from, to, args); },
+    afterAnyEvent:    function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onafterevent'] || fsm['onevent'],      name, from, to, args); },
+    leaveAnyState:    function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onleavestate'],                        name, from, to, args); },
+    enterAnyState:    function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onenterstate'] || fsm['onstate'],      name, from, to, args); },
+    changeState:      function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onchangestate'],                       name, from, to, args); },
 
-    beforeThisEvent: function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onbefore' + name],                     name, from, to, args); },
-    afterThisEvent:  function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onafter'  + name] || fsm['on' + name], name, from, to, args); },
-    leaveThisState:  function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onleave'  + from],                     name, from, to, args); },
-    enterThisState:  function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onenter'  + to]   || fsm['on' + to],   name, from, to, args); },
+    beforeThisEvent:  function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onbefore' + name],                     name, from, to, args); },
+    afterThisEvent:   function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onafter'  + name] || fsm['on' + name], name, from, to, args); },
+    leaveThisState:   function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onleave'  + from],                     name, from, to, args); },
+    enterThisState:   function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onenter'  + to]   || fsm['on' + to],   name, from, to, args); },
+    beforeStateEvent: function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onbefore' + from + name],	  	        name, from, to, args); },
+    afterStateEvent:  function(fsm, name, from, to, args) { return StateMachine.doCallback(fsm, fsm['onafter' + from + name] || 
+    																							fsm['on'+ from + name],				        name, from, to, args); },
 
     beforeEvent: function(fsm, name, from, to, args) {
       if ((false === StateMachine.beforeThisEvent(fsm, name, from, to, args)) ||
@@ -132,6 +135,7 @@
       StateMachine.enterThisState(fsm, name, from, to, args);
       StateMachine.enterAnyState( fsm, name, from, to, args);
     },
+    
 
     //===========================================================================
 
@@ -150,8 +154,13 @@
 
         if (false === StateMachine.beforeEvent(this, name, from, to, args))
           return StateMachine.Result.CANCELLED;
+          
+        if (false === StateMachine.beforeStateEvent(this, name, from, to, args))
+          return StateMachine.CANCELLED;
+        
 
         if (from === to) {
+          StateMachine.afterStateEvent(this, name, from, to, args);
           StateMachine.afterEvent(this, name, from, to, args);
           return StateMachine.Result.NOTRANSITION;
         }
@@ -163,11 +172,13 @@
           fsm.current = to;
           StateMachine.enterState( fsm, name, from, to, args);
           StateMachine.changeState(fsm, name, from, to, args);
+          StateMachine.afterStateEvent(fsm, name, from, to, args);
           StateMachine.afterEvent( fsm, name, from, to, args);
           return StateMachine.Result.SUCCEEDED;
         };
         this.transition.cancel = function() { // provide a way for caller to cancel async transition if desired (issue #22)
           fsm.transition = null;
+          StateMachine.afterStateEvent(fsm, name, from, to, args);
           StateMachine.afterEvent(fsm, name, from, to, args);
         }
 

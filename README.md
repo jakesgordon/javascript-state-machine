@@ -89,19 +89,23 @@ the same name if you prefer the verbose approach.
 Callbacks
 =========
 
-4 types of callback are available by attaching methods to your StateMachine using the following naming conventions:
+6 types of callback are available by attaching methods to your StateMachine using the following naming conventions:
 
  * `onbeforeEVENT` - fired before the event
  * `onleaveSTATE`  - fired when leaving the old state
  * `onenterSTATE`  - fired when entering the new state
  * `onafterEVENT`  - fired after the event
+ * `onbeforeSTATEEVENT` - fired before the event from the state
+ * `onafterSTATEEVENT`  - fired after the event from the state
+
 
 >> (using your **specific** EVENT and STATE names)
 
-For convenience, the 2 most useful callbacks can be shortened:
+For convenience, some callbacks can be shortened:
 
  * `onEVENT` - convenience shorthand for `onafterEVENT`
  * `onSTATE` - convenience shorthand for `onenterSTATE`
+ * `onSTATEEVENT` - convenience shorthand for `onafterSTATEEVENT`
 
 In addition, 4 general-purpose callbacks can be used to capture **all** event and state changes:
 
@@ -154,18 +158,21 @@ The order in which callbacks occur is as follows:
 
  * `onbeforego`    - specific handler for the **go** event only
  * `onbeforeevent` - generic  handler for all events
+ * `onbeforeredgo` - specific hander for the **go** event when fired from **red** state
  * `onleavered`    - specific handler for the **red** state only
  * `onleavestate`  - generic  handler for all states
  * `onentergreen`  - specific handler for the **green** state only
  * `onenterstate`  - generic  handler for all states
  * `onaftergo`     - specific handler for the **go** event only
+ * `onafterredgo`  - specific hander for the **go** event when fired from **red** state
  * `onafterevent`  - generic  handler for all events
 
 >> NOTE: the legacy `onchangestate` handler has been deprecated and will be removed in a future version
 
-You can affect the event in 3 ways:
+You can affect the event in 4 ways:
 
  * return `false` from an `onbeforeEVENT` handler to cancel the event.
+ * return `false` from an `onbeforeSTATEEVENT` handler to cancel the event.
  * return `false` from an `onleaveSTATE` handler to cancel the event.
  * return `ASYNC` from an `onleaveSTATE` handler to perform an asynchronous state transition (see next section)
 
