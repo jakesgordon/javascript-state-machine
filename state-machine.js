@@ -191,8 +191,10 @@
 
   //===========================================================================
 
-  if ("function" === typeof define) {
-    define(function(require) { return StateMachine; });
+  if (typeof window.define === 'function' && window.define.amd) {
+    window.define('StateMachine', [], function(require) {
+      return StateMachine;
+    });
   }
   else {
     window.StateMachine = StateMachine;
