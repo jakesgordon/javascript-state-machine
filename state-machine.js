@@ -9,6 +9,103 @@
 
 (function (window) {
 
+  function generateGraph(map, initial_event) {
+    var result = [
+      "strict digraph fsm {",
+      "splines=true;",
+      "graph [ fontcolor=black, fontsize=10 ];",
+      "node [ fontcolor=blue, fontsize=10 ];",
+      "edge [ fontcolor=red, fontsize=10 ];",
+    ];
+
+    var
+      encode = function (value) {
+        return "\"" + value.replace("\"", "\\\"") + "\"";
+      },
+      makeState = function (name) {
+        return encode("state_" + name);
+      };
+
+    var data = new Array;
+
+    for (var event_name in map) {
+      if (map.hasOwnProperty(event_name)) {
+        var all_from = map[event_name];
+
+        for (var from in all_from) {
+          if (all_from.hasOwnProperty(from)) {
+            var to = all_from[from];
+
+            data.push([event_name, from, to]);
+          }
+        }
+      }
+    }
+
+    /* Sort for a stable output */
+    data.sort(function (a, b) {
+      if (a === b) {
+        return 0;
+      }
+
+      var
+        a_event = a[0],
+        a_from = a[1],
+        a_to = a[2],
+        b_event = b[0],
+        b_from = b[1],
+        b_to = b[2];
+
+      if (a_event !== b_event) {
+        if (initial_event) {
+          /* Move initial event to the front */
+          if (a_event === initial_event) {
+            return -1;
+          }
+          if (b_event === initial_event) {
+            return 1;
+          }
+        }
+
+        return a_event < b_event ? -1 : 1;
+      }
+
+      if (a_from !== b_from) {
+        return a_from < b_from ? -1 : 1;
+      }
+
+      return a_to < b_to ? -1 : 1;
+    });
+
+    var writeState = (function () {
+      var done = new Array;
+      return function (name) {
+        if (done.indexOf(name) < 0) {
+          result.push(makeState(name) + " [label=" + encode(name) + "];");
+          done.push(name)
+        }
+      };
+    })();
+
+    for (var i = 0; i < data.length; ++i) {
+      var
+        ev = data[i],
+        event_name = ev[0],
+        from = ev[1],
+        to = ev[2];
+
+      writeState(from);
+      writeState(to);
+
+      result.push(makeState(from) + " -> " + makeState(to) +
+                  " [label=" + encode(event_name) + "];");
+    }
+
+    result.push("}\n");
+
+    return result.join("\n");
+  }
+
   var StateMachine = {
 
     //---------------------------------------------------------------------------
@@ -76,6 +173,10 @@
       fsm.error   = cfg.error || function(name, from, to, args, error, msg, e) { throw e || msg; }; // default behavior when something unexpected happens is to throw an exception, but caller can override this behavior if desired (see github issue #3 and #17)
 
       fsm.isFinished = function() { return this.is(terminal); };
+
+      fsm.getDotGraph = function (initial_event) {
+        return generateGraph(map, (initial && initial.event) || initial_event);
+      };
 
       if (initial && !initial.defer)
         fsm[initial.event]();
