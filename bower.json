@@ -1,5 +1,5 @@
 {
-  "name": "Javascript Finite State Machine",
+  "name": "JS-Finite-State-Machine",
   "version": "2.2.0",
   "main": "state-machine.js",
   "ignore": [
