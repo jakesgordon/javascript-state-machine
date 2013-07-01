@@ -4,6 +4,7 @@
   "main": "state-machine.js",
   "ignore": [
     "demo",
-    "minifier"
+    "minifier", 
+    "README.md"
   ]
 }
