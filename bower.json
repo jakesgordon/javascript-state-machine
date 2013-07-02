@@ -1,6 +1,6 @@
 {
-  "name": "JS-Finite-State-Machine",
-  "version": "2.2.0-bower.6",
+  "name": "JSFSM",
+  "version": "2.2.0-bower.7",
   "main": "state-machine.js",
   "ignore": [
     "demo",
