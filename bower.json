@@ -1,6 +1,6 @@
 {
   "name": "JS-Finite-State-Machine",
-  "version": "2.2.0-bower.3",
+  "version": "2.2.0-bower.6",
   "main": "state-machine.js",
   "ignore": [
     "demo",
