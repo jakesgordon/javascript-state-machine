@@ -42,13 +42,13 @@
       var fsm       = target || cfg.target  || {};
       var events    = cfg.events || [];
       var callbacks = cfg.callbacks || {};
-      var map       = {};
+      fsm.fsmmap    = fsm.fsmmap || {};
 
       var add = function(e) {
         var from = (e.from instanceof Array) ? e.from : (e.from ? [e.from] : [StateMachine.WILDCARD]); // allow 'wildcard' transition if 'from' is not specified
-        map[e.name] = map[e.name] || {};
+        fsm.fsmmap[e.name] = fsm.fsmmap[e.name] || {};
         for (var n = 0 ; n < from.length ; n++)
-          map[e.name][from[n]] = e.to || from[n]; // allow no-op transition if 'to' is not specified
+          fsm.fsmmap[e.name][from[n]] = e.to || from[n]; // allow no-op transition if 'to' is not specified
       };
 
       if (initial) {
@@ -61,7 +61,7 @@
 
       for(var name in map) {
         if (map.hasOwnProperty(name))
-          fsm[name] = StateMachine.buildEvent(name, map[name]);
+          fsm[name] = StateMachine.buildEvent(name, fsm.fsmmap[name]);
       }
 
       for(var name in callbacks) {
@@ -71,7 +71,7 @@
 
       fsm.current = 'none';
       fsm.is      = function(state) { return (state instanceof Array) ? (state.indexOf(this.current) >= 0) : (this.current === state); };
-      fsm.can     = function(event) { return !this.transition && (map[event].hasOwnProperty(this.current) || map[event].hasOwnProperty(StateMachine.WILDCARD)); }
+      fsm.can     = function(event) { return !this.transition && (fsm.fsmmap[event].hasOwnProperty(this.current) || fsm.fsmmap[event].hasOwnProperty(StateMachine.WILDCARD)); }
       fsm.cannot  = function(event) { return !this.can(event); };
       fsm.error   = cfg.error || function(name, from, to, args, error, msg, e) { throw e || msg; }; // default behavior when something unexpected happens is to throw an exception, but caller can override this behavior if desired (see github issue #3 and #17)
 
