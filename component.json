@@ -1,0 +1,15 @@
+{
+  "name": "fsm",
+  "repo": "kites/javascript-state-machine",
+  "description": "Finite State Machine coded in js",
+  "version": "2.2.1",
+  "keywords": [
+  ],
+  "main": "state-machine.js",
+  "license": "MIT",
+  "scripts": [
+    "state-machine.js"
+  ]
+}
+
+

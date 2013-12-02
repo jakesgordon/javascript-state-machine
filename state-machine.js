@@ -13,7 +13,7 @@
 
     //---------------------------------------------------------------------------
 
-    VERSION: "2.2.0",
+    VERSION: "2.2.1",
 
     //---------------------------------------------------------------------------
 
@@ -193,8 +193,9 @@
 
   if ("function" === typeof define) {
     define(function(require) { return StateMachine; });
-  }
-  else {
+  } else if (module && module.exports) {
+    module.exports = StateMachine
+  } else {
     window.StateMachine = StateMachine;
   }
 
