@@ -21,12 +21,12 @@
             { name: 'clear', from: 'yellow', to: 'green'  }
         ]});
 
-        equals(fsm.current, 'green', "initial state should be green");
+        equal(fsm.current, 'green', "initial state should be green");
 
-        fsm.warn();  equals(fsm.current, 'yellow', "warn  event should transition from green  to yellow");
-        fsm.panic(); equals(fsm.current, 'red',    "panic event should transition from yellow to red");
-        fsm.calm();  equals(fsm.current, 'yellow', "calm  event should transition from red    to yellow");
-        fsm.clear(); equals(fsm.current, 'green',  "clear event should transition from yellow to green");
+        fsm.warn();  equal(fsm.current, 'yellow', "warn  event should transition from green  to yellow");
+        fsm.panic(); equal(fsm.current, 'red',    "panic event should transition from yellow to red");
+        fsm.calm();  equal(fsm.current, 'yellow', "calm  event should transition from red    to yellow");
+        fsm.clear(); equal(fsm.current, 'green',  "clear event should transition from yellow to green");
 
       });
 

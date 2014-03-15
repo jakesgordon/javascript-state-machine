@@ -15,12 +15,12 @@ test("standalone state machine", function() {
       { name: 'clear', from: 'yellow', to: 'green'  }
   ]});
 
-  equals(fsm.current, 'green', "initial state should be green");
+  equal(fsm.current, 'green', "initial state should be green");
 
-  fsm.warn();  equals(fsm.current, 'yellow', "warn  event should transition from green  to yellow");
-  fsm.panic(); equals(fsm.current, 'red',    "panic event should transition from yellow to red");
-  fsm.calm();  equals(fsm.current, 'yellow', "calm  event should transition from red    to yellow");
-  fsm.clear(); equals(fsm.current, 'green',  "clear event should transition from yellow to green");
+  fsm.warn();  equal(fsm.current, 'yellow', "warn  event should transition from green  to yellow");
+  fsm.panic(); equal(fsm.current, 'red',    "panic event should transition from yellow to red");
+  fsm.calm();  equal(fsm.current, 'yellow', "calm  event should transition from red    to yellow");
+  fsm.clear(); equal(fsm.current, 'green',  "clear event should transition from yellow to green");
 
 });
 
@@ -38,12 +38,12 @@ test("targeted state machine", function() {
       { name: 'clear', from: 'yellow', to: 'green'  }
   ]});
 
-  equals(this.current, 'green', "initial state should be green");
+  equal(this.current, 'green', "initial state should be green");
 
-  this.warn();  equals(this.current, 'yellow', "warn  event should transition from green  to yellow");
-  this.panic(); equals(this.current, 'red',    "panic event should transition from yellow to red");
-  this.calm();  equals(this.current, 'yellow', "calm  event should transition from red    to yellow");
-  this.clear(); equals(this.current, 'green',  "clear event should transition from yellow to green");
+  this.warn();  equal(this.current, 'yellow', "warn  event should transition from green  to yellow");
+  this.panic(); equal(this.current, 'red',    "panic event should transition from yellow to red");
+  this.calm();  equal(this.current, 'yellow', "calm  event should transition from red    to yellow");
+  this.clear(); equal(this.current, 'green',  "clear event should transition from yellow to green");
 });
 
 //-----------------------------------------------------------------------------
@@ -58,20 +58,20 @@ test("can & cannot", function() {
       { name: 'calm',  from: 'red',    to: 'yellow' },
   ]});
 
-  equals(fsm.current, 'green', "initial state should be green");
+  equal(fsm.current, 'green', "initial state should be green");
 
   ok(fsm.can('warn'),     "should be able to warn from green state")
   ok(fsm.cannot('panic'), "should NOT be able to panic from green state")
   ok(fsm.cannot('calm'),  "should NOT be able to calm from green state")
 
   fsm.warn();
-  equals(fsm.current, 'yellow', "current state should be yellow");
+  equal(fsm.current, 'yellow', "current state should be yellow");
   ok(fsm.cannot('warn'),  "should NOT be able to warn from yellow state")
   ok(fsm.can('panic'),    "should be able to panic from yellow state")
   ok(fsm.cannot('calm'),  "should NOT be able to calm from yellow state")
 
   fsm.panic();
-  equals(fsm.current, 'red',  "current state should be red");
+  equal(fsm.current, 'red',  "current state should be red");
   ok(fsm.cannot('warn'),  "should NOT be able to warn from red state")
   ok(fsm.cannot('panic'), "should NOT be able to panic from red state")
   ok(fsm.can('calm'),     "should be able to calm from red state")
@@ -91,21 +91,21 @@ test("is", function() {
       { name: 'clear', from: 'yellow', to: 'green'  }
   ]});
 
-  equals(fsm.current, 'green', "initial state should be green");
+  equal(fsm.current, 'green', "initial state should be green");
 
-  equals(fsm.is('green'),           true,   'current state should match');
-  equals(fsm.is('yellow'),          false,  'current state should NOT match');
-  equals(fsm.is(['green',  'red']), true,   'current state should match when included in array');
-  equals(fsm.is(['yellow', 'red']), false,  'current state should NOT match when not included in array');
+  equal(fsm.is('green'),           true,   'current state should match');
+  equal(fsm.is('yellow'),          false,  'current state should NOT match');
+  equal(fsm.is(['green',  'red']), true,   'current state should match when included in array');
+  equal(fsm.is(['yellow', 'red']), false,  'current state should NOT match when not included in array');
 
   fsm.warn();
 
-  equals(fsm.current, 'yellow', "current state should be yellow");
+  equal(fsm.current, 'yellow', "current state should be yellow");
 
-  equals(fsm.is('green'),           false, 'current state should NOT match');
-  equals(fsm.is('yellow'),          true,  'current state should match');
-  equals(fsm.is(['green',  'red']), false, 'current state should NOT match when not included in array');
-  equals(fsm.is(['yellow', 'red']), true,  'current state should match when included in array');
+  equal(fsm.is('green'),           false, 'current state should NOT match');
+  equal(fsm.is('yellow'),          true,  'current state should match');
+  equal(fsm.is(['green',  'red']), false, 'current state should NOT match when not included in array');
+  equal(fsm.is(['yellow', 'red']), true,  'current state should match when included in array');
 
 });
 
@@ -120,16 +120,16 @@ test("isFinished", function() {
       { name: 'panic', from: 'yellow', to: 'red'    }
   ]});
 
-  equals(fsm.current,     'green');
-  equals(fsm.isFinished(), false);
+  equal(fsm.current,     'green');
+  equal(fsm.isFinished(), false);
 
   fsm.warn();
-  equals(fsm.current,     'yellow');
-  equals(fsm.isFinished(), false);
+  equal(fsm.current,     'yellow');
+  equal(fsm.isFinished(), false);
 
   fsm.panic();
-  equals(fsm.current,     'red');
-  equals(fsm.isFinished(), true);
+  equal(fsm.current,     'red');
+  equal(fsm.isFinished(), true);
 
 });
 
@@ -144,16 +144,16 @@ test("isFinished - without specifying terminal state", function() {
       { name: 'panic', from: 'yellow', to: 'red'    }
   ]});
 
-  equals(fsm.current,     'green');
-  equals(fsm.isFinished(), false);
+  equal(fsm.current,     'green');
+  equal(fsm.isFinished(), false);
 
   fsm.warn();
-  equals(fsm.current,     'yellow');
-  equals(fsm.isFinished(), false);
+  equal(fsm.current,     'yellow');
+  equal(fsm.isFinished(), false);
 
   fsm.panic();
-  equals(fsm.current,     'red');
-  equals(fsm.isFinished(), false);
+  equal(fsm.current,     'red');
+  equal(fsm.isFinished(), false);
 
 });
 //-----------------------------------------------------------------------------
@@ -168,20 +168,20 @@ test("inappropriate events", function() {
       { name: 'calm',  from: 'red',    to: 'yellow' },
   ]});
 
-  equals(fsm.current, 'green', "initial state should be green");
+  equal(fsm.current, 'green', "initial state should be green");
 
-  raises(fsm.panic.bind(fsm), /event panic inappropriate in current state green/);
-  raises(fsm.calm.bind(fsm),  /event calm inappropriate in current state green/);
+  throws(fsm.panic.bind(fsm), /event panic inappropriate in current state green/);
+  throws(fsm.calm.bind(fsm),  /event calm inappropriate in current state green/);
 
   fsm.warn();
-  equals(fsm.current, 'yellow', "current state should be yellow");
-  raises(fsm.warn.bind(fsm), /event warn inappropriate in current state yellow/);
-  raises(fsm.calm.bind(fsm), /event calm inappropriate in current state yellow/);
+  equal(fsm.current, 'yellow', "current state should be yellow");
+  throws(fsm.warn.bind(fsm), /event warn inappropriate in current state yellow/);
+  throws(fsm.calm.bind(fsm), /event calm inappropriate in current state yellow/);
 
   fsm.panic();
-  equals(fsm.current, 'red', "current state should be red");
-  raises(fsm.warn.bind(fsm),  /event warn inappropriate in current state red/);
-  raises(fsm.panic.bind(fsm), /event panic inappropriate in current state red/);
+  equal(fsm.current, 'red', "current state should be red");
+  throws(fsm.warn.bind(fsm),  /event warn inappropriate in current state red/);
+  throws(fsm.panic.bind(fsm), /event panic inappropriate in current state red/);
 
 });
 
@@ -198,20 +198,20 @@ test("inappropriate event handling can be customized", function() {
       { name: 'calm',  from: 'red',    to: 'yellow' }
   ]});
 
-  equals(fsm.current, 'green', "initial state should be green");
+  equal(fsm.current, 'green', "initial state should be green");
 
-  equals(fsm.panic(), 'event panic inappropriate in current state green');
-  equals(fsm.calm(),  'event calm inappropriate in current state green');
+  equal(fsm.panic(), 'event panic inappropriate in current state green');
+  equal(fsm.calm(),  'event calm inappropriate in current state green');
 
   fsm.warn();
-  equals(fsm.current, 'yellow', "current state should be yellow");
-  equals(fsm.warn(), 'event warn inappropriate in current state yellow');
-  equals(fsm.calm(), 'event calm inappropriate in current state yellow');
+  equal(fsm.current, 'yellow', "current state should be yellow");
+  equal(fsm.warn(), 'event warn inappropriate in current state yellow');
+  equal(fsm.calm(), 'event calm inappropriate in current state yellow');
   
   fsm.panic();
-  equals(fsm.current, 'red', "current state should be red");
-  equals(fsm.warn(),  'event warn inappropriate in current state red');
-  equals(fsm.panic(), 'event panic inappropriate in current state red');
+  equal(fsm.current, 'red', "current state should be red");
+  equal(fsm.warn(),  'event warn inappropriate in current state red');
+  equal(fsm.panic(), 'event panic inappropriate in current state red');
 
 });
 
@@ -507,9 +507,9 @@ test("exceptions in caller-provided callbacks are not swallowed (github issue #1
       onenteryellow: function() { throw 'oops'; }
     }});
 
-    equals(fsm.current, 'green', "initial state should be green");
+    equal(fsm.current, 'green', "initial state should be green");
 
-    raises(fsm.warn.bind(fsm), /oops/);
+    throws(fsm.warn.bind(fsm), /oops/);
 });
 
 //-----------------------------------------------------------------------------
@@ -526,13 +526,13 @@ test("no-op transitions (github issue #5)", function() {
       { name: 'clear', from: 'yellow', to: 'green'  }
   ]});
 
-  equals(fsm.current, 'green', "initial state should be green");
+  equal(fsm.current, 'green', "initial state should be green");
 
   ok(fsm.can('noop'), "should be able to noop from green state")
   ok(fsm.can('warn'), "should be able to warn from green state")
 
-  fsm.noop(); equals(fsm.current, 'green',  "noop event should not cause a transition (there is no 'to' specified)");
-  fsm.warn(); equals(fsm.current, 'yellow', "warn event should transition from green to yellow");
+  fsm.noop(); equal(fsm.current, 'green',  "noop event should not cause a transition (there is no 'to' specified)");
+  fsm.warn(); equal(fsm.current, 'yellow', "warn event should transition from green to yellow");
 
   ok(fsm.cannot('noop'), "should NOT be able to noop from yellow state")
   ok(fsm.cannot('warn'), "should NOT be able to warn from yellow state")
@@ -553,19 +553,19 @@ test("wildcard 'from' allows event from any state (github issue #11)", function(
       { name: 'stop',    from: '*',            to: 'stopped' }
   ]});
 
-  equals(fsm.current, 'stopped', "initial state should be stopped");
+  equal(fsm.current, 'stopped', "initial state should be stopped");
 
-  fsm.prepare(); equals(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
-  fsm.stop();    equals(fsm.current, 'stopped', "stop event should transition from ready to stopped");
+  fsm.prepare(); equal(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
+  fsm.stop();    equal(fsm.current, 'stopped', "stop event should transition from ready to stopped");
 
-  fsm.prepare(); equals(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
-  fsm.start();   equals(fsm.current, 'running', "start event should transition from ready to running");
-  fsm.stop();    equals(fsm.current, 'stopped', "stop event should transition from running to stopped");
+  fsm.prepare(); equal(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
+  fsm.start();   equal(fsm.current, 'running', "start event should transition from ready to running");
+  fsm.stop();    equal(fsm.current, 'stopped', "stop event should transition from running to stopped");
 
-  fsm.prepare(); equals(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
-  fsm.start();   equals(fsm.current, 'running', "start event should transition from ready to running");
-  fsm.pause();   equals(fsm.current, 'paused',  "pause event should transition from running to paused");
-  fsm.stop();    equals(fsm.current, 'stopped', "stop event should transition from paused to stopped");
+  fsm.prepare(); equal(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
+  fsm.start();   equal(fsm.current, 'running', "start event should transition from ready to running");
+  fsm.pause();   equal(fsm.current, 'paused',  "pause event should transition from running to paused");
+  fsm.stop();    equal(fsm.current, 'stopped', "stop event should transition from paused to stopped");
 
 });
 
@@ -583,19 +583,19 @@ test("missing 'from' allows event from any state (github issue #11) ", function(
       { name: 'stop',    /* any from state */  to: 'stopped' }
   ]});
 
-  equals(fsm.current, 'stopped', "initial state should be stopped");
+  equal(fsm.current, 'stopped', "initial state should be stopped");
 
-  fsm.prepare(); equals(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
-  fsm.stop();    equals(fsm.current, 'stopped', "stop event should transition from ready to stopped");
+  fsm.prepare(); equal(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
+  fsm.stop();    equal(fsm.current, 'stopped', "stop event should transition from ready to stopped");
 
-  fsm.prepare(); equals(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
-  fsm.start();   equals(fsm.current, 'running', "start event should transition from ready to running");
-  fsm.stop();    equals(fsm.current, 'stopped', "stop event should transition from running to stopped");
+  fsm.prepare(); equal(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
+  fsm.start();   equal(fsm.current, 'running', "start event should transition from ready to running");
+  fsm.stop();    equal(fsm.current, 'stopped', "stop event should transition from running to stopped");
 
-  fsm.prepare(); equals(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
-  fsm.start();   equals(fsm.current, 'running', "start event should transition from ready to running");
-  fsm.pause();   equals(fsm.current, 'paused',  "pause event should transition from running to paused");
-  fsm.stop();    equals(fsm.current, 'stopped', "stop event should transition from paused to stopped");
+  fsm.prepare(); equal(fsm.current, 'ready',   "prepare event should transition from stopped to ready");
+  fsm.start();   equal(fsm.current, 'running', "start event should transition from ready to running");
+  fsm.pause();   equal(fsm.current, 'paused',  "pause event should transition from running to paused");
+  fsm.stop();    equal(fsm.current, 'stopped', "stop event should transition from paused to stopped");
 
 });
 
@@ -616,19 +616,19 @@ test("event return values (github issue #12) ", function() {
     }
   });
 
-  equals(fsm.current, 'stopped', "initial state should be stopped");
+  equal(fsm.current, 'stopped', "initial state should be stopped");
 
-  equals(fsm.prepare(), StateMachine.Result.SUCCEEDED, "expected event to have SUCCEEDED");
-  equals(fsm.current,   'ready',                       "prepare event should transition from stopped to ready");
+  equal(fsm.prepare(), StateMachine.Result.SUCCEEDED, "expected event to have SUCCEEDED");
+  equal(fsm.current,   'ready',                       "prepare event should transition from stopped to ready");
 
-  equals(fsm.fake(),    StateMachine.Result.CANCELLED, "expected event to have been CANCELLED");
-  equals(fsm.current,   'ready',                       "cancelled event should not cause a transition");
+  equal(fsm.fake(),    StateMachine.Result.CANCELLED, "expected event to have been CANCELLED");
+  equal(fsm.current,   'ready',                       "cancelled event should not cause a transition");
 
-  equals(fsm.start(),   StateMachine.Result.PENDING,   "expected event to cause a PENDING asynchronous transition");
-  equals(fsm.current,   'ready',                       "async transition hasn't happened yet");
+  equal(fsm.start(),   StateMachine.Result.PENDING,   "expected event to cause a PENDING asynchronous transition");
+  equal(fsm.current,   'ready',                       "async transition hasn't happened yet");
 
-  equals(fsm.transition(), StateMachine.Result.SUCCEEDED, "expected async transition to have SUCCEEDED");
-  equals(fsm.current,      'running',                     "async transition should now be complete");
+  equal(fsm.transition(), StateMachine.Result.SUCCEEDED, "expected async transition to have SUCCEEDED");
+  equal(fsm.current,      'running',                     "async transition should now be complete");
 
 });
 
