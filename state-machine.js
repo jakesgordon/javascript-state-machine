@@ -203,7 +203,7 @@
   //============
   // AMD/REQUIRE
   //============
-  else if (typeof define === 'function') {
+  else if (typeof define === 'function' && define.amd) {
     define(function(require) { return StateMachine; });
   }
   //========

@@ -6,13 +6,11 @@
   <script src="../qunit/qunit.js"></script>
   <script src="require.js"></script>
   <script>
-    require(["../../state-machine.js"], function(RequiredStateMachine) {
+    require(["../../state-machine.js"], function(StateMachine) {
 
-      module("require.js");
+      test("state machine included using require.js", function() {
 
-      test("state machine included using require.js with custom name", function() {
-
-        var fsm = RequiredStateMachine.create({
+        var fsm = StateMachine.create({
           initial: 'green',
           events: [
             { name: 'warn',  from: 'green',  to: 'yellow' },
