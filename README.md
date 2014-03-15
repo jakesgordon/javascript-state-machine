@@ -22,12 +22,13 @@ Alternatively:
  * Minified version provided in state-machine.min.js
  * No 3rd party library is required
  * Demo can be found in /index.html
- * QUnit tests can be found in /test/index.html
+ * QUnit (browser) tests can be found in /test/index.html
+ * QUnit (headless) tests can be run with "node test/runner.js" (after installing node-qunit with "npm install")
 
 Usage
 =====
 
-Include `state-machine.min.js` in your application.
+Include `state-machine.js` in your web application, or, for nodejs `require("state-machine.js")`.
 
 In its simplest form, create a standalone state machine using:
 
