@@ -1,7 +1,8 @@
 Version 2.3.0 (March ?? 2014)
 -----------------------------
 
- * minor updates in progress
+ * Added support for nodejs (finally)
+ * Added ability to run tests in console via nodejs ("npm install" to get node-qunit, then "node test/runner.js")
 
 Version 2.2.0 (January 26th 2013)
 ---------------------------------
