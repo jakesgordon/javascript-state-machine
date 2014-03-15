@@ -1,6 +1,7 @@
-Version 2.3.0 (March ?? 2014)
+Version 2.3.0 (March 15 2014)
 -----------------------------
 
+ * Added support for bower
  * Added support for nodejs (finally)
  * Added ability to run tests in console via nodejs ("npm install" to get node-qunit, then "node test/runner.js")
 
