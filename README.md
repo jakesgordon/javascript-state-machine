@@ -1,4 +1,4 @@
-Javascript Finite State Machine (v2.2.0)
+Javascript Finite State Machine (v2.3.0)
 ========================================
 
 This standalone javascript micro-framework provides a finite state machine for your pleasure.

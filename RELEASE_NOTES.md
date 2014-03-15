@@ -1,3 +1,8 @@
+Version 2.3.0 (March ?? 2014)
+-----------------------------
+
+ * minor updates in progress
+
 Version 2.2.0 (January 26th 2013)
 ---------------------------------
  
