@@ -6,6 +6,8 @@
   "author":          "Jake Gordon <jake@codeincomplete.com>",
   "repository":      {"type": "git", "url": "git://github.com/jakesgordon/javascript-state-machine.git"},
   "main":            "state-machine.js",
-  "devDependencies": [ "qunit" ],
+  "devDependencies": {
+    "qunit": "~0.6.2"
+  },
   "version":         "2.3.0"
 }
