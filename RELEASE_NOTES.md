@@ -1,3 +1,8 @@
+Version 2.3.2 (March 16 2014)
+-----------------------------
+
+ * had to bump the version number after messing up npmjs.org package registration
+
 Version 2.3.0 (March 15 2014)
 -----------------------------
 
