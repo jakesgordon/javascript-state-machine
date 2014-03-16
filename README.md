@@ -28,7 +28,7 @@ Alternatively:
 Usage
 =====
 
-Include `state-machine.js` in your web application, or, for nodejs `require("state-machine.js")`.
+Include `state-machine.js` in your web application, or, for nodejs `require("javascript-state-machine.js")`.
 
 In its simplest form, create a standalone state machine using:
 
