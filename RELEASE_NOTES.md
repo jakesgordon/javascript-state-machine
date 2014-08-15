@@ -1,3 +1,15 @@
+Version 2.3.2 (March 16 2014)
+-----------------------------
+
+ * had to bump the version number after messing up npmjs.org package registration
+
+Version 2.3.0 (March 15 2014)
+-----------------------------
+
+ * Added support for bower
+ * Added support for nodejs (finally)
+ * Added ability to run tests in console via nodejs ("npm install" to get node-qunit, then "node test/runner.js")
+
 Version 2.2.0 (January 26th 2013)
 ---------------------------------
  

@@ -1,0 +1,28 @@
+{
+  "name": "javascript-state-machine",
+  "version": "2.3.2",
+  "homepage": "https://github.com/jakesgordon/javascript-state-machine",
+  "authors": [
+    "Jake Gordon <jake@codeincomplete.com>"
+  ],
+  "description": "a simple finite state machine library",
+  "main": "state-machine.js",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "state machine",
+    "server",
+    "client"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

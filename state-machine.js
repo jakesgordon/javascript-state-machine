@@ -2,18 +2,18 @@
 
   Javascript State Machine Library - https://github.com/jakesgordon/javascript-state-machine
 
-  Copyright (c) 2012, 2013 Jake Gordon and contributors
+  Copyright (c) 2012, 2013, 2014, Jake Gordon and contributors
   Released under the MIT license - https://github.com/jakesgordon/javascript-state-machine/blob/master/LICENSE
 
 */
 
-(function (window) {
+(function () {
 
   var StateMachine = {
 
     //---------------------------------------------------------------------------
 
-    VERSION: "2.2.0",
+    VERSION: "2.3.2",
 
     //---------------------------------------------------------------------------
 
@@ -202,12 +202,27 @@
 
   //===========================================================================
 
-  if ("function" === typeof define) {
+  //======
+  // NODE
+  //======
+  if (typeof exports !== 'undefined') {
+    if (typeof module !== 'undefined' && module.exports) {
+      exports = module.exports = StateMachine;
+    }
+    exports.StateMachine = StateMachine;
+  }
+  //============
+  // AMD/REQUIRE
+  //============
+  else if (typeof define === 'function' && define.amd) {
     define(function(require) { return StateMachine; });
   }
-  else {
+  //========
+  // BROWSER
+  //========
+  else if (window) {
     window.StateMachine = StateMachine;
   }
 
-}(this));
+}());
 
