@@ -7,6 +7,11 @@ This standalone javascript micro-framework provides a finite state machine for y
  * You can find a [description here](http://codeincomplete.com/posts/2013/1/26/javascript_state_machine_v2_2_0/)
  * You can find a [working demo here](http://codeincomplete.com/posts/2011/8/19/javascript_state_machine_v2/example/)
 
+This library has also been ported to:
+
+ * [Go](https://github.com/looplab/fsm) by @maxpersson
+ * [Python](https://github.com/oxplot/fysom) by @oxplot
+
 Download
 ========
 
