@@ -209,7 +209,7 @@
   //========
   // BROWSER
   //========
-  else if (window) {
+  else if (typeof window !== 'undefined') {
     window.StateMachine = StateMachine;
   }
 
