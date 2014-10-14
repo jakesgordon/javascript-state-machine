@@ -212,6 +212,11 @@
   else if (typeof window !== 'undefined') {
     window.StateMachine = StateMachine;
   }
+  //===========
+  // WEB WORKER
+  //===========
+  else if (typeof self !== 'undefined') {
+    self.StateMachine = StateMachine;
+  }
 
 }());
-
