@@ -209,7 +209,7 @@ test("callbacks are called when appropriate for multiple 'from' and 'to' transit
 
 test("callbacks are called when appropriate for prototype based state machine", function() {
 
-  myFSM = function() {
+  var myFSM = function() {
     this.called = [];
     this.startup();
   };
