@@ -1,3 +1,8 @@
+Version 2.3.3 (October 17 2014)
+-------------------------------
+
+ * added web worker compatability (issue #65 - thanks to @offirmo)
+
 Version 2.3.2 (March 16 2014)
 -----------------------------
 
