@@ -267,7 +267,7 @@ Initialization Options
 How the state machine should initialize can depend on your application requirements, so
 the library provides a number of simple options.
 
-By default, if you dont specify any initial state, the state machine will be in the `'none'`
+By default, if you don't specify any initial state, the state machine will be in the `'none'`
 state and you would need to provide an event to take it out of this state:
 
     var fsm = StateMachine.create({
