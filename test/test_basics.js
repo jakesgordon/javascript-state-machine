@@ -111,6 +111,39 @@ test("is", function() {
 
 //-----------------------------------------------------------------------------
 
+test("transitions", function() {
+
+  var fsm = StateMachine.create({
+    initial: 'green',
+    events: [
+      { name: 'warn',  from: 'green',  to: 'yellow' },
+      { name: 'panic', from: 'yellow', to: 'red'    },
+      { name: 'calm',  from: 'red',    to: 'yellow' },
+      { name: 'clear', from: 'yellow', to: 'green'  }
+  ]});
+
+  equal(fsm.current, 'green', 'current state should be yellow');
+  deepEqual(fsm.transitions(), ['warn'], 'current transition(s) should be yellow');
+
+  fsm.warn();
+  equal(fsm.current, 'yellow', 'current state should be yellow');
+  deepEqual(fsm.transitions(), ['panic', 'clear'], 'current transition(s) should be panic and clear');
+
+  fsm.panic();
+  equal(fsm.current, 'red', 'current state should be red');
+  deepEqual(fsm.transitions(), ['calm'], 'current transition(s) should be calm');
+
+  fsm.calm();
+  equal(fsm.current, 'yellow', 'current state should be yellow');
+  deepEqual(fsm.transitions(), ['panic', 'clear'], 'current transion(s) should be panic and clear');
+
+  fsm.clear();
+  equal(fsm.current, 'green', 'current state should be green');
+  deepEqual(fsm.transitions(), ['warn'], 'current transion(s) should be warn');
+});
+
+//-----------------------------------------------------------------------------
+
 test("isFinished", function() {
 
   var fsm = StateMachine.create({
