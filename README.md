@@ -1,4 +1,4 @@
-Javascript Finite State Machine (v2.3.3)
+Javascript Finite State Machine (v2.3.4)
 ========================================
 
 This standalone javascript micro-framework provides a finite state machine for your pleasure.
@@ -55,10 +55,11 @@ In its simplest form, create a standalone state machine using:
 
 along with the following members:
 
- * fsm.current   - contains the current state
- * fsm.is(s)     - return true if state `s` is the current state
- * fsm.can(e)    - return true if event `e` can be fired in the current state
- * fsm.cannot(e) - return true if event `e` cannot be fired in the current state
+ * fsm.current       - contains the current state
+ * fsm.is(s)         - return true if state `s` is the current state
+ * fsm.can(e)        - return true if event `e` can be fired in the current state
+ * fsm.cannot(e)     - return true if event `e` cannot be fired in the current state
+ * fsm.transitions() - return list of events that are allowed from the current state
 
 Multiple 'from' and 'to' states for a single event
 ==================================================

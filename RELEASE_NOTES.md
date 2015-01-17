@@ -1,3 +1,8 @@
+Version 2.3.4 (January 17 2014)
+-------------------------------
+
+ * helper method to list which events are allowed from the current state (issue #71 - thanks to @mgoldsborough and @chopj)
+
 Version 2.3.3 (October 17 2014)
 -------------------------------
 
