@@ -18,6 +18,10 @@ Download
 You can download [state-machine.js](https://github.com/jakesgordon/javascript-state-machine/raw/master/state-machine.js),
 or the [minified version](https://github.com/jakesgordon/javascript-state-machine/raw/master/state-machine.min.js)
 
+Using npm:
+
+    npm install --save javascript-state-machine
+
 Alternatively:
 
     git clone git@github.com:jakesgordon/javascript-state-machine
