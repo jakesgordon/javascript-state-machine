@@ -9,5 +9,5 @@
   "devDependencies": {
     "qunit": "~0.6.2"
   },
-  "version":         "2.3.3"
+  "version":         "2.3.4"
 }
