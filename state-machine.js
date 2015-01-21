@@ -49,8 +49,8 @@
         var from = (e.from instanceof Array) ? e.from : (e.from ? [e.from] : [StateMachine.WILDCARD]); // allow 'wildcard' transition if 'from' is not specified
         map[e.name] = map[e.name] || {};
         for (var n = 0 ; n < from.length ; n++) {
-          transitions[e.from] = transitions[e.from] || [];
-          transitions[e.from].push(e.name);
+          transitions[from[n]] = transitions[from[n]] || [];
+          transitions[from[n]].push(e.name);
 
           map[e.name][from[n]] = e.to || from[n]; // allow no-op transition if 'to' is not specified
         }
