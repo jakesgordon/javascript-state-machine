@@ -1,3 +1,8 @@
+Version 2.3.5 (January 20 2014)
+-------------------------------
+
+ * fix for broken transitions() method (issue #74)
+
 Version 2.3.4 (January 17 2014)
 -------------------------------
 
