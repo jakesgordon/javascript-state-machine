@@ -1,4 +1,4 @@
-Javascript Finite State Machine (v2.3.2)
+Javascript Finite State Machine (v2.3.5)
 ========================================
 
 This standalone javascript micro-framework provides a finite state machine for your pleasure.
@@ -6,6 +6,11 @@ This standalone javascript micro-framework provides a finite state machine for y
  * You can find the [code here](https://github.com/jakesgordon/javascript-state-machine)
  * You can find a [description here](http://codeincomplete.com/posts/2013/1/26/javascript_state_machine_v2_2_0/)
  * You can find a [working demo here](http://codeincomplete.com/posts/2011/8/19/javascript_state_machine_v2/example/)
+
+This library has also been ported to:
+
+ * [Go](https://github.com/looplab/fsm) by @maxpersson
+ * [Python](https://github.com/oxplot/fysom) by @oxplot
 
 Download
 ========
@@ -50,10 +55,11 @@ In its simplest form, create a standalone state machine using:
 
 along with the following members:
 
- * fsm.current   - contains the current state
- * fsm.is(s)     - return true if state `s` is the current state
- * fsm.can(e)    - return true if event `e` can be fired in the current state
- * fsm.cannot(e) - return true if event `e` cannot be fired in the current state
+ * fsm.current       - contains the current state
+ * fsm.is(s)         - return true if state `s` is the current state
+ * fsm.can(e)        - return true if event `e` can be fired in the current state
+ * fsm.cannot(e)     - return true if event `e` cannot be fired in the current state
+ * fsm.transitions() - return list of events that are allowed from the current state
 
 Multiple 'from' and 'to' states for a single event
 ==================================================
@@ -269,7 +275,7 @@ Initialization Options
 How the state machine should initialize can depend on your application requirements, so
 the library provides a number of simple options.
 
-By default, if you dont specify any initial state, the state machine will be in the `'none'`
+By default, if you don't specify any initial state, the state machine will be in the `'none'`
 state and you would need to provide an event to take it out of this state:
 
     var fsm = StateMachine.create({
