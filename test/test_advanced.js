@@ -278,3 +278,25 @@ test("callbacks are called when appropriate for prototype based state machine", 
 
 
 
+//-----------------------------------------------------------------------------
+
+test("double wildcard transition does not change current state", function() {
+
+  var fsm = StateMachine.create({
+    initial: 'green',
+    events: [
+      { name: 'warn',    from: 'green',             to: 'yellow' },
+      { name: 'panic',   from: ['green', 'yellow'], to: 'red'    },
+      { name: 'noop',    from: ['green', 'yellow']               }, // NOTE: 'to' not specified
+      { name: 'calm',    from: 'red',               to: 'yellow' },
+      { name: 'clear',   from: ['yellow', 'red'],   to: 'green'  },
+      { name: 'lightup', from: '*'                               }, // Note: "double wildcard"
+      { name: 'lightup', from: 'green',             to: 'yellow' }
+  ]});
+
+  equal(fsm.current, 'green', "start with correct state");
+
+  fsm.lightup(); equal(fsm.current, 'yellow', "lightup event should switch green to yellow");
+  fsm.lightup(); equal(fsm.current, 'yellow', "lightup event should have no effect effect in other state than green");
+
+});
