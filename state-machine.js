@@ -27,7 +27,8 @@
     Error: {
       INVALID_TRANSITION: 100, // caller tried to fire an event that was innapropriate in the current state
       PENDING_TRANSITION: 200, // caller tried to fire an event while an async transition was still pending
-      INVALID_CALLBACK:   300 // caller provided callback function threw an exception
+      INVALID_CALLBACK:   300, // caller provided callback function threw an exception
+      INVALID_EVENT_NAME: 400 // caller provided invalid event name
     },
 
     WILDCARD: '*',
@@ -81,6 +82,15 @@
       fsm.transitions = function()      { return transitions[this.current]; };
       fsm.isFinished  = function()      { return this.is(terminal); };
       fsm.error       = cfg.error || function(name, from, to, args, error, msg, e) { throw e || msg; }; // default behavior when something unexpected happens is to throw an exception, but caller can override this behavior if desired (see github issue #3 and #17)
+
+      fsm.event = function(eventName) {
+        if (map.hasOwnProperty(eventName) && typeof fsm[eventName] === "function") {
+          var args = Array.prototype.slice.call(arguments);
+          args.shift(); // get rid of the first argument (eventName)
+          return fsm[eventName].apply(fsm, args);
+        }
+        return fsm.error(name, fsm.current, eventName, args, StateMachine.Error.INVALID_EVENT_NAME, "there is no event named: " + eventName);
+      };
 
       if (initial && !initial.defer)
         fsm[initial.event]();
