@@ -80,6 +80,7 @@
       fsm.cannot      = function(event) { return !this.can(event); };
       fsm.transitions = function()      { return transitions[this.current]; };
       fsm.isFinished  = function()      { return this.is(terminal); };
+      fsm.tryTo       = function(event) { if(this.can(event)) this[event]();}
       fsm.error       = cfg.error || function(name, from, to, args, error, msg, e) { throw e || msg; }; // default behavior when something unexpected happens is to throw an exception, but caller can override this behavior if desired (see github issue #3 and #17)
 
       if (initial && !initial.defer)
