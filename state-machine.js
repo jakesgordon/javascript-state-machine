@@ -46,7 +46,7 @@
       var transitions  = {}; // track events allowed from a state            { state: [ event ] }
 
       var add = function(e) {
-        var from = (e.from instanceof Array) ? e.from : (e.from ? [e.from] : [StateMachine.WILDCARD]); // allow 'wildcard' transition if 'from' is not specified
+        var from = ( Object.prototype.toString.call(e.from) == '[object Array]') ? e.from : (e.from ? [e.from] : [StateMachine.WILDCARD]); // allow 'wildcard' transition if 'from' is not specified
         map[e.name] = map[e.name] || {};
         for (var n = 0 ; n < from.length ; n++) {
           transitions[from[n]] = transitions[from[n]] || [];
