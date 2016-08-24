@@ -12,10 +12,10 @@ Demo = function() {
     count = count + (separate ? 1 : 0);
     output.value = count + ": " + msg + "\n" + (separate ? "\n" : "") + output.value;
     demo.className = fsm.current;
-    panic.disabled = fsm.cannot('panic');
-    warn.disabled  = fsm.cannot('warn');
-    calm.disabled  = fsm.cannot('calm');
-    clear.disabled = fsm.cannot('clear');
+    // panic.disabled = fsm.cannot('panic');
+    // warn.disabled  = fsm.cannot('warn');
+    // calm.disabled  = fsm.cannot('calm');
+    // clear.disabled = fsm.cannot('clear');
   };
 
   var fsm = StateMachine.create({
