@@ -19,5 +19,5 @@
     "grunt-contrib-uglify": "^1.0.1",
     "qunit": "~0.6.2"
   },
-  "version": "2.3.5"
+  "version": "2.3.7"
 }
