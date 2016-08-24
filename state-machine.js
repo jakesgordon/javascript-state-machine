@@ -83,6 +83,15 @@
       fsm.tryTo       = function(event) { if(this.can(event)) this[event]();}
       fsm.error       = cfg.error || function(name, from, to, args, error, msg, e) { throw e || msg; }; // default behavior when something unexpected happens is to throw an exception, but caller can override this behavior if desired (see github issue #3 and #17)
 
+      fsm.event = function(eventName) {
+        if (map.hasOwnProperty(eventName) && typeof fsm[eventName] === "function") {
+          var args = Array.prototype.slice.call(arguments);
+          args.shift(); // get rid of the first argument (eventName)
+          return fsm[eventName].apply(fsm, args);
+        }
+        return fsm.error(name, fsm.current, eventName, args, StateMachine.Error.INVALID_EVENT_NAME, "there is no event named: " + eventName);
+      };
+
       if (initial && !initial.defer)
         fsm[initial.event]();
 
