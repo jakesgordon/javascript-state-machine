@@ -18,6 +18,10 @@ Download
 You can download [state-machine.js](https://github.com/jakesgordon/javascript-state-machine/raw/master/state-machine.js),
 or the [minified version](https://github.com/jakesgordon/javascript-state-machine/raw/master/state-machine.min.js)
 
+Using npm:
+
+    npm install --save javascript-state-machine
+
 Alternatively:
 
     git clone git@github.com:jakesgordon/javascript-state-machine
@@ -56,6 +60,7 @@ In its simplest form, create a standalone state machine using:
 along with the following members:
 
  * fsm.current       - contains the current state
+ * fsm.event(e)      - call transition named `e`
  * fsm.is(s)         - return true if state `s` is the current state
  * fsm.can(e)        - return true if event `e` can be fired in the current state
  * fsm.cannot(e)     - return true if event `e` cannot be fired in the current state

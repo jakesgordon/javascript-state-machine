@@ -74,13 +74,32 @@
           fsm[name] = callbacks[name]
       }
 
-      fsm.current     = 'none';
-      fsm.is          = function(state) { return (state instanceof Array) ? (state.indexOf(this.current) >= 0) : (this.current === state); };
-      fsm.can         = function(event) { return !this.transition && (map[event].hasOwnProperty(this.current) || map[event].hasOwnProperty(StateMachine.WILDCARD)); }
-      fsm.cannot      = function(event) { return !this.can(event); };
-      fsm.transitions = function()      { return transitions[this.current]; };
-      fsm.isFinished  = function()      { return this.is(terminal); };
-      fsm.error       = cfg.error || function(name, from, to, args, error, msg, e) { throw e || msg; }; // default behavior when something unexpected happens is to throw an exception, but caller can override this behavior if desired (see github issue #3 and #17)
+      fsm.current      = 'none';
+      fsm.is           = function(state) { return (state instanceof Array) ? (state.indexOf(this.current) >= 0) : (this.current === state); };
+      fsm.can          = function(event) { return !this.transition && map[event] && (map[event].hasOwnProperty(this.current) || map[event].hasOwnProperty(StateMachine.WILDCARD)); }
+      fsm.cannot       = function(event) { return !this.can(event); };
+      fsm.transitions  = function()      { return transitions[this.current]; };
+      fsm.isFinished   = function()      { return this.is(terminal); };
+      fsm.transitionTo = function(state) {
+        var event = events.find(function(e) {
+          return e.to === state;
+        });
+        if (event) {
+          this.current = event.from;
+          fsm[event.name]();
+        }
+        else console.error('attempt to transition to non-existent state: ', state);
+      };
+      fsm.error        = cfg.error || function(name, from, to, args, error, msg, e) { throw e || msg; }; // default behavior when something unexpected happens is to throw an exception, but caller can override this behavior if desired (see github issue #3 and #17)
+
+      fsm.event = function(eventName) {
+        if (map.hasOwnProperty(eventName) && typeof fsm[eventName] === "function") {
+          var args = Array.prototype.slice.call(arguments);
+          args.shift(); // get rid of the first argument (eventName)
+          return fsm[eventName].apply(fsm, args);
+        }
+        return fsm.error(name, fsm.current, eventName, args, StateMachine.Error.INVALID_EVENT_NAME, "there is no event named: " + eventName);
+      };
 
       if (initial && !initial.defer)
         fsm[initial.event]();

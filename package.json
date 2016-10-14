@@ -1,13 +1,23 @@
 {
-  "name":            "javascript-state-machine",
-  "description":     "A simple finite state machine library",
-  "homepage":        "https://github.com/jakesgordon/javascript-state-machine",
-  "keywords":        ["state machine", "server", "client"],
-  "author":          "Jake Gordon <jake@codeincomplete.com>",
-  "repository":      {"type": "git", "url": "git://github.com/jakesgordon/javascript-state-machine.git"},
-  "main":            "state-machine.js",
+  "name": "javascript-state-machine",
+  "description": "A simple finite state machine library",
+  "homepage": "https://github.com/jakesgordon/javascript-state-machine",
+  "keywords": [
+    "state machine",
+    "server",
+    "client"
+  ],
+  "author": "Jake Gordon <jake@codeincomplete.com>",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jakesgordon/javascript-state-machine.git"
+  },
+  "main": "state-machine.js",
   "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-concat": "^1.0.0",
+    "grunt-contrib-uglify": "^1.0.1",
     "qunit": "~0.6.2"
   },
-  "version":         "2.3.5"
+  "version": "2.3.7"
 }
