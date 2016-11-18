@@ -5,7 +5,7 @@
     "Jake Gordon <jake@codeincomplete.com>"
   ],
   "description": "a simple finite state machine library",
-  "main": "state-machine.js",
+  "main": ["state-machine.js", "state-machine.min.js"],
   "moduleType": [
     "amd",
     "globals",
@@ -22,6 +22,11 @@
     "node_modules",
     "bower_components",
     "test",
-    "tests"
+    "tests",
+    "demo",
+    "minifier",
+    "index.html",
+    "Rakefile",
+    ".gitignore"
   ]
 }
