@@ -634,6 +634,11 @@ test("wildcard 'from' allows event from any state (github issue #11)", function(
   fsm.pause();   equal(fsm.current, 'paused',  "pause event should transition from running to paused");
   fsm.stop();    equal(fsm.current, 'stopped', "stop event should transition from paused to stopped");
 
+                 deepEqual(fsm.transitions(), ["prepare", "stop"], "ensure wildcard event (stop) is included in available transitions")
+  fsm.prepare(); deepEqual(fsm.transitions(), ["start",   "stop"], "ensure wildcard event (stop) is included in available transitions")
+  fsm.start();   deepEqual(fsm.transitions(), ["pause",   "stop"], "ensure wildcard event (stop) is included in available transitions")
+  fsm.stop();    deepEqual(fsm.transitions(), ["prepare", "stop"], "ensure wildcard event (stop) is included in available transitions")
+
 });
 
 //-----------------------------------------------------------------------------
