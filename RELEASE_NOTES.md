@@ -1,3 +1,20 @@
+Version 3.0.0 (December 2016?)
+------------------------------
+
+I know, I know, I've neglected this library for far too long, so
+lets get it back on track before the end of 2016
+
+ TODO: resolve outstanding github issues and pull requests
+ TODO: replace yui compressor with uglify
+ TODO: better npm integration 
+  ADD: Promise based async transitions
+  ADD: conditional transitions
+  ADD: observable transitions 
+  ADD: composable state machines
+  ADD: better introspection
+  ADD: undo/redo history
+ 
+
 Version 2.3.5 (January 20 2014)
 -------------------------------
 
