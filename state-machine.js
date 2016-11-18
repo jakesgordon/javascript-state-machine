@@ -46,7 +46,7 @@
       var transitions  = {}; // track events allowed from a state            { state: [ event ] }
 
       var add = function(e) {
-        var from = (e.from instanceof Array) ? e.from : (e.from ? [e.from] : [StateMachine.WILDCARD]); // allow 'wildcard' transition if 'from' is not specified
+        var from = Array.isArray(e.from) ? e.from : (e.from ? [e.from] : [StateMachine.WILDCARD]); // allow 'wildcard' transition if 'from' is not specified
         map[e.name] = map[e.name] || {};
         for (var n = 0 ; n < from.length ; n++) {
           transitions[from[n]] = transitions[from[n]] || [];
@@ -75,7 +75,7 @@
       }
 
       fsm.current     = 'none';
-      fsm.is          = function(state) { return (state instanceof Array) ? (state.indexOf(this.current) >= 0) : (this.current === state); };
+      fsm.is          = function(state) { return Array.isArray(state) ? (state.indexOf(this.current) >= 0) : (this.current === state); };
       fsm.can         = function(event) { return !this.transition && (map[event].hasOwnProperty(this.current) || map[event].hasOwnProperty(StateMachine.WILDCARD)); }
       fsm.cannot      = function(event) { return !this.can(event); };
       fsm.transitions = function()      { return transitions[this.current]; };
