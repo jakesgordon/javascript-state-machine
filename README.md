@@ -14,7 +14,7 @@ Using npm:
 
     npm install --save javascript-state-machine
 
-Download [state-machine.js](https://github.com/jakesgordon/javascript-state-machine/raw/master/state-machine.js),
+Or download the source from [state-machine.js](https://github.com/jakesgordon/javascript-state-machine/raw/master/state-machine.js),
 or the [minified version](https://github.com/jakesgordon/javascript-state-machine/raw/master/state-machine.min.js)
 
 Alternatively:
@@ -27,7 +27,7 @@ Alternatively:
  * No 3rd party library is required
  * Demo can be found in /index.html
  * QUnit (browser) tests can be found in /test/index.html
- * QUnit (headless) tests can be run with "node test/runner.js" (after installing node-qunit with "npm install")
+ * QUnit (headless) tests can be run with "npm run test" (after "npm install")
 
 Usage
 =====
@@ -359,8 +359,4 @@ Contact
 If you have any ideas, feedback, requests or bug reports, you can reach me at
 [jake@codeincomplete.com](mailto:jake@codeincomplete.com), or via
 my website: [Code inComplete](http://codeincomplete.com/)
-
-
-
-
 
