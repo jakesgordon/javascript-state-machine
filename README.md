@@ -214,10 +214,10 @@ For example, using jQuery effects:
         },
 
         onleavegame: function() {
-          $('#game').slideDown('slow', function() {
+          $('#game').slideUp('slow', function() {
             fsm.transition();
           };
-          return StateMachine.ASYNC; // tell StateMachine to defer next state until we call transition (in slideDown callback above)
+          return StateMachine.ASYNC; // tell StateMachine to defer next state until we call transition (in slideUp callback above)
         }
 
       }
