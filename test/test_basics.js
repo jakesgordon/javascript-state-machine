@@ -114,6 +114,24 @@ test("is", function() {
 
 //-----------------------------------------------------------------------------
 
+test("states", function() {
+
+  var fsm = StateMachine.create({
+    initial: 'green',
+    events: [
+      { name: 'warn',   from: 'green',  to: 'yellow' },
+      { name: 'panic',  from: 'yellow', to: 'red'    },
+      { name: 'calm',   from: 'red',    to: 'yellow' },
+      { name: 'clear',  from: 'yellow', to: 'green'  },
+      { name: 'finish', from: 'green',  to: 'done'   },
+  ]});
+
+  deepEqual(fsm.states(), [ 'done', 'green', 'none', 'red', 'yellow' ]);
+
+});
+
+//-----------------------------------------------------------------------------
+
 test("transitions", function() {
 
   var fsm = StateMachine.create({

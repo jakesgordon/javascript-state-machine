@@ -54,6 +54,8 @@
 
           map[e.name][from[n]] = e.to || from[n]; // allow no-op transition if 'to' is not specified
         }
+        if (e.to)
+          transitions[e.to] = transitions[e.to] || [];
       };
 
       if (initial) {
@@ -81,6 +83,7 @@
       fsm.transitions = function()      { return (transitions[this.current] || []).concat(transitions[StateMachine.WILDCARD] || []); };
       fsm.isFinished  = function()      { return this.is(terminal); };
       fsm.error       = cfg.error || function(name, from, to, args, error, msg, e) { throw e || msg; }; // default behavior when something unexpected happens is to throw an exception, but caller can override this behavior if desired (see github issue #3 and #17)
+      fsm.states      = function() { return Object.keys(transitions).sort() };
 
       if (initial && !initial.defer)
         fsm[initial.event]();
