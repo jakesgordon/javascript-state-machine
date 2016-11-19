@@ -144,7 +144,7 @@
       return function() {
 
         var from  = this.current;
-        var to    = map[from] || map[StateMachine.WILDCARD] || from;
+        var to    = map[from] || (map[StateMachine.WILDCARD] != StateMachine.WILDCARD ? map[StateMachine.WILDCARD] : from) || from;
         var args  = Array.prototype.slice.call(arguments); // turn arguments into pure array
 
         if (this.transition)
