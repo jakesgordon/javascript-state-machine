@@ -22,6 +22,7 @@ Version 2.4.0 (ETA - December 2016)
  * fix for javascript error when running in jasmine/node (issue #88)
  * exclude build files from bower install (pull request #75)
  * ensure WILDCARD events are included in list of available transitions() (issue #93)
+ * fix FSM getting stuck into "*" state when using double wildcard (issue #64)
 
 Version 2.3.5 (January 20 2014)
 -------------------------------
