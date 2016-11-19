@@ -76,6 +76,9 @@ test("can & cannot", function() {
   ok(fsm.cannot('panic'), "should NOT be able to panic from red state")
   ok(fsm.can('calm'),     "should be able to calm from red state")
 
+  equal(fsm.can('jibber'),    false, "unknown event should not crash")
+  equal(fsm.cannot('jabber'), true,  "unknown event should not crash")
+
 });
 
 //-----------------------------------------------------------------------------
