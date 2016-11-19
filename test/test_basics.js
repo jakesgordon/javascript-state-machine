@@ -119,14 +119,15 @@ test("transitions", function() {
   var fsm = StateMachine.create({
     initial: 'green',
     events: [
-      { name: 'warn',  from: 'green',  to: 'yellow' },
-      { name: 'panic', from: 'yellow', to: 'red'    },
-      { name: 'calm',  from: 'red',    to: 'yellow' },
-      { name: 'clear', from: 'yellow', to: 'green'  }
+      { name: 'warn',   from: 'green',  to: 'yellow' },
+      { name: 'panic',  from: 'yellow', to: 'red'    },
+      { name: 'calm',   from: 'red',    to: 'yellow' },
+      { name: 'clear',  from: 'yellow', to: 'green'  },
+      { name: 'finish', from: 'green',  to: 'done'   },
   ]});
 
   equal(fsm.current, 'green', 'current state should be yellow');
-  deepEqual(fsm.transitions(), ['warn'], 'current transition(s) should be yellow');
+  deepEqual(fsm.transitions(), ['warn', 'finish'], 'current transition(s) should be yellow');
 
   fsm.warn();
   equal(fsm.current, 'yellow', 'current state should be yellow');
@@ -142,7 +143,12 @@ test("transitions", function() {
 
   fsm.clear();
   equal(fsm.current, 'green', 'current state should be green');
-  deepEqual(fsm.transitions(), ['warn'], 'current transion(s) should be warn');
+  deepEqual(fsm.transitions(), ['warn', 'finish'], 'current transion(s) should be warn');
+
+  fsm.finish();
+  equal(fsm.current, 'done', 'current state should be done');
+  deepEqual(fsm.transitions(), [], 'current transition(s) should be empty');
+
 });
 
 //-----------------------------------------------------------------------------
