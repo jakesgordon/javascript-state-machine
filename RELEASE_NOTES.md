@@ -11,12 +11,12 @@
       ADD: composable state machines
       ADD: better introspection
       ADD: undo/redo history
+      ADD: use camel casing for callback methods (instead of all lower case)
  
 Version 2.4.0 (ETA - December 2016)
 --------------------
 
  TODO: resolve outstanding github issues and pull requests
- TODO: replace yui compressor with uglify
 
  * added npm install instructions to readme
  * fix for javascript error when running in jasmine/node (issue #88)
@@ -25,6 +25,7 @@ Version 2.4.0 (ETA - December 2016)
  * fix FSM getting stuck into "*" state when using double wildcard (issue #64)
  * function (fsm.states) returning list of all available states in the machine would help automated testing (issue #54)
  * state machine hides callback exceptions (issue #62)
+ * replaced (dev dependency) YUI compressor with uglify-js for building minified version
 
 Version 2.3.5 (January 20 2014)
 -------------------------------

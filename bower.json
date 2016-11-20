@@ -24,9 +24,7 @@
     "test",
     "tests",
     "demo",
-    "minifier",
     "index.html",
-    "Rakefile",
     ".gitignore"
   ]
 }
