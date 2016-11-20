@@ -13,7 +13,13 @@ or the [minified version](https://github.com/jakesgordon/javascript-state-machin
 
 # Usage
 
-Include `state-machine.js` in your web application, or, for npm `require('javascript-state-machine')`.
+Include `state-machine.js` in your web application:
+
+    <script src='state-machine.js'></script>
+
+Or for npm:
+
+    var StateMachine = require('javascript-state-machine');
 
 In its simplest form, create a standalone state machine using:
 
