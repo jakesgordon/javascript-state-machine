@@ -1,10 +1,6 @@
 # Javascript Finite State Machine (v2.4.0)
 
-This standalone javascript micro-framework provides a finite state machine for your pleasure.
-
- * You can find the [code here](https://github.com/jakesgordon/javascript-state-machine)
- * You can find a [description here](http://codeincomplete.com/posts/2013/1/26/javascript_state_machine_v2_2_0/)
- * You can find a [working demo here](http://codeincomplete.com/posts/2011/8/19/javascript_state_machine_v2/example/)
+A standalone library for finite state machines.
 
 # Download
 
@@ -340,6 +336,18 @@ define a custom `error` handler:
 # Release Notes
 
 See [RELEASE NOTES](https://github.com/jakesgordon/javascript-state-machine/blob/master/RELEASE_NOTES.md) file.
+
+# Related Links
+
+ * You can find the [code on github](https://github.com/jakesgordon/javascript-state-machine)
+ * You can find a [working demo here](http://codeincomplete.com/posts/2011/8/19/javascript_state_machine_v2/example/)
+
+ * [v2.3 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2-3-0/)
+ * [v2.2 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2-2-0/)
+ * [v2.1 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2-1-0/)
+ * [v2.0 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2)
+ * [v1.2 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v1-2-0)
+ * [v1.0 release announcement](http://codeincomplete.com/posts/javascript-state-machine)
 
 # License
 
