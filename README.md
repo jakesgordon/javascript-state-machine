@@ -334,7 +334,7 @@ define a custom `error` handler:
 
     var fsm = StateMachine.create({
       initial: 'green',
-      error: function(eventName, from, to, args, errorCode, errorMessage) {
+      error: function(eventName, from, to, args, errorCode, errorMessage, originalException) {
         return 'event ' + eventName + ' was naughty :- ' + errorMessage;
       },
       events: [
