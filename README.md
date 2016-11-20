@@ -46,6 +46,7 @@ along with the following members:
  * fsm.can(e)        - return true if event `e` can be fired in the current state
  * fsm.cannot(e)     - return true if event `e` cannot be fired in the current state
  * fsm.transitions() - return list of events that are allowed from the current state
+ * fsm.states()      - return list of all possible states.
 
 # Multiple 'from' and 'to' states for a single event
 
