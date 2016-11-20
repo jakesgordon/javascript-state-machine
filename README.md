@@ -340,21 +340,20 @@ define a custom `error` handler:
  * Run tests in console with `npm test`
  * Please include tests with pull requests.
 
-# Release Notes
-
-See [RELEASE NOTES](https://github.com/jakesgordon/javascript-state-machine/blob/master/RELEASE_NOTES.md) file.
-
 # Related Links
 
  * You can find the [code on github](https://github.com/jakesgordon/javascript-state-machine)
  * You can find a [working demo here](http://codeincomplete.com/posts/2011/8/19/javascript_state_machine_v2/example/)
+ * [v2.3 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2-3-0/) - 3/15/2014
+ * [v2.2 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2-2-0/) - 1/26/2013
+ * [v2.1 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2-1-0/) - 1/7/2012
+ * [v2.0 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2) - 8/19/2011
+ * [v1.2 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v1-2-0) - 6/21/2011
+ * [v1.0 release announcement](http://codeincomplete.com/posts/javascript-state-machine) - 6/1/2011
 
- * [v2.3 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2-3-0/)
- * [v2.2 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2-2-0/)
- * [v2.1 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2-1-0/)
- * [v2.0 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2)
- * [v1.2 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v1-2-0)
- * [v1.0 release announcement](http://codeincomplete.com/posts/javascript-state-machine)
+# Release Notes
+
+See [RELEASE NOTES](https://github.com/jakesgordon/javascript-state-machine/blob/master/RELEASE_NOTES.md) file.
 
 # License
 
