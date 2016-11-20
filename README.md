@@ -73,10 +73,10 @@ This example will create an object with 2 event methods:
 The `rest` event will always transition to the `hungry` state, while the `eat` event
 will transition to a state that is dependent on the current state.
 
->> NOTE: The `rest` event could use a wildcard '*' for the 'from' state if it should be
+> NOTE: The `rest` event could use a wildcard '*' for the 'from' state if it should be
 allowed from any current state.
 
->> NOTE: The `rest` event in the above example can also be specified as multiple events with
+> NOTE: The `rest` event in the above example can also be specified as multiple events with
 the same name if you prefer the verbose approach.
 
 # Callbacks
@@ -88,7 +88,7 @@ the same name if you prefer the verbose approach.
  * `onenterSTATE`  - fired when entering the new state
  * `onafterEVENT`  - fired after the event
 
->> (using your **specific** EVENT and STATE names)
+> (using your **specific** EVENT and STATE names)
 
 For convenience, the 2 most useful callbacks can be shortened:
 
@@ -142,7 +142,7 @@ Additionally, they can be added and removed from the state machine at any time:
 
 The order in which callbacks occur is as follows:
 
->> assume event **go** transitions from **red** state to **green**
+> assume event **go** transitions from **red** state to **green**
 
  * `onbeforego`    - specific handler for the **go** event only
  * `onbeforeevent` - generic  handler for all events
@@ -153,7 +153,7 @@ The order in which callbacks occur is as follows:
  * `onaftergo`     - specific handler for the **go** event only
  * `onafterevent`  - generic  handler for all events
 
->> NOTE: the legacy `onchangestate` handler has been deprecated and will be removed in a future version
+> NOTE: the legacy `onchangestate` handler has been deprecated and will be removed in a future version
 
 You can affect the event in 3 ways:
 
@@ -207,7 +207,7 @@ For example, using jQuery effects:
       }
     });
 
->> _NOTE: If you decide to cancel the ASYNC event, you can call `fsm.transition.cancel();`
+> NOTE: If you decide to cancel the ASYNC event, you can call `fsm.transition.cancel();`
 
 # State Machine Classes
 
@@ -242,8 +242,8 @@ instances:
 
 This should be easy to adjust to fit your appropriate mechanism for object construction.
 
->> _NOTE: the `startup` event can be given any name, but it must be present in some form to 
-   ensure that each instance constructed is initialized with its own unique `current` state._
+> NOTE: the `startup` event can be given any name, but it must be present in some form to 
+  ensure that each instance constructed is initialized with its own unique `current` state.
 
 # Initialization Options
 
@@ -302,11 +302,11 @@ same as the first example in this section where you simply define your own start
 
 So you have a number of choices available to you when initializing your state machine.
 
->> _IMPORTANT NOTE: if you are using the pattern described in the previous section "State Machine
-   Classes", and wish to declare an `initial` state in this manner, you MUST use the `defer: true`
-   attribute and manually call the starting event in your constructor function. This will ensure
-   that each instance gets its own unique `current` state, rather than an (unwanted) shared
-   `current` state on the prototype object itself._
+> IMPORTANT NOTE: if you are using the pattern described in the previous section "State Machine
+  Classes", and wish to declare an `initial` state in this manner, you MUST use the `defer: true`
+  attribute and manually call the starting event in your constructor function. This will ensure
+  that each instance gets its own unique `current` state, rather than an (unwanted) shared
+  `current` state on the prototype object itself.
 
 # Handling Failures
 
@@ -344,12 +344,12 @@ define a custom `error` handler:
 
  * You can find the [code on github](https://github.com/jakesgordon/javascript-state-machine)
  * You can find a [working demo here](http://codeincomplete.com/posts/2011/8/19/javascript_state_machine_v2/example/)
- * [v2.3 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2-3-0/) - 3/15/2014
- * [v2.2 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2-2-0/) - 1/26/2013
- * [v2.1 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2-1-0/) - 1/7/2012
- * [v2.0 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2) - 8/19/2011
- * [v1.2 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v1-2-0) - 6/21/2011
- * [v1.0 release announcement](http://codeincomplete.com/posts/javascript-state-machine) - 6/1/2011
+ * [v2.3 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2-3-0/)
+ * [v2.2 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2-2-0/)
+ * [v2.1 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2-1-0/)
+ * [v2.0 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v2)
+ * [v1.2 release announcement](http://codeincomplete.com/posts/javascript-state-machine-v1-2-0)
+ * [v1.0 release announcement](http://codeincomplete.com/posts/javascript-state-machine)
 
 # Release Notes
 
