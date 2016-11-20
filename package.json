@@ -14,7 +14,9 @@
   },
   "main": "state-machine.js",
   "files": [
-    "state-machine.js"
+    "state-machine.js",
+    "state-machine.min.js",
+    "LICENSE"
   ],
   "devDependencies": {
     "local-web-server": "~1.2.6",
