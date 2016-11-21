@@ -1,6 +1,7 @@
-# Javascript Finite State Machine (v2.4.0)
+# Javascript Finite State Machine
 
 [![Build Status](https://travis-ci.org/jakesgordon/javascript-state-machine.svg?branch=master)](https://travis-ci.org/jakesgordon/javascript-state-machine)
+[![NPM version](https://img.shields.io/npm/v/javascript-state-machine.svg?style=flat)](https://www.npmjs.org/package/javascript-state-machine)
 
 A standalone library for finite state machines.
 
