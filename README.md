@@ -1,5 +1,7 @@
 # Javascript Finite State Machine (v2.4.0)
 
+[![Build Status](https://travis-ci.org/jakesgordon/javascript-state-machine.svg?branch=master)](https://travis-ci.org/jakesgordon/javascript-state-machine)
+
 A standalone library for finite state machines.
 
 # Download
