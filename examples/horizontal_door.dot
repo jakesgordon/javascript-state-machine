@@ -1,0 +1,7 @@
+digraph "door" {
+  rankdir=LR;
+  "closed";
+  "open";
+  "closed" -> "open" [ color="blue" ; headport="n" ; label=" open " ; tailport="n" ];
+  "open" -> "closed" [ color="red" ; headport="s" ; label=" close " ; tailport="s" ];
+}

@@ -1,17 +1,24 @@
+Version 3.0.0 (ETA - January 2017)
+----------------------------------
 
-      FUTURE Version 3.0.0 (ETA - Early 2017)
-      ------------------------------
+**IMPORTANT NOTE**: this version includes **breaking changes** that will require code updates.
 
-      I know, I know, I've neglected this library for far too long, so lets get it back on track...
+Please read [UPGRADING FROM 2.x](docs/upgrading-from-v2.md) for details. Highlights include:
 
-        ADD: Promise based async transitions
-        ADD: conditional transitions
-        ADD: observable transitions 
-        ADD: composable state machines
-        ADD: better introspection
-        ADD: undo/redo history
-        ADD: use camel casing for callback/observer methods (instead of all lower case)
- 
+  * Improved Construction.
+  * Arbitrary Data and Methods.
+  * Observable Transitions
+  * Conditional Transitions
+  * Promise-based Asynchronous Transitions
+  * Improved Transition Lifecycle Events
+  * State History
+  * Visualization
+  * Webpack build system
+  * ...
+
+<br>
+<br>
+
 Version 2.4.0 (November 20 2016)
 --------------------------------
 

@@ -1,32 +1,58 @@
 {
   "name": "javascript-state-machine",
-  "description": "A simple finite state machine library",
+  "description": "A finite state machine library",
   "homepage": "https://github.com/jakesgordon/javascript-state-machine",
-  "keywords": [
-    "state machine",
-    "server",
-    "client"
-  ],
-  "author": "Jake Gordon <jake@codeincomplete.com>",
   "repository": {
     "type": "git",
     "url": "git://github.com/jakesgordon/javascript-state-machine.git"
   },
-  "main": "state-machine.js",
-  "files": [
-    "state-machine.js",
-    "state-machine.min.js",
-    "LICENSE"
+  "keywords": [
+    "finite state machine",
+    "state machine",
+    "server",
+    "client"
   ],
-  "devDependencies": {
-    "local-web-server": "~1.2.6",
-    "qunit": "~0.9.1",
-    "uglify-js": "^2.7.4"
+  "author": {
+    "name": "Jake Gordon",
+    "email": "jake@codeincomplete.com"
   },
-  "version": "2.4.0",
+  "maintainers": [
+    {
+      "name": "Jake Gordon",
+      "email": "jake@codeincomplete.com"
+    }
+  ],
+  "license": "LGPL-3.0",
+  "main": "lib/state-machine.js",
+  "files": [
+    "lib/**/*.js",
+    "dist/**/*.js"
+  ],
+  "directories": {},
+  "devDependencies": {
+    "ava": "^0.17.0",
+    "fs-sync": "^1.0.3",
+    "glob": "^7.1.1",
+    "nyc": "^10.0.0",
+    "pascal-case": "^2.0.0",
+    "uglify-js": "^2.7.5",
+    "webpack": "^2.2.0-rc.1"
+  },
+  "version": "3.0.0",
   "scripts": {
-    "start": "ws --rewrite '/test -> /test/'",
-    "test": "node test/runner",
-    "minify": "uglifyjs state-machine.js --output state-machine.min.js --compress --mangle --stats"
+    "start": "npm run watch",
+    "build": "npm run bundle && npm run minify",
+    "bundle": "webpack",
+    "minify": "bin/minify",
+    "watch": "ava --watch",
+    "test": "nyc ava -v && nyc report --reporter=html"
+  },
+  "ava": {
+    "files": [
+      "test/**/*.js"
+    ],
+    "source": [
+      "src/**/*.js"
+    ]
   }
 }

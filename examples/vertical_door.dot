@@ -1,0 +1,6 @@
+digraph "fsm" {
+  "closed";
+  "open";
+  "closed" -> "open" [ label=" open " ];
+  "open" -> "closed" [ label=" close " ];
+}
