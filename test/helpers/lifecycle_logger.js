@@ -3,7 +3,7 @@ module.exports = function() {
 
   'use strict'
 
-  let entries = [],
+  var entries = [],
       logger = function(lifecycle) {
         var entry = {
               event:      lifecycle.event,
