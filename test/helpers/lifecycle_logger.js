@@ -1,6 +1,8 @@
 
 module.exports = function() {
 
+  'use strict'
+
   let entries = [],
       logger = function(lifecycle) {
         var entry = {
