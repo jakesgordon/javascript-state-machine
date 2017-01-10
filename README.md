@@ -3,6 +3,8 @@
 [![NPM version](https://img.shields.io/npm/v/javascript-state-machine.svg?style=flat)](https://www.npmjs.org/package/javascript-state-machine)
 [![Build Status](https://travis-ci.org/jakesgordon/javascript-state-machine.svg?branch=master)](https://travis-ci.org/jakesgordon/javascript-state-machine)
 
+> **NOTE**: for a a sneak preview of what's coming next, [read the documentation for v3.0.0-rc.1](https://github.com/jakesgordon/javascript-state-machine/tree/v3)
+
 A standalone library for finite state machines.
 
 # Download
