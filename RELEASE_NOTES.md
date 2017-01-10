@@ -1,5 +1,5 @@
-Version 3.0.0 (ETA - January 2017)
-----------------------------------
+Version 3.0.0-rc.1 (January 10 2017)
+------------------------------------
 
 **IMPORTANT NOTE**: this version includes **breaking changes** that will require code updates.
 
