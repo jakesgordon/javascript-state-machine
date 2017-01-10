@@ -36,7 +36,7 @@ In a browser:
 Using npm:
 
 ```shell
-  npm install --save-dev javascript-state-machine
+  npm install --save-dev javascript-state-machine@3.0.0-rc.1        # note explicit pre-release version
 ```
 
 In Node.js:
