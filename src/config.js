@@ -11,7 +11,7 @@ function Config(options, StateMachine) {
 
   options = options || {};
 
-  this.source      = options; // preserving original options helps with visualize plugin
+  this.options     = options; // preserving original options can be useful (e.g visualize plugin)
   this.defaults    = StateMachine.defaults;
   this.states      = [];
   this.transitions = [];

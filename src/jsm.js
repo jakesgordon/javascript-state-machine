@@ -71,7 +71,7 @@ mixin(JSM.prototype, {
   transit: function(transition, from, to, args) {
 
     var lifecycle = this.config.lifecycle,
-        changed   = from !== to;
+        changed   = this.config.options.observeUnchangedState || (from !== to);
 
     if (!to)
       return this.context.onInvalidTransition(transition, from, to);

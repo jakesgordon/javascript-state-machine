@@ -126,6 +126,94 @@ test('transitions with multiple from states', t => {
 
 //-------------------------------------------------------------------------------------------------
 
+test("transitions that dont change state, dont trigger enter/leave lifecycle events", t => {
+
+  var logger = new LifecycleLogger(),
+      fsm = new StateMachine({
+        transitions: [
+          { name: 'noop', from: 'none', to: 'none' }
+        ],
+        methods: {
+          onBeforeTransition: logger,
+          onBeforeNoop:       logger,
+          onLeaveState:       logger,
+          onLeaveNone:        logger,
+          onTransition:       logger,
+          onEnterState:       logger,
+          onEnterNone:        logger,
+          onNone:             logger,
+          onAfterTransition:  logger,
+          onAfterNoop:        logger,
+          onNoop:             logger
+        }
+      })
+
+  t.is(fsm.state, 'none')
+  t.deepEqual(logger.log, [])
+
+  fsm.noop()
+
+  t.is(fsm.state, 'none')
+  t.deepEqual(logger.log, [
+    { event: 'onBeforeTransition', transition: 'noop', from: 'none', to: 'none', current: 'none' },
+    { event: 'onBeforeNoop',       transition: 'noop', from: 'none', to: 'none', current: 'none' },
+    { event: 'onTransition',       transition: 'noop', from: 'none', to: 'none', current: 'none' },
+    { event: 'onAfterTransition',  transition: 'noop', from: 'none', to: 'none', current: 'none' },
+    { event: 'onAfterNoop',        transition: 'noop', from: 'none', to: 'none', current: 'none' },
+    { event: 'onNoop',             transition: 'noop', from: 'none', to: 'none', current: 'none' }
+  ])
+
+})
+
+//-------------------------------------------------------------------------------------------------
+
+test("transitions that dont change state, can be configured to trigger enter/leave lifecycle events", t => {
+
+  var logger = new LifecycleLogger(),
+      fsm = new StateMachine({
+        observeUnchangedState: true,
+        transitions: [
+          { name: 'noop', from: 'none', to: 'none' }
+        ],
+        methods: {
+          onBeforeTransition: logger,
+          onBeforeNoop:       logger,
+          onLeaveState:       logger,
+          onLeaveNone:        logger,
+          onTransition:       logger,
+          onEnterState:       logger,
+          onEnterNone:        logger,
+          onNone:             logger,
+          onAfterTransition:  logger,
+          onAfterNoop:        logger,
+          onNoop:             logger
+        }
+      })
+
+  t.is(fsm.state, 'none')
+  t.deepEqual(logger.log, [])
+
+  fsm.noop()
+
+  t.is(fsm.state, 'none')
+  t.deepEqual(logger.log, [
+    { event: 'onBeforeTransition', transition: 'noop', from: 'none', to: 'none', current: 'none' },
+    { event: 'onBeforeNoop',       transition: 'noop', from: 'none', to: 'none', current: 'none' },
+    { event: 'onLeaveState',       transition: 'noop', from: 'none', to: 'none', current: 'none' },
+    { event: 'onLeaveNone',        transition: 'noop', from: 'none', to: 'none', current: 'none' },
+    { event: 'onTransition',       transition: 'noop', from: 'none', to: 'none', current: 'none' },
+    { event: 'onEnterState',       transition: 'noop', from: 'none', to: 'none', current: 'none' },
+    { event: 'onEnterNone',        transition: 'noop', from: 'none', to: 'none', current: 'none' },
+    { event: 'onNone',             transition: 'noop', from: 'none', to: 'none', current: 'none' },
+    { event: 'onAfterTransition',  transition: 'noop', from: 'none', to: 'none', current: 'none' },
+    { event: 'onAfterNoop',        transition: 'noop', from: 'none', to: 'none', current: 'none' },
+    { event: 'onNoop',             transition: 'noop', from: 'none', to: 'none', current: 'none' }
+  ])
+
+})
+
+//-------------------------------------------------------------------------------------------------
+
 test("transition methods with dash or underscore are camelized", t => {
 
   var fsm = new StateMachine({

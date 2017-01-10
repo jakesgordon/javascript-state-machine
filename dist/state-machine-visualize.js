@@ -167,12 +167,12 @@ dotcfg.states = function(config, options) {
 dotcfg.transitions = function(config, options) {
   var n, max, transition,
       init        = config.init,
-      transitions = config.source.transitions || [], // easier to visualize using the ORIGINAL transition declarations rather than our run-time mapping
+      transitions = config.options.transitions || [], // easier to visualize using the ORIGINAL transition declarations rather than our run-time mapping
       output = [];
   if (options.init && init.active)
     dotcfg.transition(init.name, init.from, init.to, init.dot, config, options, output)
   for (n = 0, max = transitions.length ; n < max ; n++) {
-    transition = config.source.transitions[n]
+    transition = config.options.transitions[n]
     dotcfg.transition(transition.name, transition.from, transition.to, transition.dot, config, options, output)
   }
   return output
