@@ -86,7 +86,7 @@ function build(target, config) {
 
 //-----------------------------------------------------------------------------------------------
 
-StateMachine.version  = '3.0.0-rc.1';
+StateMachine.version  = '3.0.1';
 StateMachine.factory  = factory;
 StateMachine.apply    = apply;
 StateMachine.defaults = {

@@ -29,7 +29,7 @@ In a browser:
 Using npm:
 
 ```shell
-  npm install --save-dev javascript-state-machine@3.0.0-rc.1        # note explicit pre-release version
+  npm install --save-dev javascript-state-machine
 ```
 
 In Node.js:

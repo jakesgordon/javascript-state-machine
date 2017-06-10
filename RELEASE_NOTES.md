@@ -1,3 +1,12 @@
+Version 3.0.1 (June 10th 2017)
+------------------------------
+
+ * First 3.x release - see 3.0.0-rc.1 release notes below
+
+ * fix issue #109 - rejection from async lifecycle method does not reject transitions promise
+ * fix issue #106 - async transition: forward resolved value
+ * fix issue #107 - lifecycle event name breaks for all uppercase 
+
 Version 3.0.0-rc.1 (January 10 2017)
 ------------------------------------
 
