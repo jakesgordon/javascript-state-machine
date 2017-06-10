@@ -1,0 +1,10 @@
+digraph "matter" {
+  rankdir=LR;
+  "solid";
+  "liquid";
+  "gas";
+  "solid" -> "liquid" [ headport="nw" ; label=" melt " ];
+  "liquid" -> "solid" [ headport="se" ; label=" freeze " ];
+  "liquid" -> "gas" [ headport="nw" ; label=" vaporize " ];
+  "gas" -> "liquid" [ headport="se" ; label=" condense " ];
+}

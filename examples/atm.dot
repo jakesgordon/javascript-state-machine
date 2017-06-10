@@ -1,0 +1,31 @@
+digraph "ATM" {
+  "ready";
+  "pin";
+  "action";
+  "return-card";
+  "deposit-account";
+  "deposit-amount";
+  "confirm-deposit";
+  "collect-envelope";
+  "continue";
+  "withdrawal-account";
+  "withdrawal-amount";
+  "confirm-withdrawal";
+  "dispense-cash";
+  "ready" -> "pin" [ label=" insert-card " ];
+  "pin" -> "action" [ label=" confirm " ];
+  "pin" -> "return-card" [ label=" reject " ];
+  "return-card" -> "ready" [ label=" withdraw " ];
+  "action" -> "deposit-account" [ label=" deposit " ];
+  "deposit-account" -> "deposit-amount" [ label=" provide " ];
+  "deposit-amount" -> "confirm-deposit" [ label=" provide " ];
+  "confirm-deposit" -> "collect-envelope" [ label=" confirm " ];
+  "collect-envelope" -> "continue" [ label=" provide " ];
+  "action" -> "withdrawal-account" [ label=" withdraw " ];
+  "withdrawal-account" -> "withdrawal-amount" [ label=" provide " ];
+  "withdrawal-amount" -> "confirm-withdrawal" [ label=" provide " ];
+  "confirm-withdrawal" -> "dispense-cash" [ label=" confirm " ];
+  "dispense-cash" -> "continue" [ label=" withdraw " ];
+  "continue" -> "action" [ label=" continue " ];
+  "continue" -> "return-card" [ label=" finish " ];
+}

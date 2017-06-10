@@ -1,0 +1,13 @@
+digraph "wizard" {
+  rankdir=LR;
+  "A";
+  "B";
+  "C";
+  "D";
+  "A" -> "B" [ headport="w" ; label=" step " ; tailport="ne" ];
+  "B" -> "C" [ headport="w" ; label=" step " ; tailport="e" ];
+  "C" -> "D" [ headport="w" ; label=" step " ; tailport="e" ];
+  "B" -> "A" [ headport="se" ; label=" reset " ; tailport="s" ];
+  "C" -> "A" [ headport="se" ; label=" reset " ; tailport="s" ];
+  "D" -> "A" [ headport="se" ; label=" reset " ; tailport="s" ];
+}

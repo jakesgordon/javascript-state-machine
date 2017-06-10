@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+
+//=================================================================================================
+//
+// This script is used (by npm run build) to minify the distributed source code
+//
+//=================================================================================================
+
+var fs     = require('fs-sync'),
+    path   = require('path'),
+    uglify = require('uglify-js'),
+    target = 'dist';
+
+//-------------------------------------------------------------------------------------------------
+
+fs.expand("lib/**/*.js")
+    .map(minify);
+
+//-------------------------------------------------------------------------------------------------
+
+function minify(file) {
+  var name     = output_name(file),
+      expanded = path.join(target, name + '.js'),
+      minified = path.join(target, name + '.min.js')
+
+  console.log('copied ' + file + ' to ' + expanded + ' and minified as ' + minified);
+
+  fs.copy(file, expanded, { force: true });
+  fs.write(minified, uglify.minify(expanded).code);
+}
+
+function output_name(file) {
+  var name = path.basename(file, '.js');
+  if (name === 'state-machine')
+    return 'state-machine'
+  else
+    return 'state-machine-' + name
+}
+
+//-------------------------------------------------------------------------------------------------
