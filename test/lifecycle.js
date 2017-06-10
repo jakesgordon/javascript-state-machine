@@ -587,7 +587,8 @@ test('lifecycle events can be cancelled using a promise', t => {
     }
 
     fsm.step('additional', 'arguments')
-       .then(done)
+       .then(function() { done('promise was rejected so this should never happen'); })
+       .catch(done)
 
   })
 })

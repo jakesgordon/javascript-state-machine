@@ -108,6 +108,7 @@ mixin(JSM.prototype, {
 
   beginTransit: function()          { this.pending = true;                 },
   endTransit:   function(result)    { this.pending = false; return result; },
+  failTransit:  function(result)    { this.pending = false; throw result;  },
   doTransit:    function(lifecycle) { this.state = lifecycle.to;           },
 
   observe: function(args) {
@@ -153,7 +154,7 @@ mixin(JSM.prototype, {
           result = observer[event].apply(observer, args);
       if (result && typeof result.then === 'function') {
         return result.then(this.observeEvents.bind(this, events, args, event))
-                     .catch(this.endTransit.bind(this))
+                     .catch(this.failTransit.bind(this))
       }
       else if (result === false) {
         return this.endTransit(false);
