@@ -131,9 +131,9 @@ mixin(JSM.prototype, {
     return [ event, result, true ]
   },
 
-  observeEvents: function(events, args, previousEvent) {
+  observeEvents: function(events, args, previousEvent, previousResult) {
     if (events.length === 0) {
-      return this.endTransit(true);
+      return this.endTransit(previousResult === undefined ? true : previousResult);
     }
 
     var event     = events[0][0],
@@ -146,7 +146,7 @@ mixin(JSM.prototype, {
 
     if (observers.length === 0) {
       events.shift();
-      return this.observeEvents(events, args, event);
+      return this.observeEvents(events, args, event, previousResult);
     }
     else {
       var observer = observers.shift(),
@@ -159,7 +159,7 @@ mixin(JSM.prototype, {
         return this.endTransit(false);
       }
       else {
-        return this.observeEvents(events, args, event);
+        return this.observeEvents(events, args, event, result);
       }
     }
   },

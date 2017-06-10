@@ -490,7 +490,7 @@ test('lifecycle events can be deferred using a promise', t => {
 
     var logger = new LifecycleLogger(),
         start  = Date.now(),
-        pause  = function(ms) { return new Promise(function(resolve, reject) { setTimeout(resolve, ms); }); },
+        pause  = function(ms) { return new Promise(function(resolve, reject) { setTimeout(function() { resolve('resolved') }, ms); }); },
         fsm    = new StateMachine({
           transitions: [
             { name: 'step', from: 'none', to: 'complete' }
@@ -506,11 +506,11 @@ test('lifecycle events can be deferred using a promise', t => {
             onLeaveNone:        function(lifecycle, a, b) { logger(lifecycle, a, b); return pause(100); },
             onLeaveComplete:    function(lifecycle, a, b) { logger(lifecycle, a, b); return pause(100); },
             onAfterTransition:  function(lifecycle, a, b) { logger(lifecycle, a, b); return pause(100); },
-            onAfterStep:        function(lifecycle, a, b) { logger(lifecycle, a, b); return done();     }
+            onAfterStep:        function(lifecycle, a, b) { logger(lifecycle, a, b); return pause(100); }
           }
         });
 
-    function done() {
+    function done(answer) {
       var duration = Date.now() - start;
       t.is(fsm.state, 'complete')
       t.is(duration > 600, true)
@@ -525,10 +525,12 @@ test('lifecycle events can be deferred using a promise', t => {
         { event: 'onAfterTransition',  transition: 'step', from: 'none', to: 'complete', current: 'complete', args: [ 'additional', 'arguments' ] },
         { event: 'onAfterStep',        transition: 'step', from: 'none', to: 'complete', current: 'complete', args: [ 'additional', 'arguments' ] },
       ])
+      t.is(answer, 'resolved');
       resolveTest()
     }
 
     fsm.step('additional', 'arguments')
+       .then(done);
 
   });
 });
@@ -542,15 +544,12 @@ test('lifecycle events can be cancelled using a promise', t => {
         start  = Date.now(),
         pause  = function(ms) {
           return new Promise(function(resolve, reject) {
-            setTimeout(resolve, ms);
+            setTimeout(function() { resolve('resolved') }, ms);
           });
         },
         cancel = function(ms) {
           return new Promise(function(resolve, reject) {
-            setTimeout(function() {
-              reject();
-              done();
-            }, ms);
+            setTimeout(function() { reject('rejected'); }, ms);
           });
         },
         fsm = new StateMachine({
@@ -572,7 +571,7 @@ test('lifecycle events can be cancelled using a promise', t => {
           }
         });
 
-    function done() {
+    function done(answer) {
       var duration = Date.now() - start;
       t.is(fsm.state, 'none');
       t.is(duration > 300, true);
@@ -583,10 +582,12 @@ test('lifecycle events can be cancelled using a promise', t => {
         { event: 'onLeaveNone',        transition: 'step', from: 'none', to: 'complete', current: 'none', args: [ 'additional', 'arguments' ] },
         { event: 'onTransition',       transition: 'step', from: 'none', to: 'complete', current: 'none', args: [ 'additional', 'arguments' ] }
       ]);
+      t.is(answer, 'rejected');
       resolveTest();
     }
 
     fsm.step('additional', 'arguments')
+       .then(done)
 
   })
 })
