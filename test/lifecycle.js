@@ -227,6 +227,56 @@ test('lifecycle events with dash or underscore are camelized', t => {
 
 //-------------------------------------------------------------------------------------------------
 
+test('lifecycle event names that are all uppercase are camelized', t => {
+
+  var logger = new LifecycleLogger(),
+      fsm = new StateMachine({
+        init: 'FIRST',
+        transitions: [
+          { name: 'GO',    from: 'FIRST',        to: 'SECOND_STATE' },
+          { name: 'DO_IT', from: 'SECOND_STATE', to: 'FIRST'        }
+        ],
+        methods: {
+          onBeforeGo:         logger,
+          onBeforeDoIt:       logger,
+          onLeaveFirst:       logger,
+          onLeaveSecondState: logger,
+          onEnterFirst:       logger,
+          onEnterSecondState: logger,
+          onAfterGo:          logger,
+          onAfterDoIt:        logger
+        }
+      });
+
+  t.is(fsm.state, 'FIRST')
+  t.deepEqual(logger.log, [
+    { event: 'onEnterFirst', transition: 'init', from: 'none', to: 'FIRST', current: 'FIRST' },
+  ])
+
+  logger.clear()
+  fsm.go()
+  t.is(fsm.state, 'SECOND_STATE')
+  t.deepEqual(logger.log, [
+    { event: 'onBeforeGo',         transition: 'GO', from: 'FIRST', to: 'SECOND_STATE', current: 'FIRST'        },
+    { event: 'onLeaveFirst',       transition: 'GO', from: 'FIRST', to: 'SECOND_STATE', current: 'FIRST'        },
+    { event: 'onEnterSecondState', transition: 'GO', from: 'FIRST', to: 'SECOND_STATE', current: 'SECOND_STATE' },
+    { event: 'onAfterGo',          transition: 'GO', from: 'FIRST', to: 'SECOND_STATE', current: 'SECOND_STATE' }
+  ])
+
+  logger.clear();
+  fsm.doIt();
+  t.is(fsm.state, 'FIRST')
+  t.deepEqual(logger.log, [
+    { event: 'onBeforeDoIt',       transition: 'DO_IT', from: 'SECOND_STATE', to: 'FIRST', current: 'SECOND_STATE' },
+    { event: 'onLeaveSecondState', transition: 'DO_IT', from: 'SECOND_STATE', to: 'FIRST', current: 'SECOND_STATE' },
+    { event: 'onEnterFirst',       transition: 'DO_IT', from: 'SECOND_STATE', to: 'FIRST', current: 'FIRST'        },
+    { event: 'onAfterDoIt',        transition: 'DO_IT', from: 'SECOND_STATE', to: 'FIRST', current: 'FIRST'        }
+  ])
+
+});
+
+//-------------------------------------------------------------------------------------------------
+
 test('lifecycle events receive arbitrary transition arguments', t => {
 
   var logger = new LifecycleLogger(),

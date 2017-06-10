@@ -42,9 +42,9 @@ mixin(Config.prototype, {
   },
 
   addStateLifecycleNames: function(name) {
-    this.lifecycle.onEnter[name] = camelize('on-enter-' + name);
-    this.lifecycle.onLeave[name] = camelize('on-leave-' + name);
-    this.lifecycle.on[name]      = camelize('on-' + name);
+    this.lifecycle.onEnter[name] = camelize.prepended('onEnter', name);
+    this.lifecycle.onLeave[name] = camelize.prepended('onLeave', name);
+    this.lifecycle.on[name]      = camelize.prepended('on',      name);
   },
 
   addTransition: function(name) {
@@ -55,9 +55,9 @@ mixin(Config.prototype, {
   },
 
   addTransitionLifecycleNames: function(name) {
-    this.lifecycle.onBefore[name] = camelize('on-before-' + name);
-    this.lifecycle.onAfter[name]  = camelize('on-after-' + name);
-    this.lifecycle.on[name]       = camelize('on-' + name);
+    this.lifecycle.onBefore[name] = camelize.prepended('onBefore', name);
+    this.lifecycle.onAfter[name]  = camelize.prepended('onAfter',  name);
+    this.lifecycle.on[name]       = camelize.prepended('on',       name);
   },
 
   mapTransition: function(transition) {
@@ -74,11 +74,11 @@ mixin(Config.prototype, {
 
   configureLifecycle: function() {
     return {
-      onBefore: { transition: camelize('on-before-transition') },
-      onAfter:  { transition: camelize('on-after-transition')  },
-      onEnter:  { state:      camelize('on-enter-state')       },
-      onLeave:  { state:      camelize('on-leave-state')       },
-      on:       { transition: camelize('on-transition')        }
+      onBefore: { transition: 'onBeforeTransition' },
+      onAfter:  { transition: 'onAfterTransition'  },
+      onEnter:  { state:      'onEnterState'       },
+      onLeave:  { state:      'onLeaveState'       },
+      on:       { transition: 'onTransition'       }
     };
   },
 

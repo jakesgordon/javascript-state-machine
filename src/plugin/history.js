@@ -10,11 +10,11 @@ module.exports = function(options) { options = options || {};
 
   var past       = camelize(options.name || options.past   || 'history'),
       future     = camelize(                options.future || 'future'),
-      clear      = camelize('clear-' + past),
-      back       = camelize(past + '-back'),
-      forward    = camelize(past + '-forward'),
-      canBack    = camelize('can-' + back),
-      canForward = camelize('can-' + forward),
+      clear      = camelize.prepended('clear', past),
+      back       = camelize.prepended(past,   'back'),
+      forward    = camelize.prepended(past,   'forward'),
+      canBack    = camelize.prepended('can',   back),
+      canForward = camelize.prepended('can',   forward),
       max        = options.max;
 
   var plugin = {
