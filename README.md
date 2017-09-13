@@ -128,7 +128,8 @@ Read more about
   * [Visualization](docs/visualization.md)
   * [State Machine Factory](docs/state-machine-factory.md)
   * [Upgrading from 2.x](docs/upgrading-from-v2.md)
- 
+  * [TypeScript](docs/typescript.md)
+
 # Contributing
 
 You can [Contribute](docs/contributing.md) to this project with issues or pull requests.
