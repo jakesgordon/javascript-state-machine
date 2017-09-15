@@ -7,6 +7,8 @@ declare class StateMachine {
 	can: StateMachine.StateMachineCan;
 	cannot: StateMachine.StateMachineCan;
 	transitions: StateMachine.StateMachineTransitions;
+	allTransitions: StateMachine.StateMachineTransitions;
+	allStates: StateMachine.StateMachineStates;
 	observe: StateMachine.Observe;
 	// history: string[];
 	historyBack();
@@ -26,6 +28,7 @@ declare namespace StateMachine {
 	type StateMachineIs = (state: string) => boolean;
 	type StateMachineCan = (evt: string) => boolean;
 	type StateMachineTransitions = () => string[];
+	type StateMachineStates = () => string[];
 	type Callback = (...args: any[]) => any;
 	interface Observe {
 		(event: string, callback: Callback): void;
