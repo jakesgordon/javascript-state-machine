@@ -52,11 +52,11 @@ declare namespace StateMachine {
 		}[];
 		methods: {
 			[method: string]: Callback;
-			onBeforeTransition?(lifecycle?: LifeCycle, ...args: any[]): boolean | Promise<boolean>;	// 1
-			onLeaveState?(lifecycle?: LifeCycle, ...args: any[]): boolean | Promise<boolean>;	// 2
-			onTransition?(lifecycle?: LifeCycle, ...args: any[]): boolean | Promise<boolean>;	// 3
-			onEnterState?(lifecycle?: LifeCycle, ...args: any[]): any | Promise<any>;	// 4
-			onAfterTransition?(lifecycle?: LifeCycle, ...args: any[]): any | Promise<any>;	// 5
+			onBeforeTransition?(lifecycle: LifeCycle, ...args: any[]): boolean | Promise<boolean>;	// 1
+			onLeaveState?(lifecycle: LifeCycle, ...args: any[]): boolean | Promise<boolean>;	// 2
+			onTransition?(lifecycle: LifeCycle, ...args: any[]): boolean | Promise<boolean>;	// 3
+			onEnterState?(lifecycle: LifeCycle, ...args: any[]): any | Promise<any>;	// 4
+			onAfterTransition?(lifecycle: LifeCycle, ...args: any[]): any | Promise<any>;	// 5
 			onPendingTransition?(transition: string, from: string, to: string): any | Promise<any>;
 		};
 		data: any;	// {} | any[] | ((...args: any[]) => {} | any[]);
