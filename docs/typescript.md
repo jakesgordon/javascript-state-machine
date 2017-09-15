@@ -3,7 +3,7 @@
 import * as StateMachine from 'javascript-state-machine';
 ```
 
-#umd
+# umd
 Add this into your tsconfig.json
 
 ```json
