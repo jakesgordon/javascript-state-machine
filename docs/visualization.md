@@ -16,7 +16,7 @@ state machine configuration to the `.dot` language expected by GraphViz using th
     ]
   });
 
-  visualize(fsm)
+  console.log(visualize(fsm));
 ```
 
 Generates the following .dot syntax:
@@ -47,7 +47,7 @@ You can customize the generated `.dot` output - and hence the graphviz visualiza
       { name: 'close', from: 'open',   to: 'closed', dot: { color: 'red',  headport: 's', tailport: 's' } }
     ]
   });
-  visualize(fsm, { name: 'door', orientation: 'horizontal' });
+  console.log(visualize(fsm, { name: 'door', orientation: 'horizontal' }));
 ```
 
 Generates the following (enhanced) `.dot` syntax:
@@ -81,7 +81,7 @@ You can use the same `visualize` method to generate `.dot` output for a state ma
     ]
   });
 
-  visualize(Matter, { name: 'matter', orientation: 'horizontal' })
+  console.log(visualize(Matter, { name: 'matter', orientation: 'horizontal' }));
 ```
 
 Generates the following .dot syntax:
@@ -116,7 +116,7 @@ Which GraphViz displays as:
     ]
   });
 
-  visualize(Wizard, { orientation: 'horizontal' })
+  console.log(visualize(Wizard, { orientation: 'horizontal' }));
 ```
 
 Generates:
@@ -167,7 +167,7 @@ Displays:
     ]
   })
 
-  visualize(ATM)
+  console.log(visualize(ATM));
 ```
 
 Generates:
