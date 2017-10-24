@@ -29,7 +29,7 @@ A state machine consists of a set of **states**, e.g:
   fsm.state;             // 'solid'
   fsm.melt();
   fsm.state;             // 'liquid'
-  fsm.vaporise();
+  fsm.vaporize();
   fsm.state;             // 'gas'
 ```
 
