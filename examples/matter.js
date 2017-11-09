@@ -2,6 +2,11 @@ var StateMachine = require('../src/app'),
     visualize    = require('../src/plugin/visualize');
 
 var Matter = StateMachine.factory({
+  statedefs: [
+    {name: 'solid' },
+    {name: 'liquid'},
+    {name: 'gas'}
+  ],
   init: 'solid',
   transitions: [
     { name: 'melt',     from: 'solid',  to: 'liquid', dot: { headport: 'nw' } },
