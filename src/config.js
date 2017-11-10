@@ -20,6 +20,7 @@ function Config(options, StateMachine) {
   this.init        = this.configureInitTransition(options.init);
   this.data        = this.configureData(options.data);
   this.methods     = this.configureMethods(options.methods);
+  this.dotPrefix   = options['dotPrefix'] || this.defaults.dotPrefix;
   this.hasStateDefs = false;
 
   this.map[this.defaults.wildcard] = {};

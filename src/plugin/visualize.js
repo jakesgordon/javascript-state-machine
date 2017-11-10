@@ -22,6 +22,7 @@ function dotcfg(fsm, options) {
       states      = dotcfg.states(config, options),
       statedefs   = dotcfg.statedefs(config, options),
       transitions = dotcfg.transitions(config, options),
+      dotPrefix   = config.dotPrefix,
       result      = { }
 
   if (name)
@@ -38,6 +39,9 @@ function dotcfg(fsm, options) {
 
   if (transitions && transitions.length > 0)
     result.transitions = transitions
+
+  if (dotPrefix)
+    result.dotPrefix = dotPrefix;
 
   return result
 }
@@ -124,6 +128,7 @@ function dotify(dotcfg) {
       states      = dotcfg.states || [],
       transitions = dotcfg.transitions || [],
       statedefs   = dotcfg.statedefs,
+      dotPrefix   = dotcfg.dotPrefix,
       rankdir     = dotcfg.rankdir,
       output      = [],
       n, max;
@@ -132,13 +137,17 @@ function dotify(dotcfg) {
   if (rankdir)
     output.push("  rankdir=" + rankdir + ";")
 
+  if (dotPrefix) {
+    output.push(dotify.dotPrefix(dotPrefix));
+  }
+
   if (statedefs) {
     for(n = 0, max = statedefs.length ; n < max ; n++)
       output.push(dotify.statedef(statedefs[n]))
   }
   else {
     for(n = 0, max = states.length ; n < max ; n++)
-      output.push(dotify.state(states[n]))
+      output.push(dotify.gen(states[n]))
   }
 
   for(n = 0, max = transitions.length ; n < max ; n++)
@@ -148,16 +157,28 @@ function dotify(dotcfg) {
 
 }
 
-dotify.state = function(state) {
+dotify.gen = function(state) {
   return "  " + quote(state) + ";"
 }
 
 dotify.statedef = function(statedef) {
-  return "  " + quote(statedef.name) + dotify.state.attr(statedef.dot) + ";"
+  return "  " + quote(statedef.name) + dotify.gen.attr(statedef.dot) + ";"
 }
 
 dotify.edge = function(edge) {
   return "  " + quote(edge.from) + " -> " + quote(edge.to) + dotify.edge.attr(edge) + ";"
+}
+
+dotify.dotPrefix = function(dotPrefix) {
+  var prefixStrAry = [];
+  var ix, key;
+  var keys = Object.keys(dotPrefix);
+  for (ix = 0; ix < keys.length; ix++) {
+    key = keys[ix];
+    prefixStrAry.push('  ' + key + ' ' + dotify.gen.attr(dotPrefix[key]) + ";" );
+  }
+
+  return prefixStrAry.join("\n");
 }
 
 dotify.edge.attr = function(edge) {
@@ -170,7 +191,7 @@ dotify.edge.attr = function(edge) {
   return output.length > 0 ? " [ " + output.join(" ; ") + " ]" : ""
 }
 
-dotify.state.attr = function(statedef_dot) {
+dotify.gen.attr = function(statedef_dot) {
   var n, max, key, keys = Object.keys(statedef_dot).sort(), output = [];
   for(n = 0, max = keys.length ; n < max ; n++) {
     key = keys[n];

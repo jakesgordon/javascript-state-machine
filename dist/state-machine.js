@@ -210,6 +210,7 @@ function Config(options, StateMachine) {
   this.init        = this.configureInitTransition(options.init);
   this.data        = this.configureData(options.data);
   this.methods     = this.configureMethods(options.methods);
+  this.dotPrefix   = options['dotPrefix'] || this.defaults.dotPrefix;
   this.hasStateDefs = false;
 
   this.map[this.defaults.wildcard] = {};
@@ -665,6 +666,11 @@ StateMachine.defaults = {
   init: {
     name: 'init',
     from: 'none'
+  },
+  dotPrefix: {
+    graph: [ { fontcolor: "dimgray", fontname:"Helvetica"} ],
+    node: [ {color: "dimgray", fontsize: 13, fontcolor: "dimgray", fontname: "Helvetica"} ],
+    edge: [ { fontcolor: "dimgray", fontsize: 10, fontname: "Arial"} ]
   }
 }
 
