@@ -20,6 +20,7 @@ function dotcfg(fsm, options) {
       name        = options.name,
       rankdir     = dotcfg.rankdir(options.orientation),
       states      = dotcfg.states(config, options),
+      statedefs   = dotcfg.statedefs(config, options),
       transitions = dotcfg.transitions(config, options),
       result      = { }
 
@@ -31,6 +32,9 @@ function dotcfg(fsm, options) {
 
   if (states && states.length > 0)
     result.states = states
+
+  if (statedefs && statedefs.length > 0)
+    result.statedefs = statedefs;
 
   if (transitions && transitions.length > 0)
     result.transitions = transitions
@@ -59,6 +63,11 @@ dotcfg.states = function(config, options) {
     states = states.slice(0, index).concat(states.slice(index+1));
   }
   return states;
+}
+
+dotcfg.statedefs = function(config, options) {
+  return config.options['statedefs'];
+          // can be null
 }
 
 dotcfg.transitions = function(config, options) {
@@ -95,7 +104,6 @@ dotcfg.transition = function(name, from, to, dot, config, options, output) {
   else {
     output.push(mixin({}, { from: from, to: to, label: pad(name) }, dot || {}))
   }
-
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -115,6 +123,7 @@ function dotify(dotcfg) {
   var name        = dotcfg.name || 'fsm',
       states      = dotcfg.states || [],
       transitions = dotcfg.transitions || [],
+      statedefs   = dotcfg.statedefs,
       rankdir     = dotcfg.rankdir,
       output      = [],
       n, max;
@@ -122,8 +131,16 @@ function dotify(dotcfg) {
   output.push("digraph " + quote(name) + " {")
   if (rankdir)
     output.push("  rankdir=" + rankdir + ";")
-  for(n = 0, max = states.length ; n < max ; n++)
-    output.push(dotify.state(states[n]))
+
+  if (statedefs) {
+    for(n = 0, max = statedefs.length ; n < max ; n++)
+      output.push(dotify.statedef(statedefs[n]))
+  }
+  else {
+    for(n = 0, max = states.length ; n < max ; n++)
+      output.push(dotify.state(states[n]))
+  }
+
   for(n = 0, max = transitions.length ; n < max ; n++)
     output.push(dotify.edge(transitions[n]))
   output.push("}")
@@ -133,6 +150,10 @@ function dotify(dotcfg) {
 
 dotify.state = function(state) {
   return "  " + quote(state) + ";"
+}
+
+dotify.statedef = function(statedef) {
+  return "  " + quote(statedef.name) + dotify.state.attr(statedef.dot) + ";"
 }
 
 dotify.edge = function(edge) {
@@ -147,6 +168,15 @@ dotify.edge.attr = function(edge) {
       output.push(key + "=" + quote(edge[key]))
   }
   return output.length > 0 ? " [ " + output.join(" ; ") + " ]" : ""
+}
+
+dotify.state.attr = function(statedef_dot) {
+  var n, max, key, keys = Object.keys(statedef_dot).sort(), output = [];
+  for(n = 0, max = keys.length ; n < max ; n++) {
+    key = keys[n];
+    output.push(key + "=" + quote(statedef_dot[key]))
+  }
+  return output.length > 0 ? " [ " + output.join(", ") + " ]" : ""
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -1,0 +1,12 @@
+digraph "Traffic_Light" {
+  "green" [ fillcolor="green", style="filled" ];
+  "yellow" [ fillcolor="yellow", shape="rect", style="filled" ];
+  "red" [ fillcolor="red", style="filled" ];
+  "none" -> "green" [ color="blue" ; label=" start " ];
+  "green" -> "yellow" [ color="blue" ; label=" warn " ];
+  "green" -> "red" [ color="red" ; label=" panic " ];
+  "yellow" -> "red" [ color="red" ; label=" panic " ];
+  "red" -> "yellow" [ color="blue" ; label=" calm " ];
+  "red" -> "green" [ color="green" ; label=" clear " ];
+  "yellow" -> "green" [ color="green" ; label=" clear " ];
+}
