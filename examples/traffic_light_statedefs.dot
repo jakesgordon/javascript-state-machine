@@ -1,5 +1,5 @@
 digraph "Traffic_Light" {
-  graph  [ fontcolor="dimgray", fontname="Helvetica" ];
+  graph  [ fontcolor="dimgray", fontname="Helvetica", splines="spline" ];
   node  [ color="dimgray", fontcolor="dimgray", fontname="Helvetica", fontsize="13" ];
   edge  [ fontcolor="dimgray", fontname="Arial", fontsize="10" ];
   "green" [ fillcolor="green", style="filled" ];
