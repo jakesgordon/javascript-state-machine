@@ -162,7 +162,11 @@ dotify.gen = function(state) {
 }
 
 dotify.statedef = function(statedef) {
-  return "  " + quote(statedef.name) + dotify.gen.attr(statedef.dot) + ";"
+  var retstr = "  " + quote(statedef.name);
+  if (statedef.dot) {
+    retstr += dotify.gen.attr(statedef.dot); 
+  }
+  return retstr + ";";
 }
 
 dotify.edge = function(edge) {
@@ -191,11 +195,11 @@ dotify.edge.attr = function(edge) {
   return output.length > 0 ? " [ " + output.join(" ; ") + " ]" : ""
 }
 
-dotify.gen.attr = function(statedef_dot) {
-  var n, max, key, keys = Object.keys(statedef_dot).sort(), output = [];
+dotify.gen.attr = function(attrs) {
+  var n, max, key, keys = Object.keys(attrs).sort(), output = [];
   for(n = 0, max = keys.length ; n < max ; n++) {
     key = keys[n];
-    output.push(key + "=" + quote(statedef_dot[key]))
+    output.push(key + "=" + quote(attrs[key]))
   }
   return output.length > 0 ? " [ " + output.join(", ") + " ]" : ""
 }

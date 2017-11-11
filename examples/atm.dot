@@ -1,4 +1,7 @@
 digraph "ATM" {
+  graph  [ fontcolor="dimgray", fontname="Helvetica", splines="spline" ];
+  node  [ color="dimgray", fontcolor="dimgray", fontname="Helvetica", fontsize="13" ];
+  edge  [ fontcolor="dimgray", fontname="Arial", fontsize="10" ];
   "ready";
   "pin";
   "action";

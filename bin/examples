@@ -19,21 +19,22 @@ var fs    = require('fs'),
     child = require('child_process');
 
 //-------------------------------------------------------------------------------------------------
+process.chdir(path.dirname(process.argv[1]));
 
 if (process.argv.length > 2) {
-  var fn = process.argv[2];
-  process.chdir(path.dirname(process.argv[1]));
-  if (!fs.existsSync('../examples/' + fn)) {
-    console.log('File: ' + fn + ' does not exist');
+  var fn = process.argv[2],
+      fnfull = '../examples/' + fn;
+  if (!fs.existsSync(fnfull)) {
+    console.log('Error - file: ' + fnfull + ' does not exist');
   }
 
   else {
-    visualize(process.argv[2]);
+    visualize(fn);
   }
 }
 
 else {
-  fs.readdirSync('examples')
+  fs.readdirSync('../examples')
     .filter(function(file) { return path.extname(file) === ".js" })
     .map(visualize);
 }

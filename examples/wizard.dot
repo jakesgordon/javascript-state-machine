@@ -1,5 +1,8 @@
 digraph "wizard" {
   rankdir=LR;
+  graph  [ fontcolor="dimgray", fontname="Helvetica", splines="spline" ];
+  node  [ color="dimgray", fontcolor="dimgray", fontname="Helvetica", fontsize="13" ];
+  edge  [ fontcolor="dimgray", fontname="Arial", fontsize="10" ];
   "A";
   "B";
   "C";

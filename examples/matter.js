@@ -5,7 +5,7 @@ var Matter = StateMachine.factory({
   statedefs: [
     {name: 'solid' },
     {name: 'liquid'},
-    {name: 'gas'}
+    {name: 'gas' }
   ],
   init: 'solid',
   transitions: [
