@@ -5,12 +5,18 @@ import visualize    from '../../src/plugin/visualize'
 var dotcfg    = visualize.dotcfg, // converts FSM        to DOT CONFIG
     dotify    = visualize.dotify; // converts DOT CONFIG to DOT OUTPUT
 
+/*
+ | dot prefix string will be appended to all dot output
+ */
 var pfxStr = '\
   graph  [ fontcolor="dimgray", fontname="Helvetica", splines="spline" ];\n\
   node  [ color="dimgray", fontcolor="dimgray", fontname="Helvetica", fontsize="13" ];\n\
   edge  [ fontcolor="dimgray", fontname="Arial", fontsize="10" ];\
 ';
 
+/*
+ | dot default pfx object will always be appended to dot output object
+ */
 var pfxObj = { dotPrefix: {
   graph: { fontcolor: 'dimgray',
            fontname: 'Helvetica',
