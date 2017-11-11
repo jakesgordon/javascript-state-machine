@@ -1,7 +1,7 @@
 import test         from 'ava';
 import StateMachine from '../src/app';
 import visualize    from '../src/plugin/visualize';
-import {PFXSTR,PFXOBJ} from './imports/dotprefix';
+import {PFXSTR,PFXOBJ} from './helpers/dotprefix';
 
 test('states defined', t => {
   var fsm = new StateMachine({
