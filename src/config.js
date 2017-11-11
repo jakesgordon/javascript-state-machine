@@ -155,7 +155,7 @@ mixin(Config.prototype, {
       }
     }
     if (undefinedStates.length > 0) {
-      throw 'Undefined states in transitions: "' + undefinedStates.join(', ') + '"';
+      throw new Error('Undefined states in transitions: "' + undefinedStates.join(', ') + '"');
     }
   },
 
