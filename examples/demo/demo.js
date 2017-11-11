@@ -25,11 +25,6 @@ Demo = function() {
   };
 
   var fsm = new StateMachine({
-    statedefs: [
-      {name: 'green'},
-      {name: 'yellow'},
-      {name: 'red'}
-    ],
     transitions: [
       { name: 'start', from: 'none',   to: 'green'  },
       { name: 'warn',  from: 'green',  to: 'yellow' },

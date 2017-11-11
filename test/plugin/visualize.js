@@ -5,6 +5,23 @@ import visualize    from '../../src/plugin/visualize'
 var dotcfg    = visualize.dotcfg, // converts FSM        to DOT CONFIG
     dotify    = visualize.dotify; // converts DOT CONFIG to DOT OUTPUT
 
+var pfxStr = '\
+  graph  [ fontcolor="dimgray", fontname="Helvetica", splines="spline" ];\n\
+  node  [ color="dimgray", fontcolor="dimgray", fontname="Helvetica", fontsize="13" ];\n\
+  edge  [ fontcolor="dimgray", fontname="Arial", fontsize="10" ];\
+';
+
+var pfxObj = { dotPrefix: {
+  graph: { fontcolor: 'dimgray',
+           fontname: 'Helvetica',
+           splines: 'spline' },
+  node: { color: 'dimgray',
+          fontsize: 13,
+          fontcolor: 'dimgray',
+          fontname: 'Helvetica' },
+  edge: { fontcolor: 'dimgray', fontsize: 10, fontname: 'Arial' }
+  }};
+
 //-------------------------------------------------------------------------------------------------
 
 test('visualize state machine', t => {
@@ -20,6 +37,7 @@ test('visualize state machine', t => {
   })
 
   t.is(visualize(fsm), `digraph "fsm" {
+${pfxStr}
   "solid";
   "liquid";
   "gas";
@@ -45,6 +63,7 @@ test('visualize state machine factory', t => {
   })
 
   t.is(visualize(FSM), `digraph "fsm" {
+${pfxStr}
   "solid";
   "liquid";
   "gas";
@@ -71,6 +90,7 @@ test('visualize with custom .dot markup', t => {
 
   t.is(visualize(fsm, { name: 'matter', orientation: 'horizontal' }), `digraph "matter" {
   rankdir=LR;
+${pfxStr}
   "solid";
   "liquid";
   "gas";
@@ -97,7 +117,7 @@ test('dotcfg simple state machine', t => {
     ]
   })
 
-  t.deepEqual(dotcfg(fsm), {
+  t.deepEqual(dotcfg(fsm), Object.assign({
     states: [ 'solid', 'liquid', 'gas' ],
     transitions: [
       { from: 'solid',  to: 'liquid', label: ' melt '     },
@@ -105,7 +125,7 @@ test('dotcfg simple state machine', t => {
       { from: 'liquid', to: 'gas',    label: ' vaporize ' },
       { from: 'gas',    to: 'liquid', label: ' condense ' }
     ]
-  })
+  }, pfxObj))
 
 })
 
@@ -117,17 +137,14 @@ test('dotcfg for state machine - optionally include :init transition', t => {
     init: { name: 'boot', from: 'booting', to: 'ready', dot: { color: 'red' } }
   })
 
-  t.deepEqual(dotcfg(fsm, { init: false }), {
-    states: [ 'ready' ]
-  })
+  t.deepEqual(dotcfg(fsm, { init: false }), Object.assign({
+    states: [ 'ready' ]}, pfxObj));
 
-  t.deepEqual(dotcfg(fsm, { init: true }), {
+  t.deepEqual(dotcfg(fsm, { init: true }), Object.assign({
     states: [ 'booting', 'ready' ],
     transitions: [
       { from: 'booting', to: 'ready', label: ' boot ', color: 'red' }
-    ]
-  })
-
+    ]}, pfxObj));
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -143,15 +160,13 @@ test('dotcfg for fsm with multiple transitions with same :name', t => {
     ]
   })
 
-  t.deepEqual(dotcfg(fsm), {
+  t.deepEqual(dotcfg(fsm), Object.assign({
     states: [ 'A', 'B', 'C', 'D' ],
     transitions: [
       { from: 'A', to: 'B', label: ' step ' },
       { from: 'B', to: 'C', label: ' step ' },
       { from: 'C', to: 'D', label: ' step ' }
-    ]
-  })
-
+    ]}, pfxObj));
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -168,7 +183,7 @@ test('dotcfg for fsm transition with multiple :from', t => {
     ]
   })
 
-  t.deepEqual(dotcfg(fsm), {
+  t.deepEqual(dotcfg(fsm), Object.assign({
     states: [ 'A', 'B', 'C', 'D' ],
     transitions: [
       { from: 'A', to: 'B', label: ' step '  },
@@ -176,15 +191,12 @@ test('dotcfg for fsm transition with multiple :from', t => {
       { from: 'C', to: 'D', label: ' step '  },
       { from: 'A', to: 'A', label: ' reset ' },
       { from: 'B', to: 'A', label: ' reset ' }
-    ]
-  })
-
+    ]}, pfxObj));
 })
 
 //-------------------------------------------------------------------------------------------------
 
 test('dotcfg for fsm with wildcard/missing :from', t => {
-
   var fsm = new StateMachine({
     init: 'A',
     transitions: [
@@ -196,7 +208,7 @@ test('dotcfg for fsm with wildcard/missing :from', t => {
     ]
   })
 
-  t.deepEqual(dotcfg(fsm), {
+  t.deepEqual(dotcfg(fsm), Object.assign({
     states: [ 'A', 'B', 'C', 'D', 'X' ],
     transitions: [
       { from: 'A',    to: 'B', label: ' step '   },
@@ -214,9 +226,7 @@ test('dotcfg for fsm with wildcard/missing :from', t => {
       { from: 'C',    to: 'X', label: ' finish ' },
       { from: 'D',    to: 'X', label: ' finish ' },
       { from: 'X',    to: 'X', label: ' finish ' }
-    ]
-  })
-
+    ]}, pfxObj));
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -236,7 +246,7 @@ test('dotcfg for fsm with wildcard/missing :to', t => {
     ]
   })
 
-  t.deepEqual(dotcfg(fsm), {
+  t.deepEqual(dotcfg(fsm), Object.assign({
     states: [ 'A', 'B', 'C', 'D' ],
     transitions: [
       { from: 'A',    to: 'B',    label: ' step ' },
@@ -250,9 +260,7 @@ test('dotcfg for fsm with wildcard/missing :to', t => {
       { from: 'B',    to: 'B',    label: ' noop ' },
       { from: 'C',    to: 'C',    label: ' noop ' },
       { from: 'D',    to: 'D',    label: ' noop ' }
-    ]
-  })
-
+    ]}, pfxObj));
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -272,10 +280,8 @@ test('dotcfg for fsm - conditional transition is not displayed', t => {
         }
       });
 
-  t.deepEqual(dotcfg(fsm), {
-    states: [ 'A' ]
-  })
-
+  t.deepEqual(dotcfg(fsm), Object.assign({
+    states: [ 'A' ]}, pfxObj));
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -290,14 +296,12 @@ test('dotcfg with custom transition .dot edge markup', t => {
     ]
   })
 
-  t.deepEqual(dotcfg(fsm), {
+  t.deepEqual(dotcfg(fsm), Object.assign({
     states: [ 'A', 'B', 'C' ],
     transitions: [
       { from: 'A', to: 'B', label: 'A2B',  color: "red",   headport: "nw", tailport: "ne" },
       { from: 'B', to: 'C', label: 'B2C',  color: "green", headport: "sw", tailport: "se" }
-    ]
-  })
-
+    ]}, pfxObj));
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -306,10 +310,8 @@ test('dotcfg with custom name', t => {
 
   var fsm = new StateMachine();
 
-  t.deepEqual(dotcfg(fsm, { name: 'bob' }), {
-    name: 'bob',
-  })
-
+  t.deepEqual(dotcfg(fsm, { name: 'bob' }), Object.assign({
+    name: 'bob'}, pfxObj));
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -318,14 +320,11 @@ test('dotcfg with custom orientation', t => {
 
   var fsm = new StateMachine();
 
-  t.deepEqual(dotcfg(fsm, { orientation: 'horizontal' }), {
-    rankdir: 'LR',
-  })
+  t.deepEqual(dotcfg(fsm, { orientation: 'horizontal' }), Object.assign({
+    rankdir: 'LR'}, pfxObj));
 
-  t.deepEqual(dotcfg(fsm, { orientation: 'vertical' }), {
-    rankdir: 'TB',
-  })
-
+  t.deepEqual(dotcfg(fsm, { orientation: 'vertical' }), Object.assign({
+    rankdir: 'TB'}, pfxObj));
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -334,8 +333,7 @@ test('dotcfg for empty state machine', t => {
 
   var fsm = new StateMachine();
 
-  t.deepEqual(dotcfg(fsm), {})
-
+  t.deepEqual(dotcfg(fsm), pfxObj);
 })
 
 //=================================================================================================
@@ -344,9 +342,9 @@ test('dotcfg for empty state machine', t => {
 
 test('dotify empty', t => {
   var expected = `digraph "fsm" {
-}`
-  t.is(dotify(),   expected)
-  t.is(dotify({}), expected)
+}`;
+  t.is(dotify(),   expected);
+  t.is(dotify({}), expected);
 })
 
 //-------------------------------------------------------------------------------------------------
