@@ -60,6 +60,64 @@ ${PFXSTR}
 }`);
 });
 
+test('clear dotPrefix (empty)', t => {
+  var fsm = new StateMachine({
+    dotPrefix: {},
+    statedefs: [
+      {name: "roger"},
+      {name: "wilco"}
+    ],
+    transitions: [
+      { name: 'affirm', from: 'roger', to: 'wilco' },
+    ]
+  });
+  t.is(visualize(fsm),`digraph "fsm" {
+  "roger";
+  "wilco";
+  "roger" -> "wilco" [ label=" affirm " ];
+}`);
+});
+
+test('clear dotPrefix (null)', t => {
+  var fsm = new StateMachine({
+    dotPrefix: null,
+    statedefs: [
+      {name: "roger"},
+      {name: "wilco"}
+    ],
+    transitions: [
+      { name: 'affirm', from: 'roger', to: 'wilco' },
+    ]
+  });
+  t.is(visualize(fsm),`digraph "fsm" {
+  "roger";
+  "wilco";
+  "roger" -> "wilco" [ label=" affirm " ];
+}`);
+});
+
+
+test('redefine dotPrefix', t => {
+  var fsm = new StateMachine({
+    dotPrefix: {
+      node: { fillColor: 'red' }
+    },
+    statedefs: [
+      {name: "roger"},
+      {name: "wilco"}
+    ],
+    transitions: [
+      { name: 'affirm', from: 'roger', to: 'wilco' },
+    ]
+  });
+  t.is(visualize(fsm),`digraph "fsm" {
+  node  [ fillColor="red" ];
+  "roger";
+  "wilco";
+  "roger" -> "wilco" [ label=" affirm " ];
+}`);
+});
+
 test('transition uses undefined state', t => {
   var error = t.throws(function() { new StateMachine({
     statedefs: [
@@ -71,6 +129,30 @@ test('transition uses undefined state', t => {
       { name: 'ack', from: 'positive', to: 'wilco' }
     ]
   })});
-  console.log('Error message in error: ' + error.message);
   t.is(error.message, 'Undefined states in transitions: "negative, positive"');
+});
+
+test('transition name contained in states', t => {
+  var error = t.throws(function() { new StateMachine({
+    statedefs: [
+      {name: "roger"},
+      {name: "wilco"}
+    ],
+    transitions: [
+      { name: 'roger', from: 'roger', to: 'wilco' },
+    ]
+  })});
+  t.is(error.message, 'Transition name same as state: "roger"');
+});
+
+test('transition name in states AND undefined state in transition', t => {
+  var error = t.throws(function() { new StateMachine({
+    statedefs: [
+      {name: "roger"},
+    ],
+    transitions: [
+      { name: 'roger', from: 'roger', to: 'negative' },
+    ]
+  })});
+  t.is(error.message, 'Undefined states in transitions: "negative"\nTransition name same as state: "roger"');
 });
