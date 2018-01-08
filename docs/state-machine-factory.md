@@ -85,10 +85,10 @@ constructor method:
 
   StateMachine.factory(Person, {
     init: 'idle',
-    transitions: {
+    transitions: [
       { name: 'sleep', from: 'idle',     to: 'sleeping' },
       { name: 'wake',  from: 'sleeping', to: 'idle'     }
-    }
+    ]
   });
 
   var amy = new Person('amy'),
