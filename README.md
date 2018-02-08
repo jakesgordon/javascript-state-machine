@@ -1,7 +1,7 @@
 # Javascript State Machine
 
 [![NPM version](https://img.shields.io/npm/v/@taoqf/javascript-state-machine.svg?style=flat)](https://www.npmjs.org/package/@taoqf/javascript-state-machine)
-[![Build Status](https://travis-ci.org/jakesgordon/@taoqf/javascript-state-machine.svg?branch=master)](https://travis-ci.org/taoqf/javascript-state-machine)
+[![Build Status](https://travis-ci.org/taoqf/javascript-state-machine.svg?branch=master)](https://travis-ci.org/taoqf/javascript-state-machine)
 
 A library for finite state machines.
 
