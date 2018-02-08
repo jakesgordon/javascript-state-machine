@@ -57,9 +57,9 @@ object (e.g. a react component). You can achieve this using the `StateMachine.ap
 
   StateMachine.apply(component, {
     init: 'A',
-    transitions: {
+    transitions: [
       { name: 'step', from: 'A', to: 'B' }
-    }
+    ]
   });
 ```
 

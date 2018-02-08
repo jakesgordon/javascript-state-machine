@@ -1,7 +1,7 @@
 {
-	"name": "javascript-state-machine",
+	"name": "@taoqf/javascript-state-machine",
 	"description": "A finite state machine library",
-	"homepage": "https://github.com/jakesgordon/javascript-state-machine",
+	"homepage": "https://github.com/taoqf/javascript-state-machine",
 	"repository": {
 		"type": "git",
 		"url": "git://github.com/jakesgordon/javascript-state-machine.git"
@@ -21,6 +21,10 @@
 		{
 			"name": "Jake Gordon",
 			"email": "jake@codeincomplete.com"
+		},
+		{
+			"name": "taoqf",
+			"email": "tao_qiufeng@126.com"
 		}
 	],
 	"license": "LGPL-3.0",
@@ -39,7 +43,7 @@
 		"uglify-js": "^2.7.5",
 		"webpack": "^2.2.0-rc.1"
 	},
-	"version": "3.0.1",
+	"version": "3.0.2",
 	"scripts": {
 		"start": "npm run watch",
 		"build": "npm run bundle && npm run minify",

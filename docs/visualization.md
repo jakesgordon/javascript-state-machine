@@ -3,7 +3,9 @@
 It can be very helpful to visualize your state machine as a directed graph. This is possible
 with the open source [GraphViz](http://www.graphviz.org/) library if we convert from our
 state machine configuration to the `.dot` language expected by GraphViz using the
-`visualize` method:
+`visualize` method.
+
+A `main.js` file defining the following FSM:
 
 ```javascript
   var visualize = require('javascript-state-machine/lib/visualize');
@@ -32,11 +34,15 @@ Generates the following .dot syntax:
 
 Which GraphViz displays as:
 
+```bash
+node main.js | dot -Tpng -o graph.png && open graph.png
+```
+
 ![door](../examples/vertical_door.png)
 
 ## Enhanced Visualization
 
-You can customize the generated `.dot` output - and hence the graphviz visualization - by attaching 
+You can customize the generated `.dot` output - and hence the graphviz visualization - by attaching
 `dot` attributes to your transitions and (optionally) declaring an `orientation`:
 
 ```javascript
