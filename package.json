@@ -4,7 +4,7 @@
 	"homepage": "https://github.com/taoqf/javascript-state-machine",
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/jakesgordon/javascript-state-machine.git"
+		"url": "git@github.com:taoqf/javascript-state-machine.git"
 	},
 	"types": "types/state-machine.d.ts",
 	"keywords": [
@@ -28,7 +28,7 @@
 		}
 	],
 	"license": "LGPL-3.0",
-	"main": "lib/state-machine.js",
+	"main": "dist/state-machine.min.js",
 	"files": [
 		"lib/**/*.js",
 		"dist/**/*.js"
@@ -43,7 +43,7 @@
 		"uglify-js": "^2.7.5",
 		"webpack": "^2.2.0-rc.1"
 	},
-	"version": "3.0.2",
+	"version": "3.0.3",
 	"scripts": {
 		"start": "npm run watch",
 		"build": "npm run bundle && npm run minify",
