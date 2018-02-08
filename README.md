@@ -1,7 +1,7 @@
 # Javascript State Machine
 
-[![NPM version](https://img.shields.io/npm/v/javascript-state-machine.svg?style=flat)](https://www.npmjs.org/package/javascript-state-machine)
-[![Build Status](https://travis-ci.org/jakesgordon/javascript-state-machine.svg?branch=master)](https://travis-ci.org/jakesgordon/javascript-state-machine)
+[![NPM version](https://img.shields.io/npm/v/@taoqf/javascript-state-machine.svg?style=flat)](https://www.npmjs.org/package/@taoqf/javascript-state-machine)
+[![Build Status](https://travis-ci.org/taoqf/javascript-state-machine.svg?branch=master)](https://travis-ci.org/taoqf/javascript-state-machine)
 
 A library for finite state machines.
 
@@ -21,7 +21,9 @@ A library for finite state machines.
 In a browser:
 
 ```html
-  <script src='state-machine.js'></script>
+<script src='https://unpkg.com/@taoqf/javascript-state-machine'></script>
+<!-- or -->
+<script src='https://unpkg.com/@taoqf/javascript-state-machine/dist/state-machine.min.js'></script>
 ```
 
 > after downloading the [source](dist/state-machine.js) or the [minified version](dist/state-machine.min.js)
@@ -29,13 +31,13 @@ In a browser:
 Using npm:
 
 ```shell
-  npm install --save-dev javascript-state-machine
+  npm install --save-dev @taoqf/javascript-state-machine
 ```
 
 In Node.js:
 
 ```javascript
-  var StateMachine = require('javascript-state-machine');
+  var StateMachine = require('@taoqf/javascript-state-machine');
 ```
 
 # Usage
@@ -128,7 +130,8 @@ Read more about
   * [Visualization](docs/visualization.md)
   * [State Machine Factory](docs/state-machine-factory.md)
   * [Upgrading from 2.x](docs/upgrading-from-v2.md)
- 
+  * [TypeScript](docs/typescript.md)
+
 # Contributing
 
 You can [Contribute](docs/contributing.md) to this project with issues or pull requests.

@@ -46,7 +46,7 @@ Using the factory, each state machine instance is a unique javascript object. Ea
 its own `state` property, but methods are shared via the normal javascript prototype mechanism.
 
 > NOTE: be aware of special case handling required for [Data and State Machine Factories](data-and-methods.md#data-and-state-machine-factories)
- 
+
 ## Applying State Machine Behavior to Existing Objects
 
 Occasionally, you may wish to apply state machine behavior to an already existing
@@ -57,9 +57,9 @@ object (e.g. a react component). You can achieve this using the `StateMachine.ap
 
   StateMachine.apply(component, {
     init: 'A',
-    transitions: {
+    transitions: [
       { name: 'step', from: 'A', to: 'B' }
-    }
+    ]
   });
 ```
 
@@ -85,10 +85,10 @@ constructor method:
 
   StateMachine.factory(Person, {
     init: 'idle',
-    transitions: {
+    transitions: [
       { name: 'sleep', from: 'idle',     to: 'sleeping' },
       { name: 'wake',  from: 'sleeping', to: 'idle'     }
-    }
+    ]
   });
 
   var amy = new Person('amy'),
