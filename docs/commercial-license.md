@@ -16,8 +16,7 @@ licensed versions. The commercial license allows for commercial use and provides
 
 ## PURCHASE NOW
 
-A commercial license can be [purchased here](https://plasso.com/s/TrSu29woZU). You will receive
-your license details via email within 48 hours of purchase.
+A commercial license ~~can be purchased here~~ is no longer available.
 
 Please contact [jake@codeincomplete.com](mailto:jake@codeincomplete.com) if you have any questions.
 
