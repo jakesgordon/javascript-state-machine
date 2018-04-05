@@ -134,6 +134,7 @@ Read more about
   * [State History](docs/state-history.md)
   * [Visualization](docs/visualization.md)
   * [State Machine Factory](docs/state-machine-factory.md)
+  * [State Machine ES6](docs/state-machine-es6.md)
   * [Upgrading from 2.x](docs/upgrading-from-v2.md)
  
 # Contributing
