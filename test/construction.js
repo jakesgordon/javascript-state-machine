@@ -227,3 +227,174 @@ test('factory construction - with custom data and methods', t => {
 })
 
 //-------------------------------------------------------------------------------------------------
+
+test('subclass construction', t => {
+
+  class MyClass extends StateMachine.es6 {
+    static initialState = 'A';
+    static stateTransitions = [
+      { name: 'step1', from: 'A', to: 'B' },
+      { name: 'step2', from: 'B', to: 'C' }
+    ];
+  }
+
+  var fsm1 = new MyClass(),
+    fsm2 = new MyClass(),
+    fsm3 = new MyClass();
+
+  fsm2.step1()
+  fsm3.step1()
+  fsm3.step2()
+
+  t.is(fsm1.state, 'A')
+  t.is(fsm2.state, 'B')
+  t.is(fsm3.state, 'C')
+
+  t.deepEqual(fsm1.allStates(), [ 'none', 'A', 'B', 'C' ])
+  t.deepEqual(fsm2.allStates(), [ 'none', 'A', 'B', 'C' ])
+  t.deepEqual(fsm3.allStates(), [ 'none', 'A', 'B', 'C' ])
+
+  t.deepEqual(fsm1.allTransitions(), [ 'init', 'step1', 'step2' ])
+  t.deepEqual(fsm2.allTransitions(), [ 'init', 'step1', 'step2' ])
+  t.deepEqual(fsm3.allTransitions(), [ 'init', 'step1', 'step2' ])
+
+  t.deepEqual(fsm1.transitions(), [ 'step1' ])
+  t.deepEqual(fsm2.transitions(), [ 'step2' ])
+  t.deepEqual(fsm3.transitions(), [         ])
+
+})
+
+//-------------------------------------------------------------------------------------------------
+
+test('subclass construction - with custom data and methods', t => {
+
+  class MyClass extends StateMachine.es6 {
+    static initialState = 'A';
+    static stateTransitions = [
+      { name: 'step1', from: 'A', to: 'B' },
+      { name: 'step2', from: 'B', to: 'C' }
+    ];
+    constructor(value) {
+      super();
+      this.value = value
+    }
+    talk() {
+      return this.state + ' - ' + this.value
+    }
+  }
+
+  var fsm1 = new MyClass(1),
+    fsm2 = new MyClass(2),
+    fsm3 = new MyClass(3);
+
+  t.is(fsm1.state, 'A')
+  t.is(fsm2.state, 'A')
+  t.is(fsm3.state, 'A')
+
+  t.is(fsm1.talk(), 'A - 1')
+  t.is(fsm2.talk(), 'A - 2')
+  t.is(fsm3.talk(), 'A - 3')
+
+  fsm2.step1()
+  fsm3.step1()
+  fsm3.step2()
+
+  t.is(fsm1.state, 'A')
+  t.is(fsm2.state, 'B')
+  t.is(fsm3.state, 'C')
+
+  t.is(fsm1.talk(), 'A - 1')
+  t.is(fsm2.talk(), 'B - 2')
+  t.is(fsm3.talk(), 'C - 3')
+
+  t.deepEqual(fsm1.allStates(), [ 'none', 'A', 'B', 'C' ])
+  t.deepEqual(fsm2.allStates(), [ 'none', 'A', 'B', 'C' ])
+  t.deepEqual(fsm3.allStates(), [ 'none', 'A', 'B', 'C' ])
+
+  t.deepEqual(fsm1.allTransitions(), [ 'init', 'step1', 'step2' ])
+  t.deepEqual(fsm2.allTransitions(), [ 'init', 'step1', 'step2' ])
+  t.deepEqual(fsm3.allTransitions(), [ 'init', 'step1', 'step2' ])
+
+  t.deepEqual(fsm1.transitions(), [ 'step1' ])
+  t.deepEqual(fsm2.transitions(), [ 'step2' ])
+  t.deepEqual(fsm3.transitions(), [         ])
+
+  t.throws(function() {
+    fsm3.state = 'A'
+  })
+
+  t.notThrows(function() {
+    fsm1.state = 'B'
+  })
+
+  t.is(fsm1.talk(), 'B - 1')
+
+  t.notThrows(function() {
+    fsm1.state = 'B'
+  })
+
+})
+
+//-------------------------------------------------------------------------------------------------
+
+test('subclass construction - with assignment transitions', t => {
+
+  class MyClass extends StateMachine.es6 {
+    static initialState = 'A';
+    static stateTransitions = [
+      { name: 'step1', from: 'A', to: 'B' },
+      { name: 'step11', from: 'A', to: function() {
+        return 'B'
+      } },
+      { name: 'step*', from: '*', to: MyClass.goto }
+    ];
+    static goto(state) {
+      return state
+    }
+  }
+
+  var fsm1 = new MyClass()
+
+  t.is(fsm1.state, 'A')
+
+  t.throws(function() {
+    fsm1.state = 'B'
+  })
+
+  t.is(fsm1.state, 'A')
+
+  t.notThrows(function() {
+    fsm1.state = 'Z'
+  })
+
+  t.is(fsm1.state, 'Z')
+
+  var stepBTriggered = false
+
+  class MyClass2 extends StateMachine.es6 {
+    static initialState = 'A';
+    static stateTransitions = [
+      { name: 'stepB', from: '*', to: 'B' }
+    ];
+    onStepB() {
+      stepBTriggered = true
+    }
+  }
+
+  var fsm2 = new MyClass2()
+
+  t.notThrows(function() {
+    fsm2.state = 'B'
+  })
+
+  t.is(fsm2.state, 'B')
+  t.is(stepBTriggered, true)
+
+
+  t.throws(function() {
+    fsm2.state = 'Z'
+  })
+
+})
+
+//-------------------------------------------------------------------------------------------------
