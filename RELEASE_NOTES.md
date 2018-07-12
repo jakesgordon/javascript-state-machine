@@ -1,3 +1,8 @@
+Version 3.1.0 (July 12th 2018)
+------------------------------
+
+ * Changed back to MIT license
+
 Version 3.0.1 (June 10th 2017)
 ------------------------------
 

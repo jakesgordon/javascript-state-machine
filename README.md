@@ -133,16 +133,13 @@ Read more about
 
 You can [Contribute](docs/contributing.md) to this project with issues or pull requests.
 
-You might also want to support this project by purchasing a [commercial license](docs/commercial-license.md).
-
 # Release Notes
 
 See [RELEASE NOTES](RELEASE_NOTES.md) file.
 
 # License
 
-Dual-licensed under the [LGPL](http://www.gnu.org/licenses/lgpl-3.0.html) for the open source community and also available with support
-under a [commercial license](docs/commercial-license.md).
+See [MIT LICENSE](https://github.com/jakesgordon/javascript-state-machine/blob/master/LICENSE) file.
 
 # Contact
 

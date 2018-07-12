@@ -22,7 +22,7 @@
       "email": "jake@codeincomplete.com"
     }
   ],
-  "license": "LGPL-3.0",
+  "license": "MIT",
   "main": "lib/state-machine.js",
   "files": [
     "lib/**/*.js",
@@ -38,7 +38,7 @@
     "uglify-js": "^2.7.5",
     "webpack": "^2.2.0-rc.1"
   },
-  "version": "3.0.1",
+  "version": "3.1.0",
   "scripts": {
     "start": "npm run watch",
     "build": "npm run bundle && npm run minify",
