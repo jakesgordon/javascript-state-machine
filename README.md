@@ -30,6 +30,8 @@ Using npm:
 
 ```shell
   npm install --save-dev javascript-state-machine
+or
+  yarn add javascript-state-machine
 ```
 
 In Node.js:

@@ -20,8 +20,25 @@ function Config(options, StateMachine) {
   this.init        = this.configureInitTransition(options.init);
   this.data        = this.configureData(options.data);
   this.methods     = this.configureMethods(options.methods);
+  this.hasStateDefs = false;
+  if (Object.keys(options).indexOf('dotPrefix') >=0 ) {
+    this.dotPrefix = options['dotPrefix'];
+    if (this.dotPrefix !== null &&
+        typeof this.dotPrefix === 'object' &&
+        Object.keys(this.dotPrefix).length === 0) {
+      this.dotPrefix = null;
+    }
+  }
+  else  {
+    this.dotPrefix = this.defaults.dotPrefix;
+  }
 
   this.map[this.defaults.wildcard] = {};
+
+  if (options['statedefs']) {
+    this.hasStateDefs = true;
+    this.configureStateDefs(options['statedefs']);
+  }
 
   this.configureTransitions(options.transitions || []);
 
@@ -121,15 +138,49 @@ mixin(Config.prototype, {
     return plugins
   },
 
+  configureStateDefs: function(statedefs) {
+    var n;
+    for (n = 0; n < statedefs.length; n++) {
+      this.addState(statedefs[n].name);
+    }
+  },
+
   configureTransitions: function(transitions) {
-    var i, n, transition, from, to, wildcard = this.defaults.wildcard;
+    var i, n, transition, fromStates, from, to, wildcard = this.defaults.wildcard;
+    var undefinedStates = [], sameAsTrans = [];
     for(n = 0 ; n < transitions.length ; n++) {
       transition = transitions[n];
-      from  = Array.isArray(transition.from) ? transition.from : [transition.from || wildcard]
+      fromStates  = Array.isArray(transition.from) ? transition.from : [transition.from || wildcard]
       to    = transition.to || wildcard;
-      for(i = 0 ; i < from.length ; i++) {
-        this.mapTransition({ name: transition.name, from: from[i], to: to });
+      if (this.hasStateDefs) {
+        if (this.states.indexOf(transition.name) >= 0) {
+          sameAsTrans.push(transition.name);
+        }
+        if (to !== wildcard && this.states.indexOf(to) === -1) {
+          undefinedStates.push(to);
+        }
       }
+
+      for(i = 0 ; i < fromStates.length ; i++) {
+        from = fromStates[i];
+        if (this.hasStateDefs && from !== wildcard && from !== 'none' &&
+            this.states.indexOf(from) === -1) {
+          undefinedStates.push(from);
+        }
+        this.mapTransition({ name: transition.name, from: from, to: to });
+      }
+    }
+    if (undefinedStates.length > 0 || sameAsTrans.length > 0) {
+      var errStr = '';
+      if (undefinedStates.length > 0) {
+        errStr += 'Undefined states in transitions: "' + undefinedStates.join(', ') + '"';
+      }
+      if (sameAsTrans.length > 0) {
+        if (errStr.length > 0)
+          errStr += '\n';
+        errStr += 'Transition name same as state: "' + sameAsTrans.join(', ') + '"';
+      }
+      throw new Error(errStr);
     }
   },
 

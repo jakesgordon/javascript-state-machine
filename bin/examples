@@ -4,6 +4,14 @@
 //
 // This script is used to regenerate the example visualizations
 //
+// It will scan all the .js files in the 'examples' folder and generate a
+// * .dot - file with dot directives for graphviz
+// * .svg - svg graphics representation
+// * .png - png graphics representation
+//
+// If provided with an argument, it will only generate output for the specified
+// argument.
+//
 //=================================================================================================
 
 var fs    = require('fs'),
@@ -11,10 +19,25 @@ var fs    = require('fs'),
     child = require('child_process');
 
 //-------------------------------------------------------------------------------------------------
+process.chdir(path.dirname(process.argv[1]));
 
-fs.readdirSync('examples')
-  .filter(function(file) { return path.extname(file) === ".js" })
-  .map(visualize);
+if (process.argv.length > 2) {
+  var fn = process.argv[2],
+      fnfull = '../examples/' + fn;
+  if (!fs.existsSync(fnfull)) {
+    console.log('Error - file: ' + fnfull + ' does not exist');
+  }
+
+  else {
+    visualize(fn);
+  }
+}
+
+else {
+  fs.readdirSync('../examples')
+    .filter(function(file) { return path.extname(file) === ".js" })
+    .map(visualize);
+}
 
 //-------------------------------------------------------------------------------------------------
 
@@ -24,10 +47,10 @@ function visualize(example) {
       dot  = fsm.visualize(),
       svg  = dot2svg(dot),
       png  = dot2png(dot);
-  console.log('visualizing examples/' + example);
-  fs.writeFileSync('examples/' + name + '.dot', dot);
-  fs.writeFileSync('examples/' + name + '.svg', svg);
-  fs.writeFileSync('examples/' + name + '.png', png, 'binary');
+  console.log('visualizing ../examples/' + example);
+  fs.writeFileSync('../examples/' + name + '.dot', dot);
+  fs.writeFileSync('../examples/' + name + '.svg', svg);
+  fs.writeFileSync('../examples/' + name + '.png', png, 'binary');
 }
 
 //-------------------------------------------------------------------------------------------------
