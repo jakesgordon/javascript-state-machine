@@ -5,6 +5,10 @@
 
 A library for finite state machines.
 
+一个有限状态机库.
+
+查看[中文文档](README_zh-cn.md)
+
 ![matter state machine](examples/matter.png)
 
 <br>
@@ -13,6 +17,9 @@ A library for finite state machines.
 
 > **VERSION 3.0** Is a significant rewrite from earlier versions.
   Existing 2.x users should be sure to read the [Upgrade Guide](docs/upgrading-from-v2.md).
+
+> 值得注意的是**VERSION 3.0** 已经重写了。
+  现有2.x用户应该阅读[升级指南](docs/upgrading-from-v2.md).
 
 <br>
 
