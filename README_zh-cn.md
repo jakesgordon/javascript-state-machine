@@ -125,13 +125,13 @@
   * [States and Transitions状态和转换](docs/zh-cn/states-and-transitions.md)
   * [Data and Methods数据和方法](docs/zh-cn/data-and-methods.md)
   * [Lifecycle Events生命周期事件](docs/zh-cn/lifecycle-events.md)
-  * [Asynchronous Transitions](docs/zh-cn/async-transitions.md)
-  * [Initialization](docs/zh-cn/initialization.md)
-  * [Error Handling](docs/zh-cn/error-handling.md)
-  * [State History](docs/zh-cn/state-history.md)
-  * [Visualization](docs/zh-cn/visualization.md)
-  * [State Machine Factory](docs/state-machine-factory.md)
-  * [Upgrading from 2.x](docs/zh-cn/upgrading-from-v2.md)
+  * [Asynchronous Transitions异步转换](docs/zh-cn/async-transitions.md)
+  * [Initialization初始化](docs/zh-cn/initialization.md)
+  * [Error Handling错误处理](docs/zh-cn/error-handling.md)
+  * [State History状态历史](docs/zh-cn/state-history.md)
+  * [Visualization可视化](docs/zh-cn/visualization.md)
+  * [State Machine Factory状态机工厂](docs/state-machine-factory.md)
+  * [Upgrading from 2.x从2.x升级](docs/zh-cn/upgrading-from-v2.md)
  
 # 贡献（〜^㉨^)〜
 
