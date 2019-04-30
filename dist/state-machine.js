@@ -503,8 +503,8 @@ mixin(JSM.prototype, {
       plugin.hook(this, 'lifecycle', args);
 
     if (observers.length === 0) {
-      events.shift();
-      return this.observeEvents(events, args, event, previousResult);
+      var nextEvents = events.slice(1);
+      return this.observeEvents(nextEvents, args, event, previousResult);
     }
     else {
       var observer = observers.shift(),
