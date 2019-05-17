@@ -108,7 +108,13 @@ mixin(JSM.prototype, {
 
   beginTransit: function()          { this.pending = true;                 },
   endTransit:   function(result)    { this.pending = false; return result; },
-  failTransit:  function(result)    { this.pending = false; throw result;  },
+  failTransit:  function(result, from, to) {
+    if (this.state === to) {
+       this.state = from;
+    }
+    this.pending = false;
+    throw result;
+  },
   doTransit:    function(lifecycle) { this.state = lifecycle.to;           },
 
   observe: function(args) {
@@ -132,6 +138,14 @@ mixin(JSM.prototype, {
     return [ event, result, true ]
   },
 
+  callObserver: function(event, observer, args, from, to) {
+    try {
+      return observer[event].apply(observer, args);
+    } catch (error) {
+      this.failTransit.call(this, error, from, to);
+    }
+  },
+
   observeEvents: function(events, args, previousEvent, previousResult) {
     if (events.length === 0) {
       return this.endTransit(previousResult === undefined ? true : previousResult);
@@ -150,11 +164,16 @@ mixin(JSM.prototype, {
       return this.observeEvents(events, args, event, previousResult);
     }
     else {
-      var observer = observers.shift(),
-          result = observer[event].apply(observer, args);
+      var from = args[0].from;
+      var to = args[0].to;
+      var observer = observers.shift();
+      var result = this.callObserver.call(this, event, observer, args, from, to);
       if (result && typeof result.then === 'function') {
+        var jsm = this
         return result.then(this.observeEvents.bind(this, events, args, event))
-                     .catch(this.failTransit.bind(this))
+                     .catch(function (error) {
+                       jsm.failTransit.call(jsm, error, from, to);
+                     });
       }
       else if (result === false) {
         return this.endTransit(false);
