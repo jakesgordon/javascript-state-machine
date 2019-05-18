@@ -39,6 +39,10 @@ module.exports = function(options) { options = options || {};
       }
     },
 
+    cancel: function(instance, lifecycle) {
+      instance[past].pop()
+    },
+
     methods:    {},
     properties: {}
 
