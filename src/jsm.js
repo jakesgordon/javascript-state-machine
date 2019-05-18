@@ -108,9 +108,13 @@ mixin(JSM.prototype, {
 
   beginTransit: function()          { this.pending = true;                 },
   endTransit:   function(result)    { this.pending = false; return result; },
-  failTransit:  function(result, from, to) {
+  failTransit:  function(result, args) {
+    var from = args[0].from;
+    var to = args[0].to;
+
     if (this.state === to) {
-       this.state = from;
+      this.state = from;
+      plugin.hook(this, 'cancel', args);
     }
     this.pending = false;
     throw result;
@@ -138,11 +142,11 @@ mixin(JSM.prototype, {
     return [ event, result, true ]
   },
 
-  callObserver: function(event, observer, args, from, to) {
+  callObserver: function(event, observer, args) {
     try {
       return observer[event].apply(observer, args);
     } catch (error) {
-      this.failTransit.call(this, error, from, to);
+      this.failTransit.call(this, error, args);
     }
   },
 
@@ -164,15 +168,13 @@ mixin(JSM.prototype, {
       return this.observeEvents(events, args, event, previousResult);
     }
     else {
-      var from = args[0].from;
-      var to = args[0].to;
       var observer = observers.shift();
-      var result = this.callObserver.call(this, event, observer, args, from, to);
+      var result = this.callObserver.call(this, event, observer, args);
       if (result && typeof result.then === 'function') {
         var jsm = this
         return result.then(this.observeEvents.bind(this, events, args, event))
                      .catch(function (error) {
-                       jsm.failTransit.call(jsm, error, from, to);
+                       jsm.failTransit.call(jsm, error, args);
                      });
       }
       else if (result === false) {
