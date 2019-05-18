@@ -158,3 +158,58 @@ test('pending transition handler can be customized', t => {
 })
 
 //-------------------------------------------------------------------------------------------------
+
+test('exception thrown in handler cancels state transition', t => {
+
+  var fsm = new StateMachine({
+    transitions: [
+      { name: 'step1', from: 'none', to: 'A' },
+      { name: 'step2', from: 'A',    to: 'B' }
+    ],
+    methods: {
+      onA:function () {
+        throw new Error('Error thrown in observer')
+      }
+    }
+  });
+
+  t.is(fsm.state,        'none')
+  t.is(fsm.can('step1'),  true)
+  t.is(fsm.can('step2'), false)
+  
+  const error = t.throws(() => {
+    fsm.step1();
+  })
+
+  t.is(error.message,    'Error thrown in observer')
+  t.is(fsm.state,       'none')
+
+})
+
+test('exception with promise thrown in handler cancels state transition', async t => {
+
+  var fsm = new StateMachine({
+    transitions: [
+      { name: 'step1', from: 'none', to: 'A' },
+      { name: 'step2', from: 'A',    to: 'B' }
+    ],
+    methods: {
+      onA: async function () {
+        return Promise.reject(new Error('Error thrown in observer'))
+        }
+      }
+  });
+
+  t.is(fsm.state,        'none')
+  t.is(fsm.can('step1'),  true)
+  t.is(fsm.can('step2'), false)
+
+  try{
+    await fsm.step1()
+    t.is('Should fail', 'fail')
+  }catch(error){
+    t.is(error.message,    'Error thrown in observer')
+  }
+
+  t.is(fsm.state,       'none')
+})

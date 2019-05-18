@@ -491,3 +491,35 @@ test('history can be used with a state machine factory applied to existing class
 })
 
 //-------------------------------------------------------------------------------------------------
+
+test('exception thrown in handler cancels state transition', t => {
+
+  var fsm = new StateMachine({
+    transitions: [
+      { name: 'step1', from: 'none', to: 'A' },
+      { name: 'step2', from: 'A',    to: 'B' }
+    ],
+    plugins:[
+      StateMachineHistory
+    ],
+    methods: {
+      onB:function () {
+        throw new Error('Error thrown in observer')
+      }
+    }
+  });
+
+  t.is(fsm.state,        'none'); t.deepEqual(fsm.history, [ ]);
+  t.is(fsm.can('step1'),  true)
+  t.is(fsm.can('step2'), false)
+
+  fsm.step1();  t.is(fsm.state,        'A'); t.deepEqual(fsm.history, [ 'A' ]);
+  
+  const error = t.throws(() => {
+    fsm.step2();
+  })
+
+  t.is(fsm.state,        'A'); t.deepEqual(fsm.history, [ 'A' ]);
+
+  t.is(error.message,    'Error thrown in observer')
+})

@@ -146,3 +146,6 @@ lifecycle events:
 
 All subsequent lifecycle events will be cancelled and the state will remain unchanged.
 
+To cancel a transition, you can also throw an exception `throw new Error('')` or await for a promise that is rejected inside any lifecycle handler.
+The transition state will be cancelled and the following lifecycle events will not be triggered
+
