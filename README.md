@@ -38,6 +38,19 @@ In Node.js:
   var StateMachine = require('javascript-state-machine');
 ```
 
+With Typescript:
+
+* ```shell
+  npm install @types/javascript-state-machine javascript-state-machine
+
+  ```
+
+* then in your code
+
+* ```typescript
+    import { StateMachine } from 'javascript-state-machine';
+  ```
+
 # Usage
 
 A state machine can be constructed using:
