@@ -138,7 +138,7 @@ arbitrary `goto` behavior:
 
 ```javascript
   var fsm = new StateMachine({
-    init: 'A'
+    init: 'A',
     transitions: [
       { name: 'step', from: 'A', to: 'B'                      },
       { name: 'step', from: 'B', to: 'C'                      },
