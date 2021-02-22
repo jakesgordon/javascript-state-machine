@@ -23,36 +23,80 @@
     }
   ],
   "license": "MIT",
-  "main": "lib/state-machine.js",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/es/index.js",
+  "browser": "./dist/umd/index.js",
   "files": [
-    "lib/**/*.js",
-    "dist/**/*.js"
+    "dist/*",
+    "dist/cjs/*",
+    "dist/es/*",
+    "dist/umd/*"
   ],
+  "types": "dist/index.d.ts",
   "directories": {},
-  "devDependencies": {
-    "ava": "^0.17.0",
-    "fs-sync": "^1.0.3",
-    "glob": "^7.1.1",
-    "nyc": "^10.0.0",
-    "pascal-case": "^2.0.0",
-    "uglify-js": "^2.7.5",
-    "webpack": "^2.2.0-rc.1"
-  },
   "version": "3.1.0",
   "scripts": {
-    "start": "npm run watch",
-    "build": "npm run bundle && npm run minify",
-    "bundle": "webpack",
-    "minify": "bin/minify",
-    "watch": "ava --watch",
-    "test": "nyc ava -v && nyc report --reporter=html"
+    "build": "rm -rf dist && rollup -c",
+    "build:prod": "rm -rf dist && rollup -c --environment mode:production",
+    "build-fat": "rm -rf dist && rollup -c rollup.config.fat.js",
+    "build-fat:prod": "rm -rf dist rollup -c --environment mode:production rollup.config.fat.js",
+    "watch": "rm -rf && rollup -cw",
+    "lint": "eslint '*/**/*.{ts,tsx}' --quiet --fix",
+    "test": "jest",
+    "coverage": "jest --coverage",
+    "test-js": "nyc ava -v && nyc report --reporter=html",
+    "visualize-examples": "node bin/examples"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "@rollup/plugin-strip": "^2.0.0",
+    "@types/isomorphic-fetch": "^0.0.35",
+    "@types/jest": "^26.0.20",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/node": "^14.14.10",
+    "@typescript-eslint/eslint-plugin": "^4.15.1",
+    "@typescript-eslint/parser": "^4.15.1",
+    "ava": "^0.17.0",
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.21.5",
+    "esm": "^3.2.25",
+    "jest": "^26.6.3",
+    "nyc": "^10.0.0",
+    "prettier": "^2.2.0",
+    "rollup": "^2.32.0",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-dotenv": "^0.3.0",
+    "rollup-plugin-inject-process-env": "^1.3.1",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-globals": "^1.4.0",
+    "rollup-plugin-node-polyfills": "^0.2.1",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.28.0",
+    "rollup-plugin-uglify": "^6.0.4",
+    "rollup-pluginutils": "^2.8.2",
+    "ts-jest": "^26.5.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
   },
   "ava": {
+    "require": [
+      "esm"
+    ],
     "files": [
-      "test/**/*.js"
+      "test-js/**/*.js"
     ],
     "source": [
-      "src/**/*.js"
+      "dist/**/*.js"
     ]
   }
 }

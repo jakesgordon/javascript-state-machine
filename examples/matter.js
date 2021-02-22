@@ -1,5 +1,5 @@
-var StateMachine = require('../src/app'),
-    visualize    = require('../src/plugin/visualize');
+var { StateMachine, plugins } = require('../dist/cjs');
+var  visualize = plugins.visualize;
 
 var Matter = StateMachine.factory({
   init: 'solid',
@@ -11,8 +11,8 @@ var Matter = StateMachine.factory({
   ]
 });
 
-Matter.visualize = function() {
-  return visualize(Matter, { name: 'matter', orientation: 'horizontal' })
+Matter.prototype.visualize = function() {
+  return visualize(this, { name: 'matter', orientation: 'horizontal' })
 }
 
 module.exports = Matter

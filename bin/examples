@@ -21,7 +21,8 @@ fs.readdirSync('examples')
 function visualize(example) {
   var name = path.basename(example, '.js'),
       fsm  = require('../examples/' + example),
-      dot  = fsm.visualize(),
+      machine = new fsm(),
+      dot  = machine.visualize(),
       svg  = dot2svg(dot),
       png  = dot2png(dot);
   console.log('visualizing examples/' + example);

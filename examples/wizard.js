@@ -1,5 +1,5 @@
-var StateMachine = require('../src/app'),
-    visualize    = require('../src/plugin/visualize');
+var { StateMachine, plugins } = require('../dist/cjs');
+var  visualize = plugins.visualize;
 
 var Wizard = StateMachine.factory({
   init: 'A',
@@ -11,8 +11,8 @@ var Wizard = StateMachine.factory({
   ]
 });
 
-Wizard.visualize = function() {
-  return visualize(Wizard, { name: 'wizard', orientation: 'horizontal' })
+Wizard.prototype.visualize = function() {
+  return visualize(this, { name: 'wizard', orientation: 'horizontal' })
 }
 
 module.exports = Wizard
