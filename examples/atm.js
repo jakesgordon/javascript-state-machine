@@ -1,5 +1,5 @@
-var StateMachine = require('../src/app'),
-    visualize    = require('../src/plugin/visualize');
+var { StateMachine, plugins } = require('../dist/cjs');
+var  visualize = plugins.visualize;
 
 var ATM = StateMachine.factory({
   init: 'ready',
@@ -26,8 +26,8 @@ var ATM = StateMachine.factory({
   ]
 })
 
-ATM.visualize = function() {
-  return visualize(ATM, { name: 'ATM' })
+ATM.prototype.visualize = function() {
+  return visualize(this, { name: 'ATM' })
 }
 
 module.exports = ATM

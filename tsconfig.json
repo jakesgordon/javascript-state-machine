@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "./dist",
+    "module": "ESNext",
+//    "module": "es2015",
+//    "module": "commonjs",
+//    "noImplicitAny": true,
+    "outDir": "./dist",
+    "target": "es5",
+    "lib": ["es6", "es2017", "dom"],
+    // https://github.com/axios/axios/issues/1221
+    "moduleResolution": "node",
+//    "types": ["javascript-state-machine"],
+    "allowSyntheticDefaultImports": true,
+    "typeRoots": [ "./types", "./node_modules/@types"],
+
+    // epos config
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+//    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+//    "module": "esnext",
+//    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noImplicitAny": false,
+    "noEmit": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": ["node_modules", "typings", "test"]
+}
