@@ -81,7 +81,7 @@ Version 2.2.0 (January 26th 2013)
  * Added generic state callbacks 'onleavestate' and 'onenterstate'  (issue #28)
  * Fixed 'undefined' event return codes (issue #34) - pull from gentooboontoo (thanks!)
  * Allow async event transition to be cancelled (issue #22)
- * [read more...](http://codeincomplete.com/posts/2013/1/26/javascript_state_machine_v2_2_0/)
+ * [read more...](https://jakesgordon.com/writing/javascript-state-machine-v2-2-0/)
 
 Version 2.1.0 (January 7th 2012)
 --------------------------------
@@ -104,14 +104,14 @@ Version 2.0.0 (August 19th 2011)
  * added a generic `onchangestate(event,from,to)` callback to detect all state changes with a single function.
  * allow callbacks to be declared at creation time (instead of having to attach them afterwards)
  * renamed 'hooks' => 'callbacks'
- * [read more...](http://codeincomplete.com/posts/2011/8/19/javascript_state_machine_v2/)
+ * [read more...](https://jakesgordon.com/writing/javascript-state-machine-v2/)
 
 Version 1.2.0 (June 21st 2011)
 ------------------------------
  * allows the same event to transition to different states, depending on the current state (see 'Multiple...' section in README.md)
- * [read more...](http://codeincomplete.com/posts/2011/6/21/javascript_state_machine_v1_2_0/)
+ * [read more...](https://jakesgordon.com/writing/javascript-state-machine-v1-2-0/)
 
 Version 1.0.0 (June 1st 2011)
 -----------------------------
  * initial version
- * [read more...](http://codeincomplete.com/posts/2011/6/1/javascript_state_machine/)
+ * [read more...](https://jakesgordon.com/writing/javascript-state-machine/)

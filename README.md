@@ -144,5 +144,5 @@ See [MIT LICENSE](https://github.com/jakesgordon/javascript-state-machine/blob/m
 # Contact
 
 If you have any ideas, feedback, requests or bug reports, you can reach me at
-[jake@codeincomplete.com](mailto:jake@codeincomplete.com), or via
-my website: [Code inComplete](http://codeincomplete.com/)
+[jakesgordon@gmail.com](mailto:jakesgordon@gmail.com), or via
+my website: [jakesgordon.com](https://jakesgordon.com/)
